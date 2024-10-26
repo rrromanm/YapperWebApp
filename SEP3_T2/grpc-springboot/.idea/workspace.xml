@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="55b939f6-c2ea-45f7-a2a9-20a2c05834da" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/via/pro3/grpcspringboot/client/ConverterTestClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/via/pro3/grpcspringboot/service/TextConverterImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/proto/TextConverter.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/GrpcService.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/Program.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/Properties/launchSettings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/Protos/greet.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/Services/GreeterService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/appsettings.Development.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/appsettings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/Debug/net8.0/12fbc7ffe642ca7e_greet.protodep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/Debug/net8.0/GrpcService.AssemblyInfo.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/Debug/net8.0/GrpcService.AssemblyInfoInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/Debug/net8.0/GrpcService.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/Debug/net8.0/GrpcService.GlobalUsings.g.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/Debug/net8.0/GrpcService.assets.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/Debug/net8.0/GrpcService.csproj.AssemblyReference.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/Debug/net8.0/Protos/Greet.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/Debug/net8.0/Protos/GreetGrpc.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/GrpcService.csproj.nuget.dgspec.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/GrpcService.csproj.nuget.g.props" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/GrpcService.csproj.nuget.g.targets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/project.assets.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/project.nuget.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/project.packagespec.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../GrpcService/obj/rider.project.restore.info" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../SEP3_T2.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/sep3/RunProgram.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Use Maven wrapper" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2nyhhsTWdspRDGmCxniNbYYCU9P" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.grpc-springboot [compile].executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.GrpcSpringbootApplication.executor": "Run",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn compile" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Application.ConverterTestClient">
+    <configuration name="ConverterTestClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="via.pro3.grpcspringboot.client.ConverterTestClient" />
+      <module name="grpc-springboot" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="via.pro3.grpcspringboot.client.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GrpcSpringbootApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="grpc-springboot" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="via.pro3.grpcspringboot.GrpcSpringbootApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.ConverterTestClient" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="55b939f6-c2ea-45f7-a2a9-20a2c05834da" name="Changes" comment="" />
+      <created>1729951347483</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1729951347483</updated>
+      <workItem from="1729951348590" duration="693000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
