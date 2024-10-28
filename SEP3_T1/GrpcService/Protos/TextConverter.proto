@@ -13,4 +13,5 @@ message RequestText {
 
 message ResponseText {
   string outputText = 1;
+  
 }
