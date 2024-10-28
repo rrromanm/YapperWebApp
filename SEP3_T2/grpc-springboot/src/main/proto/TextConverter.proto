@@ -1,17 +1,15 @@
 syntax = "proto3";
-
 option java_multiple_files = true;
-option java_package = "org.baeldung.grpc";
+package org.baeldung.grpc;
 
-// TextConverter service definition
 service TextConverter {
-  rpc toUpper(RequestText) returns(ResponseText);
-  rpc capitalizeFirstCharacter(RequestText) returns(ResponseText);
+  rpc ToUpper (RequestText) returns (ResponseText);
 }
+
 message RequestText {
-  string input_text = 1;
+  string inputText = 1;
 }
 
 message ResponseText {
-  string output_text = 1;
+  string outputText = 1;
 }

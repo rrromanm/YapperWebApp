@@ -5,13 +5,12 @@ package org.baeldung.grpc;
 
 service TextConverter {
   rpc ToUpper (RequestText) returns (ResponseText);
-  rpc CapitalizeFirstCharacter (RequestText) returns (ResponseText);
 }
 
 message RequestText {
-  string input_text = 1;
+  string inputText = 1;
 }
 
 message ResponseText {
-  string output_text = 1;
+  string outputText = 1;
 }

@@ -9,35 +9,35 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = BlazorApp
 build_property.RootNamespace = BlazorApp
-build_property.ProjectDir = /Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/
+build_property.ProjectDir = C:\Users\samko\RiderProjects\YapperWebApp\SEP3_T1\BlazorApp\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp
+build_property.MSBuildProjectDirectory = C:\Users\samko\RiderProjects\YapperWebApp\SEP3_T1\BlazorApp
 build_property._RazorSourceGeneratorDebug = 
 
-[/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/Components/App.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9BcHAucmF6b3I=
+[C:/Users/samko/RiderProjects/YapperWebApp/SEP3_T1/BlazorApp/Components/App.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/Components/Pages/Error.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9FcnJvci5yYXpvcg==
+[C:/Users/samko/RiderProjects/YapperWebApp/SEP3_T1/BlazorApp/Components/Pages/Error.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/Components/Pages/Home.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9QYWdlcy9Ib21lLnJhem9y
+[C:/Users/samko/RiderProjects/YapperWebApp/SEP3_T1/BlazorApp/Components/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/Components/Routes.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9Sb3V0ZXMucmF6b3I=
+[C:/Users/samko/RiderProjects/YapperWebApp/SEP3_T1/BlazorApp/Components/Routes.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/Components/_Imports.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9fSW1wb3J0cy5yYXpvcg==
+[C:/Users/samko/RiderProjects/YapperWebApp/SEP3_T1/BlazorApp/Components/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/Components/Layout/MainLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50cy9MYXlvdXQvTWFpbkxheW91dC5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = b-fekawvbbds
+[C:/Users/samko/RiderProjects/YapperWebApp/SEP3_T1/BlazorApp/Components/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTWFpbkxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-qgsvw684bo
