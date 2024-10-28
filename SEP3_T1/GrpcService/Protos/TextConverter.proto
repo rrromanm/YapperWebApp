@@ -1,0 +1,17 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option csharp_namespace = "GrpcService.Protos";
+package org.baeldung.grpc;
+
+service TextConverter {
+  rpc ToUpper (RequestText) returns (ResponseText);
+  rpc CapitalizeFirstCharacter (RequestText) returns (ResponseText);
+}
+
+message RequestText {
+  string input_text = 1;
+}
+
+message ResponseText {
+  string output_text = 1;
+}

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/BlazorApp.csproj": {}
+    "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/GrpcService.csproj": {}
   },
   "projects": {
-    "/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/BlazorApp.csproj": {
+    "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/GrpcService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/BlazorApp.csproj",
-        "projectName": "BlazorApp",
-        "projectPath": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/BlazorApp.csproj",
+        "projectUniqueName": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/GrpcService.csproj",
+        "projectName": "GrpcService",
+        "projectPath": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/GrpcService.csproj",
         "packagesPath": "/Users/maciej/.nuget/packages/",
-        "outputPath": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/BlazorApp/obj/",
+        "outputPath": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/maciej/.nuget/NuGet/NuGet.Config"
@@ -42,6 +42,22 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Google.Protobuf": {
+              "target": "Package",
+              "version": "[3.28.2, )"
+            },
+            "Grpc.Net.Client": {
+              "target": "Package",
+              "version": "[2.66.0, )"
+            },
+            "Grpc.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.66.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -54,9 +70,6 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
