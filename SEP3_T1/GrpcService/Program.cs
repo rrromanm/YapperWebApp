@@ -15,5 +15,6 @@ class Program
         Console.WriteLine("Upper case: " + reply.OutputText);
         Console.WriteLine("Press any key to exit...");
         Console.ReadKey();
+        
     }
 }
