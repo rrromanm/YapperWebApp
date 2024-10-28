@@ -5,13 +5,13 @@ import io.grpc.ServerBuilder;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws Exception {
+        Server server = ServerBuilder.forPort(9090)
+                .addService(new ConverterTestImpl())
+                .build()
+                .start();
 
-        Server server = ServerBuilder
-                .forPort(9090)
-                .addService(new ConverterTestImpl()).build();
-
-        server.start();
+        System.out.println("Server started, listening on " + 9090);
         server.awaitTermination();
     }
 }

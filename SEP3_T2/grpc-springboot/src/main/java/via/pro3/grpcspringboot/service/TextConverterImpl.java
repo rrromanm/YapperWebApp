@@ -2,9 +2,9 @@ package via.pro3.grpcspringboot.service;
 
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
-import via.pro3.grpcspringbootexample.grpc.RequestText;
-import via.pro3.grpcspringbootexample.grpc.ResponseText;
-import via.pro3.grpcspringbootexample.grpc.TextConverterGrpc;
+import org.baeldung.grpc.RequestText;
+import org.baeldung.grpc.ResponseText;
+import org.baeldung.grpc.TextConverterGrpc;
 
 @GrpcService
 public class TextConverterImpl extends TextConverterGrpc.TextConverterImplBase {
