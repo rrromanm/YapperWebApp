@@ -1,28 +1,8 @@
-﻿# Ignore all bin directories in any subdirectory
+﻿# Ignore build output directories (common for all)
 **/bin/
-
-# Ignore all obj directories in any subdirectory
 **/obj/
-
-# Ignore IntelliJ IDEA project files and directories
-**/.idea/
-
-# Ignore Maven build directories
+**/out/
 **/target/
-**/bin/
-**/obj/
-
-# Ignore IDE files (IntelliJ IDEA, Eclipse, etc.)
-**/.idea/
-**/.classpath
-**/.project
-**/.settings/
-**/nbproject/
-
-# Ignore Maven dependency files
-**/.mvn/
-mvnw
-mvnw.cmd
 
 # Ignore logs and temporary files
 *.log
@@ -32,63 +12,6 @@ mvnw.cmd
 .DS_Store
 Thumbs.db
 
-# C# and Blazor
-# Ignore Visual Studio build directories
-bin/
-obj/
-
-# Ignore Visual Studio specific files
-*.suo
-*.user
-*.userosscache
-*.sln.ide
-*.vs/
-.vscode/
-*.csproj.user
-*.csproj.lock
-*.pdb
-*.dbmdl
-
-# Ignore ASP.NET Core files
-wwwroot/lib/
-wwwroot/css/
-wwwroot/js/
-wwwroot/img/
-wwwroot/favicon.ico
-
-# Ignore ASP.NET Core temporary files
-**/Properties/launchSettings.json
-**/Properties/launchSettings.json.user
-
-# Ignore NuGet packages
-*.nupkg
-**/packages/
-**/.nuget/
-**/project.lock.json
-
-# Ignore publishing artifacts
-**/publish/
-
-# Ignore logs and temporary files
-*.log
-*.tmp
-
-# Ignore OS-generated files
-.DS_Store
-Thumbs.db
-
-# Java and Maven
-# Ignore Maven build directories
-**/target/
-
-# Ignore Maven wrapper files
-**/.mvn/
-mvnw
-mvnw.cmd
-
-# Ignore IntelliJ IDEA project files
+# Ignore IDE-specific files (if not covered by specific gitignores)
 **/.idea/
-**/.classpath
-**/.project
-**/.settings/
-**/nbproject/
+**/.vscode/

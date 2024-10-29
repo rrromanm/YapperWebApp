@@ -1,8 +1,20 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
+# IntelliJ IDEA specific files
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Ignore Maven specific files and folders
+**/target/
+**/.mvn/
+mvnw
+mvnw.cmd
+**/.classpath
+**/.project
+**/.settings/
+**/nbproject/
+
+# Ignore generated files
+**/*.nuget.g.targets
+**/project.lock.json

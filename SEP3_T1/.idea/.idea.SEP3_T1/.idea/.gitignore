@@ -1,13 +1,21 @@
-﻿# Default ignored files
-/shelf/
-/workspace.xml
-# Rider ignored files
-/contentModel.xml
-/modules.xml
-/projectSettingsUpdater.xml
-/.idea.SEP3_T1.iml
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
+﻿# Rider specific files
+.idea/
+*.sln.ide
+*.sublime-project
+*.sublime-workspace
+
+# Blazor (ASP.NET Core) files
+wwwroot/lib/
+wwwroot/css/
+wwwroot/js/
+wwwroot/img/
+wwwroot/favicon.ico
+**/Properties/launchSettings.json
+**/Properties/launchSettings.json.user
+**/publish/
+
+# Ignore NuGet packages and related files
+*.nupkg
+**/packages/
+**/.nuget/
+**/*.nuget.g.targets
