@@ -1,4 +1,4 @@
-package via.pro3.grpcspringboot.client;
+package sep3;
 
 import io.grpc.stub.StreamObserver;
 import org.baeldung.grpc.RequestText;
