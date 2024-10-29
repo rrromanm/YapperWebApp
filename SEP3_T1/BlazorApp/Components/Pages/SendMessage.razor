@@ -3,38 +3,71 @@
 @using Microsoft.AspNetCore.Mvc
 @inject BlazorApp.Services.HttpMessageService MessageService
 
-<h3>Send Message</h3>
+<h2 class="text-center my-4">Send Your Message</h2>
 
 <EditForm Model="message" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="form-group">
-        <label for="messageContent">Message Content</label>
-        <InputTextArea id="messageContent" class="form-control" @bind-Value="message.MessageContent" />
+        <label for="messageContent" class="form-label">Message Content</label>
+        <InputTextArea id="messageContent"
+                       class="form-control rounded-3 shadow-sm"
+                       placeholder="Type your message here..."
+                       @bind-Value="message.MessageContent"
+                       style="min-height: 150px; max-height: 300px;" />
+        <small class="form-text text-muted">Max 500 characters.</small>
     </div>
 
-    <button type="submit" class="btn btn-primary">Send</button>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary btn-lg mt-3 px-5" style="transition: all 0.3s ease;">
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" hidden="!isLoading"></span>
+            Send Message
+        </button>
+    </div>
 </EditForm>
 
 @if (!string.IsNullOrEmpty(responseMessage))
 {
-    <div class="alert alert-success mt-3">
-        @responseMessage
+    <div class="alert alert-success mt-4 text-center">
+        <strong>Success!</strong> @responseMessage
+    </div>
+}
+
+@if (showError)
+{
+    <div class="alert alert-danger mt-4 text-center">
+        <strong>Error:</strong> Unable to send your message. Please try again.
     </div>
 }
 
 @code {
-    private API.SendMessage message = new API.SendMessage();
+    private API.SendMessage message = new();
     private string responseMessage;
+    private bool isLoading;
+    private bool showError;
 
     private async Task HandleValidSubmit()
     {
-        var result = await MessageService.SendMessage(message);
-        if (result is OkObjectResult okResult)
+        isLoading = true;
+        showError = false;
+
+        try
         {
-            var response = okResult.Value as dynamic;
-            responseMessage = response?.OutputText;
+            var result = await MessageService.SendMessage(message);
+            if (result is OkObjectResult okResult)
+            {
+                var response = okResult.Value as dynamic;
+                responseMessage = response?.OutputText;
+            }
+        }
+        catch
+        {
+            showError = true;
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 }
