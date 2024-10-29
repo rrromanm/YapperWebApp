@@ -1,10 +1,94 @@
-﻿/SEP3_T1/BlazorApp/obj/
-/SEP3_T1/BlazorApp/bin/
-/SEP3_T2/grpc-springboot/.idea
-/SEP3_T2/grpc-springboot/.idea
-/SEP3_T2/grpc-springboot/target
-/SEP3_T1/API/bin
-/SEP3_T1/API/obj
-/SEP3_T1/GrpcService/bin
-/SEP3_T1/GrpcService/obj
-/SEP3_T2/grpc-springboot/.idea
+﻿# Ignore all bin directories in any subdirectory
+**/bin/
+
+# Ignore all obj directories in any subdirectory
+**/obj/
+
+# Ignore IntelliJ IDEA project files and directories
+**/.idea/
+
+# Ignore Maven build directories
+**/target/
+**/bin/
+**/obj/
+
+# Ignore IDE files (IntelliJ IDEA, Eclipse, etc.)
+**/.idea/
+**/.classpath
+**/.project
+**/.settings/
+**/nbproject/
+
+# Ignore Maven dependency files
+**/.mvn/
+mvnw
+mvnw.cmd
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
+
+# C# and Blazor
+# Ignore Visual Studio build directories
+bin/
+obj/
+
+# Ignore Visual Studio specific files
+*.suo
+*.user
+*.userosscache
+*.sln.ide
+*.vs/
+.vscode/
+*.csproj.user
+*.csproj.lock
+*.pdb
+*.dbmdl
+
+# Ignore ASP.NET Core files
+wwwroot/lib/
+wwwroot/css/
+wwwroot/js/
+wwwroot/img/
+wwwroot/favicon.ico
+
+# Ignore ASP.NET Core temporary files
+**/Properties/launchSettings.json
+**/Properties/launchSettings.json.user
+
+# Ignore NuGet packages
+*.nupkg
+**/packages/
+**/.nuget/
+**/project.lock.json
+
+# Ignore publishing artifacts
+**/publish/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
+
+# Java and Maven
+# Ignore Maven build directories
+**/target/
+
+# Ignore Maven wrapper files
+**/.mvn/
+mvnw
+mvnw.cmd
+
+# Ignore IntelliJ IDEA project files
+**/.idea/
+**/.classpath
+**/.project
+**/.settings/
+**/nbproject/
