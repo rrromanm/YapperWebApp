@@ -1,0 +1,40 @@
+@page "/send-message"
+@using API
+@using Microsoft.AspNetCore.Mvc
+@inject BlazorApp.Services.HttpMessageService MessageService
+
+<h3>Send Message</h3>
+
+<EditForm Model="message" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="messageContent">Message Content</label>
+        <InputTextArea id="messageContent" class="form-control" @bind-Value="message.MessageContent" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Send</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(responseMessage))
+{
+    <div class="alert alert-success mt-3">
+        @responseMessage
+    </div>
+}
+
+@code {
+    private API.SendMessage message = new API.SendMessage();
+    private string responseMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        var result = await MessageService.SendMessage(message);
+        if (result is OkObjectResult okResult)
+        {
+            var response = okResult.Value as dynamic;
+            responseMessage = response?.OutputText;
+        }
+    }
+}
