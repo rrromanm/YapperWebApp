@@ -14,6 +14,7 @@ builder.Services.AddScoped(
 
 // Register HttpMessageService as a scoped service
 builder.Services.AddScoped<HttpMessageService>();
+builder.Services.AddScoped<IUserServices, HttpUserService>();
 
 var app = builder.Build();
 

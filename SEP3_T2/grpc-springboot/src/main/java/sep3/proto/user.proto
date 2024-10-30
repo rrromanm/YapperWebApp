@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package sep3.proto;
+
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+}
+
+message CreateUserRequest {
+  SocialMediaUser user = 1;
+}
+
+message CreateUserResponse {
+  SocialMediaUser user = 1;
+}
+
+message SocialMediaUser {
+  string email = 1;
+  string username = 2;
+  string password = 3;
+}

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/maciej/repositories/YapperWebApp/SEP3_T1/API/API.csproj": {}
+    "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\API\\API.csproj": {}
   },
   "projects": {
-    "/Users/maciej/repositories/YapperWebApp/SEP3_T1/API/API.csproj": {
+    "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/API/API.csproj",
+        "projectUniqueName": "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/API/API.csproj",
-        "packagesPath": "/Users/maciej/.nuget/packages/",
-        "outputPath": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/API/obj/",
+        "projectPath": "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\API\\API.csproj",
+        "packagesPath": "C:\\Users\\romam\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/maciej/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\romam\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -26,8 +26,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/GrpcService.csproj": {
-                "projectPath": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/GrpcService.csproj"
+              "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\GrpcService\\GrpcService.csproj": {
+                "projectPath": "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\GrpcService\\GrpcService.csproj"
               }
             }
           }
@@ -71,21 +71,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/GrpcService.csproj": {
+    "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\GrpcService\\GrpcService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/GrpcService.csproj",
+        "projectUniqueName": "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\GrpcService\\GrpcService.csproj",
         "projectName": "GrpcService",
-        "projectPath": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/GrpcService.csproj",
-        "packagesPath": "/Users/maciej/.nuget/packages/",
-        "outputPath": "/Users/maciej/repositories/YapperWebApp/SEP3_T1/GrpcService/obj/",
+        "projectPath": "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\GrpcService\\GrpcService.csproj",
+        "packagesPath": "C:\\Users\\romam\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\romam\\IdeaProjects\\YapperWebApp\\SEP3_T1\\GrpcService\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/maciej/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\romam\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -145,7 +145,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
