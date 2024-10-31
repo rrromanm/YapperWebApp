@@ -2,8 +2,9 @@ package sep3.model;
 
 public abstract class User
 {
-    public String username;
-    public String password;
+    private String username;
+    private String password;
+    private String email;
 
     public User(String username, String password)
     {
@@ -25,5 +26,14 @@ public abstract class User
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }
