@@ -5,5 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 public interface IUserServices
 {
-    public Task<IActionResult> CreateUser(CreateUserDTO message);
+    Task CreateSMUser(CreateUserDTO dto);
+    Task UpdateSMUser(UpdateUserDTO dto);
+    Task DeleteSMUser(int accountId);
 }

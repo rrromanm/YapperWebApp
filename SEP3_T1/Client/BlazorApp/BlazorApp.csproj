@@ -7,8 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Server\API\API.csproj" />
-      <ProjectReference Include="..\..\Shared\DTOs\DTOs.csproj" />
       <ProjectReference Include="..\..\Shared\HttpClients\HttpClients.csproj" />
     </ItemGroup>
 
