@@ -19,7 +19,8 @@ public class PostLogic : IPostLogic
     {
         try
         {
-            await client.CreatePost(new CreatePostRequest
+            await client.CreatePostAsync(new CreatePostRequest
+                
             {
                 Title = dto.Title,
                 Content = dto.Content,

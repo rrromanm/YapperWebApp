@@ -30,48 +30,48 @@ public class PostController : ControllerBase
         }
     }
     
-    [HttpPatch]
-    public async Task<ActionResult> UpdatePost(UpdatePostDTO dto)
-    {
-        try
-        {
-            if(!string.IsNullOrEmpty(dto.Content))
-                await _postLogic.UpdateContent(dto);
-            if(!string.IsNullOrEmpty(dto.Title))
-                await _postLogic.UpdateTitle(dto);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-    
-    [HttpDelete]
-    public async Task<ActionResult> DeletePost([FromRoute] int postId)
-    {
-        try
-        {
-            await _postLogic.DeletePost(postId);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-    
-    [HttpGet]
-    public async Task<ActionResult> GetPost([FromRoute] int postId)
-    {
-        try
-        {
-            var post = await _postLogic.GetPost(postId);
-            return Ok(post);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
+    // [HttpPatch]
+    // public async Task<ActionResult> UpdatePost(UpdatePostDTO dto)
+    // {
+    //     try
+    //     {
+    //         if(!string.IsNullOrEmpty(dto.Content))
+    //             await _postLogic.UpdateContent(dto);
+    //         if(!string.IsNullOrEmpty(dto.Title))
+    //             await _postLogic.UpdateTitle(dto);
+    //         return Ok();
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         return BadRequest(e.Message);
+    //     }
+    // }
+    //
+    // [HttpDelete]
+    // public async Task<ActionResult> DeletePost([FromRoute] int postId)
+    // {
+    //     try
+    //     {
+    //         await _postLogic.DeletePost(postId);
+    //         return Ok();
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         return BadRequest(e.Message);
+    //     }
+    // }
+    //
+    // [HttpGet]
+    // public async Task<ActionResult> GetPost([FromRoute] int postId)
+    // {
+    //     try
+    //     {
+    //         var post = await _postLogic.GetPost(postId);
+    //         return Ok(post);
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         return BadRequest(e.Message);
+    //     }
+    // }
 }

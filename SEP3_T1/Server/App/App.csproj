@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <Protobuf Include="Protos\SocialMediaUserService.proto" GrpcServices="Client" />
+        <Protobuf Include="Protos\PostService.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>

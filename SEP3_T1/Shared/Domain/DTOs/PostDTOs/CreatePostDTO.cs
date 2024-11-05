@@ -2,16 +2,16 @@
 
 public class CreatePostDTO
 {
-    public string title { get; set; }
-    public string content { get; set; }
-    public int accountId { get; set; }
-    public int categoryId { get; set; }
+    public string Title { get; set; }
+    public string Content { get; set; }
+    public int AccountId { get; set; }
+    public int CategoryId { get; set; }
     
     public CreatePostDTO(string title, string content, int accountId, int categoryId)
     {
-        this.title = title;
-        this.content = content;
-        this.accountId = accountId;
-        this.categoryId = categoryId;
+        Title = title;
+        Content = content;
+        AccountId = accountId;
+        CategoryId = categoryId;
     }
 }
