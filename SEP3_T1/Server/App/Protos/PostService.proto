@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+option csharp_namespace = "GrpcClient";
+package yapperPost;
+
+message CreatePostRequest {
+  string title = 1;
+  string content = 2;
+  int32 accountId = 3;
+  int32 categoryId = 4;
+}
+
+message PostEmptyMessage {
+
+}
+
+service PostService {
+  rpc CreateUser (CreatePostRequest) returns (PostEmptyMessage);
+}

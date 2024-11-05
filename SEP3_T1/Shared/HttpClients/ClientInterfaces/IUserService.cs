@@ -3,7 +3,7 @@
 namespace HttpClients.ClientInterfaces;
 using Microsoft.AspNetCore.Mvc;
 
-public interface IUserServices
+public interface IUserService
 {
     Task CreateSMUser(CreateUserDTO dto);
     Task UpdateSMUser(UpdateUserDTO dto);
