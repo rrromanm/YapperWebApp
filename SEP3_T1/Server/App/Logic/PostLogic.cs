@@ -7,10 +7,30 @@ namespace App.Logic;
 
 public class PostLogic : IPostLogic
 {
-    private PostService.PostServiceClient _client;
+    private PostService.PostServiceClient client;
     
-    public Task CreatePost(CreatePostDTO dto)
+    public PostLogic(GRPCService service)
     {
-        throw new NotImplementedException();
+        GrpcChannel channel = service.Channel;
+        client = new PostSerive.PostServiceClient(channel);
+    }
+    
+    public async Task CreatePost(CreatePostDTO dto)
+    {
+        try
+        {
+            await client.CreatePost(new CreatePostRequest
+            {
+                Title = dto.Title,
+                Content = dto.Content,
+                AccountId = dto.AccountId,
+                CategoryId = dto.CategoryId
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error creating user");
+        }
     }
 }
