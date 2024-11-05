@@ -1,13 +1,13 @@
 ﻿using App.Logic;
 using DTOs.User.PostDTOs;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class PostController
+public class PostController : ControllerBase
 {
     private readonly PostLogic _postLogic;
         

@@ -12,7 +12,7 @@ public class PostLogic : IPostLogic
     public PostLogic(GRPCService service)
     {
         GrpcChannel channel = service.Channel;
-        client = new PostSerive.PostServiceClient(channel);
+        client = new PostService.PostServiceClient(channel);
     }
     
     public async Task CreatePost(CreatePostDTO dto)
@@ -30,7 +30,7 @@ public class PostLogic : IPostLogic
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw new Exception("Error creating user");
+            throw new Exception("Error creating post");
         }
     }
 }
