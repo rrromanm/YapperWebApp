@@ -33,5 +33,6 @@ public class PostLogic : IPostLogic
             Console.WriteLine(e);
             throw new Exception("Error creating post");
         }
+        
     }
 }

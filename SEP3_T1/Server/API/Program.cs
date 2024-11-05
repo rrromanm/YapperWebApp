@@ -13,7 +13,6 @@ builder.Services.AddScoped<IPostLogic, PostLogic>();
 
 var app = builder.Build();
 
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

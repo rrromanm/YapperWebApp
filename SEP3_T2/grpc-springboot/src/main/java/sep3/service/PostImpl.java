@@ -7,6 +7,7 @@ import yapperPost.PostServiceGrpc;
 
 public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
 
+    @Override
     public void createPost(CreatePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
         try{
             System.out.println("User created with email: " + request.getTitle());

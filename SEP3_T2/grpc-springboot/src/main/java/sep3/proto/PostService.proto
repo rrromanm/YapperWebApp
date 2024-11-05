@@ -9,10 +9,8 @@ message CreatePostRequest {
   int32 categoryId = 4;
 }
 
-message PostEmptyMessage {
-
-}
+message PostEmptyMessage {}
 
 service PostService {
-  rpc CreateUser (CreatePostRequest) returns (PostEmptyMessage);
+  rpc CreatePost (CreatePostRequest) returns (PostEmptyMessage);
 }
