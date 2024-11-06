@@ -7,7 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddScoped<IUserServices, SocialMediaUserHttpClient>();
+builder.Services.AddScoped<IUserService, SocialMediaUserHttpClient>();
+builder.Services.AddScoped<IPostService, PostHttpClient>();
 builder.Services.AddScoped(
     sp => new HttpClient
     {

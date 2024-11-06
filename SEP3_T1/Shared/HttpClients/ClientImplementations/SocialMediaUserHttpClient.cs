@@ -4,7 +4,7 @@ using HttpClients.ClientInterfaces;
 
 namespace HttpClients.ClientImplementations;
 
-public class SocialMediaUserHttpClient : IUserServices
+public class SocialMediaUserHttpClient : IUserService
 {
     private readonly HttpClient _client;
     
