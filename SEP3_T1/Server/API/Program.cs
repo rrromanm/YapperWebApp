@@ -10,6 +10,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<GRPCService>();
 builder.Services.AddScoped<ISMUserLogic, SMUserLogic>();
 builder.Services.AddScoped<ICategoryLogic, CategoryLogic>();
+builder.Services.AddScoped<ICommentLogic, CommentLogic>();
 
 var app = builder.Build();
 
