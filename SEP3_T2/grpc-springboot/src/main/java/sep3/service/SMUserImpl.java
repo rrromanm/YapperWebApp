@@ -64,27 +64,24 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
     }
 
     @Override
-    public void deleteUser(DeleteSMUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
-        try{
-            // Implement your logic here
-            // Complete the gRPC call
-            responseObserver.onNext(SMUserEmptyResponse.newBuilder().build());
-            responseObserver.onCompleted();
-        }catch (Exception e){
-            // Handle the exception
-        }
+    public void updatePassword(UpdateSMUserPasswordRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
+
     }
 
     @Override
-    public void updatePassword(UpdateSMUserPasswordRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
+    public void deleteUser(DeleteSMUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
         try{
-            // Implement your logic here
-            // Complete the gRPC call
+            int id = request.getId();
+
+            dao.deleteSMUser(id);
+            System.out.println("Social media user deleted with id: " + id);
+
             responseObserver.onNext(SMUserEmptyResponse.newBuilder().build());
             responseObserver.onCompleted();
-        }catch (Exception e){
-            // Handle the exception
+        }catch(Exception e){
+            responseObserver.onError(e);
         }
+
     }
 
 

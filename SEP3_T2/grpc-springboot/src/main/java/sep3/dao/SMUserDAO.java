@@ -32,12 +32,9 @@ public class SMUserDAO implements SMUserDAOInterface {
     public void createUser(CreateSMUserDTO dto) throws SQLException {
         try{
             Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO yapper_database.social_media_user (username, password, nickname, email) VALUES (?,?,?,?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO yapper_database.social_media_user (username, password, nickname, email) VALUES (?,?)");
             statement.setString(1, dto.getUsername());
-            statement.setString(2, dto.getPassword());
-            statement.setString(3, dto.getNickname());
-            statement.setString(4, dto.getEmail());
-            statement.executeUpdate();
+
         }
         catch (Exception e){
             e.printStackTrace();
@@ -52,6 +49,22 @@ public class SMUserDAO implements SMUserDAOInterface {
 
     @Override
     public void deleteSMUser(int id) throws SQLException {
+        try {
+            Connection connection = getConnection();
 
+            // First, delete the related posts
+            PreparedStatement deletePostsStatement = connection.prepareStatement("DELETE FROM yapper_database.post WHERE userid = ?");
+            deletePostsStatement.setInt(1, id);
+            deletePostsStatement.executeUpdate();
+
+            // Then, delete the user
+            PreparedStatement deleteUserStatement = connection.prepareStatement("DELETE FROM yapper_database.social_media_user WHERE userid = ?");
+            deleteUserStatement.setInt(1, id);
+            deleteUserStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to delete user");
+        }
     }
+
 }

@@ -51,12 +51,12 @@ public class SocialMediaUserController : ControllerBase
     
     
     
-    [HttpDelete]
-    public async Task<ActionResult> DeleteUser([FromRoute] int accountId)
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> DeleteUser([FromRoute] int id)
     {
         try
         {
-            await _smUserLogic.DeleteUser(accountId);
+            await _smUserLogic.DeleteUser(id);
             return Ok();
         }
         catch (Exception e)
