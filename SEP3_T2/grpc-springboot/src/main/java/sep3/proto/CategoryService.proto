@@ -1,0 +1,51 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package postCategory;
+
+message CreateCategoryRequest {
+  string name = 1;
+  int32 addedBy = 2;
+}
+
+message UpdateCategoryRequest {
+  int32 id = 1;
+  string name = 2;
+}
+
+message DeleteCategoryRequest {
+  int32 id = 1;
+}
+
+message GetCategoryRequest {
+  int32 id = 1;
+}
+
+message GetCategoryByNameRequest {
+  string name = 1;
+}
+
+message EmptyGetAllCategoriesRequest {
+
+}
+
+message CategoryResponse {
+  int32 id = 1;
+  string name = 2;
+  int32 addedBy = 3;
+}
+
+message GetAllCategoriesResponse {
+  string list = 1;
+}
+
+message EmptyCategoryResponse {
+}
+
+service CategoryService {
+  rpc CreateCategory (CreateCategoryRequest) returns (EmptyCategoryResponse);
+  rpc UpdateCategory (UpdateCategoryRequest) returns (EmptyCategoryResponse);
+  rpc DeleteCategory (DeleteCategoryRequest) returns (EmptyCategoryResponse);
+  rpc GetCategory (GetCategoryRequest) returns (CategoryResponse);
+  rpc GetCategoryByName (GetCategoryByNameRequest) returns (CategoryResponse);
+  rpc GetAllCategories (EmptyGetAllCategoriesRequest) returns (GetAllCategoriesResponse);
+}

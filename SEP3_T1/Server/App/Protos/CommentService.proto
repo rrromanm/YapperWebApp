@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+option csharp_namespace = "GrpcClient";
+option java_multiple_files = true;
+package comment;
+
+message CreateCommentRequest {
+  string body = 1;
+  int32 userId = 2;
+  int32 postId = 3;
+}
+message UpdateCommentRequest {
+  string body = 1;
+  int32 commentId = 2;
+}
+
+message CommentEmptyResponse {}
+
+service CommentService {
+  rpc CreateComment (CreateCommentRequest) returns (CommentEmptyResponse);
+  rpc UpdateComment (UpdateCommentRequest) returns (CommentEmptyResponse);
+}
