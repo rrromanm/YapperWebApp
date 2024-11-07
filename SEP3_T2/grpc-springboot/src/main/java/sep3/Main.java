@@ -2,6 +2,7 @@ package sep3;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import sep3.dao.CategoryDAO;
+import sep3.dao.PostDAO;
 import sep3.dao.SMUserDAO;
 import sep3.service.CategoryImpl;
 import sep3.service.CommentImpl;
@@ -14,7 +15,7 @@ public class Main {
         Server server = ServerBuilder.forPort(8080)
                 .addService(new SMUserImpl(SMUserDAO.getInstance()))
                 .addService(new CategoryImpl(CategoryDAO.getInstance()))
-                .addService(new PostImpl())
+                .addService(new PostImpl(PostDAO.getInstance()))
                 .addService(new CommentImpl())
                 .build()
                 .start();

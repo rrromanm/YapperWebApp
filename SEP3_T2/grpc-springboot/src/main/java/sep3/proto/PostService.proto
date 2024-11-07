@@ -9,8 +9,26 @@ message CreatePostRequest {
   int32 categoryId = 4;
 }
 
+message UpdatePostRequest {
+  string title = 1;
+  string content = 2;
+  int32 categoryId = 3;
+  int32 postId = 4;
+}
+
+message DeletePostRequest {
+  int32 postId = 1;
+}
+
+message GetPostRequest {
+  int32 postId = 1;
+}
+
 message PostEmptyMessage {}
 
 service PostService {
   rpc CreatePost (CreatePostRequest) returns (PostEmptyMessage);
+  rpc UpdatePost (UpdatePostRequest) returns (PostEmptyMessage);
+  rpc DeletePost (DeletePostRequest) returns (PostEmptyMessage);
+  rpc GetPost (GetPostRequest) returns (PostEmptyMessage);
 }
