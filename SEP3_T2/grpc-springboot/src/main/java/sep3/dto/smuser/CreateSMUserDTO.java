@@ -1,4 +1,4 @@
-package sep3.dto;
+package sep3.dto.smuser;
 
 public class CreateSMUserDTO {
     private String username;

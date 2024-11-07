@@ -1,5 +1,10 @@
 package sep3.service;
 
+import com.google.gson.Gson;
+import postCategory.EmptyCategoryResponse;
+import sep3.dao.CategoryDAOInterface;
+import sep3.dao.SMUserDAO;
+import sep3.dto.smuser.CreateSMUserDTO;
 import socialMediaUser.*;
 import io.grpc.stub.StreamObserver;
 import socialMediaUser.CreateSMUserRequest;
@@ -12,15 +17,20 @@ import socialMediaUser.UpdateSMUserPasswordRequest;
 
 public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
 
+    private SMUserDAO dao;
+    private final Gson gson;
+
+    public SMUserImpl(SMUserDAO dao) {
+        this.dao = dao;
+        this.gson = new Gson();
+    }
     @Override
     public void createUser(CreateSMUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
         try{
-            // Implement your logic here
-            System.out.println("User created with email: " + request.getEmail());
-            System.out.println("Username: " + request.getUsername());
-            System.out.println("Nickname: " + request.getNickname());
-            System.out.println("Password: " + request.getPassword());
-            // Complete the gRPC call
+            System.out.println("User created with username: " + request.getUsername());
+            CreateSMUserDTO dto = new CreateSMUserDTO(request.getUsername(), request.getNickname(), request.getPassword(),  request.getEmail());
+            dao.createUser(dto);
+            SMUserEmptyResponse response = SMUserEmptyResponse.newBuilder().build();
             responseObserver.onNext(SMUserEmptyResponse.newBuilder().build());
             responseObserver.onCompleted();
         }catch (Exception e){

@@ -3,19 +3,17 @@ package sep3.service;
 import com.google.gson.Gson;
 import io.grpc.stub.StreamObserver;
 import postCategory.*;
-import sep3.dao.CategoryDAO;
 import sep3.dao.CategoryDAOInterface;
-import sep3.dto.CategoryDTO;
-import sep3.dto.CreateCategoryDTO;
-import sep3.dto.UpdateCategoryDTO;
+import sep3.dto.category.CategoryDTO;
+import sep3.dto.category.CreateCategoryDTO;
+import sep3.dto.category.UpdateCategoryDTO;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
 
     private CategoryDAOInterface dao;
-    private Gson gson;
+    private final Gson gson;
 
     public CategoryImpl(CategoryDAOInterface dao) {
         this.dao = dao;

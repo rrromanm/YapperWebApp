@@ -1,4 +1,4 @@
-package sep3.dto;
+package sep3.dto.post;
 
 public class CreatePostDTO {
     private String title;
