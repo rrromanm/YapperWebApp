@@ -5,4 +5,6 @@ namespace App.LogicInterfaces;
 public interface IPostLogic
 {
     Task CreatePost(CreatePostDTO dto);
+    Task UpdatePost(UpdatePostDTO dto);
+    Task DeletePost(int postId);
 }

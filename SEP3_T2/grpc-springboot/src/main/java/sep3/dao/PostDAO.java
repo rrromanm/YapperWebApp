@@ -31,10 +31,11 @@ public class PostDAO implements PostDAOInterface {
         try
         {
             Connection connection = getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO yapper_database.post (title, body, userId) VALUES (?, ?, ?)");
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO yapper_database.post (title, body, categoryId , userId) VALUES (?, ?, ?, ?)");
             preparedStatement.setString(1, createPostDTO.getTitle());
             preparedStatement.setString(2, createPostDTO.getContent());
-            preparedStatement.setInt(3, createPostDTO.getAccountId());
+            preparedStatement.setInt(3, createPostDTO.getCategoryId());
+            preparedStatement.setInt(4, createPostDTO.getAccountId());
         }
         catch (SQLException e)
         {

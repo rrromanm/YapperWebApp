@@ -20,7 +20,6 @@ public class PostLogic : IPostLogic
         try
         {
             await client.CreatePostAsync(new CreatePostRequest
-                
             {
                 Title = dto.Title,
                 Content = dto.Content,
@@ -28,11 +27,20 @@ public class PostLogic : IPostLogic
                 CategoryId = dto.CategoryId
             });
         }
-        catch (Exception e)
+        catch (Grpc.Core.RpcException e)
         {
-            Console.WriteLine(e);
-            throw new Exception("Error creating post");
+            Console.WriteLine($"gRPC Error: {e.Status.StatusCode}, Detail: {e.Status.Detail}");
+            throw new Exception("Error creating post", e);
         }
-        
+    }
+
+    public Task UpdatePost(UpdatePostDTO dto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeletePost(int postId)
+    {
+        throw new NotImplementedException();
     }
 }
