@@ -22,4 +22,24 @@ public class PostHttpClient : IPostService
             throw new Exception(e);
         }
     }
+
+    public async Task UpdatePost(UpdatePostDTO dto)
+    {
+        HttpResponseMessage response = await _client.PutAsJsonAsync($"/Posts/{dto.PostId}", dto);
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+    }
+
+    public async Task DeletePost(int id)
+    {
+        HttpResponseMessage response = await _client.DeleteAsync($"/Posts/{id}");
+        if(!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+    }
 }

@@ -17,7 +17,7 @@ public class SMUserDAO implements SMUserDAOInterface {
 
     private Connection getConnection() throws SQLException {
 
-        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_schema", "postgres", "343460");
+        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_schema", "postgres", "via");
 
     }
 

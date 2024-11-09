@@ -13,7 +13,8 @@ message CreatePostRequest {
 message UpdatePostRequest {
   string title = 1;
   string content = 2;
-  int32 postId = 3;
+  int32 categoryId = 3;
+  int32 postId = 4;
 }
 
 message DeletePostRequest {

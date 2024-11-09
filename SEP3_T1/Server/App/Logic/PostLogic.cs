@@ -34,12 +34,42 @@ public class PostLogic : IPostLogic
         }
     }
 
-    public Task UpdatePost(UpdatePostDTO dto)
+    public async Task UpdatePost(UpdatePostDTO dto)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await client.UpdatePostAsync(new UpdatePostRequest
+            {
+                PostId = dto.PostId,
+                Title = dto.Title,
+                Content = dto.Content,
+                CategoryId = dto.CategoryId
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
-    public Task DeletePost(int postId)
+    public async Task DeletePost(int postId)
+    {
+        try
+        {
+            await client.DeletePostAsync(new DeletePostRequest
+            {
+                PostId = postId
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public Task GetPost(int postId)
     {
         throw new NotImplementedException();
     }
