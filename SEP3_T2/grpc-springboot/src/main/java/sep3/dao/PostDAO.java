@@ -1,12 +1,11 @@
 package sep3.dao;
 
 import sep3.dto.post.CreatePostDTO;
+import sep3.dto.post.PostDTO;
 import sep3.dto.post.UpdatePostDTO;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class PostDAO implements PostDAOInterface {
     private static PostDAO instance;
@@ -77,5 +76,93 @@ public class PostDAO implements PostDAOInterface {
         }
     }
 
+    @Override
+    public PostDTO getPost(int id) throws SQLException {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM yapper_database.post WHERE postid = ?");
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
 
+            if (resultSet.next())
+            {
+                return new PostDTO(
+                        resultSet.getString("title"),
+                        resultSet.getString("content"),
+                        resultSet.getDate("post"),
+                        resultSet.getInt("likeCount"),
+                        resultSet.getInt("commentCount")
+                        );
+            }
+            else
+            {
+                throw new SQLException("Post not found");
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            throw new SQLException("Failed to retrieve post");
+        }
+    }
+
+    @Override
+    public ArrayList<PostDTO> getAllPosts() throws SQLException {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM yapper_database.post");
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<PostDTO> posts = new ArrayList<>();
+
+            while (resultSet.next())
+            {
+                posts.add(new PostDTO(
+                        resultSet.getString("title"),
+                        resultSet.getString("content"),
+                        resultSet.getDate("post"),
+                        resultSet.getInt("likeCount"),
+                        resultSet.getInt("commentCount")
+                ));
+            }
+            return posts;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            throw new SQLException("Failed to retrieve posts");
+        }
+    }
+
+    @Override
+    public ArrayList<PostDTO> getAllFollowingPosts(int userId) throws SQLException {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT p.title, p.body, p.postDate, p.likeCount, p.commentCount\n" +
+                    "FROM post p\n" +
+                    "JOIN follows f ON p.userId = f.followedId\n" +
+                    "WHERE f.followerId = 1\n" +
+                    "ORDER BY p.postDate DESC;");
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<PostDTO> posts = new ArrayList<>();
+
+            while (resultSet.next())
+            {
+                posts.add(new PostDTO(
+                        resultSet.getString("title"),
+                        resultSet.getString("content"),
+                        resultSet.getDate("post"),
+                        resultSet.getInt("likeCount"),
+                        resultSet.getInt("commentCount")
+                ));
+            }
+            return posts;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            throw new SQLException("Failed to retrieve posts");
+        }
+    }
 }
