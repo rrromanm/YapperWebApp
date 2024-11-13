@@ -7,11 +7,11 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SocialMediaUserController : ControllerBase
+public class SMUController : ControllerBase
 {
     private readonly ISMUserLogic _smUserLogic;
     
-    public SocialMediaUserController(ISMUserLogic smUserLogic)
+    public SMUController(ISMUserLogic smUserLogic)
     {
         _smUserLogic = smUserLogic;
     }

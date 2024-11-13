@@ -111,7 +111,8 @@ public class PostDAO implements PostDAOInterface {
         try {
             Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM yapper_database.post");
+                    "SELECT * FROM yapper_database.post\n" +
+                    "ORDER BY postdate DESC");
             ResultSet resultSet = statement.executeQuery();
             ArrayList<PostDTO> posts = new ArrayList<>();
 
@@ -139,11 +140,13 @@ public class PostDAO implements PostDAOInterface {
         try {
             Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(
-                    "SELECT p.title, p.body, p.postDate, p.likeCount, p.commentCount\n" +
+                    "SELECT p.title, p.body, p.postdate, p.likecount, p.commentcount\n" +
                     "FROM post p\n" +
-                    "JOIN follows f ON p.userId = f.followedId\n" +
-                    "WHERE f.followerId = 1\n" +
-                    "ORDER BY p.postDate DESC;");
+                    "JOIN follows f ON p.userid = f.followeid\n" +
+                    "WHERE f.followerid = ? \n" +
+                    "ORDER BY p.postdate DESC;");
+
+            statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
             ArrayList<PostDTO> posts = new ArrayList<>();
 

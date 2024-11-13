@@ -24,6 +24,14 @@ message GetPostRequest {
   int32 postId = 1;
 }
 
+message GetAllPostsRequest {
+  string list = 1;
+}
+
+message GetAllFollowingPostsRequest {
+  string list = 1;
+}
+
 message PostEmptyMessage {}
 
 service PostService {
@@ -31,4 +39,6 @@ service PostService {
   rpc UpdatePost (UpdatePostRequest) returns (PostEmptyMessage);
   rpc DeletePost (DeletePostRequest) returns (PostEmptyMessage);
   rpc GetPost (GetPostRequest) returns (PostEmptyMessage);
+  rpc GetAllPosts (GetAllPostsRequest) returns (PostEmptyMessage);
+  rpc GetAllFollowingPosts (GetAllFollowingPostsRequest) returns (PostEmptyMessage);
 }
