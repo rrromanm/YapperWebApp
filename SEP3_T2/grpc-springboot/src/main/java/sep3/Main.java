@@ -2,10 +2,8 @@ package sep3;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import sep3.dao.CategoryDAO;
-import sep3.service.CategoryImpl;
-import sep3.service.CommentImpl;
-import sep3.service.PostImpl;
-import sep3.service.SMUserImpl;
+import sep3.dao.ChatDAO;
+import sep3.service.*;
 
 
 public class Main {
@@ -15,6 +13,7 @@ public class Main {
                 .addService(new CategoryImpl(CategoryDAO.getInstance()))
                 .addService(new PostImpl())
                 .addService(new CommentImpl())
+                .addService(new ChatImpl(ChatDAO.getInstance()))
                 .build()
                 .start();
 

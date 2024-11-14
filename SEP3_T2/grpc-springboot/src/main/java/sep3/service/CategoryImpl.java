@@ -27,7 +27,6 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
             System.out.println("Category created with name: " + request.getName());
             CreateCategoryDTO dto = new CreateCategoryDTO(request.getName(), request.getAddedBy());
             dao.createCategory(dto);
-            EmptyCategoryResponse response = EmptyCategoryResponse.newBuilder().build();
             responseObserver.onNext(EmptyCategoryResponse.newBuilder().build());
             responseObserver.onCompleted();
         }catch(Exception e){
