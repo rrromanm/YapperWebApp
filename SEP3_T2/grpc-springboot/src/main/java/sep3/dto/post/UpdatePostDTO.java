@@ -1,15 +1,16 @@
-package sep3.dto;
+package sep3.dto.post;
 
-public class CreatePostDTO {
+public class UpdatePostDTO {
     private String title;
     private String content;
-    private int accountId;
+    private int postId;
     private int categoryId;
 
-    public CreatePostDTO(String title, String content, int accountId) {
+    public UpdatePostDTO(String title, String content, int categoryId, int postId) {
         this.title = title;
         this.content = content;
-        this.accountId = accountId;
+        this.categoryId = categoryId;
+        this.postId = postId;
     }
 
     public String getTitle() {
@@ -20,11 +21,9 @@ public class CreatePostDTO {
         return content;
     }
 
-    public int getAccountId() {
-        return accountId;
-    }
-
     public int getCategoryId() {
         return categoryId;
     }
+
+    public int getPostId() { return postId; }
 }

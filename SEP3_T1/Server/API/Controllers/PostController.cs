@@ -17,6 +17,7 @@ public class PostController : ControllerBase
         _postLogic = postLogic;
     }
     
+    
     [HttpPost]
     public async Task<ActionResult> CreatePost(CreatePostDTO dto)
     {
@@ -31,48 +32,74 @@ public class PostController : ControllerBase
         }
     }
     
-    // [HttpPatch]
-    // public async Task<ActionResult> UpdatePost(UpdatePostDTO dto)
-    // {
-    //     try
-    //     {
-    //         if(!string.IsNullOrEmpty(dto.Content))
-    //             await _postLogic.UpdateContent(dto);
-    //         if(!string.IsNullOrEmpty(dto.Title))
-    //             await _postLogic.UpdateTitle(dto);
-    //         return Ok();
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e.Message);
-    //     }
-    // }
-    //
-    // [HttpDelete]
-    // public async Task<ActionResult> DeletePost([FromRoute] int postId)
-    // {
-    //     try
-    //     {
-    //         await _postLogic.DeletePost(postId);
-    //         return Ok();
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e.Message);
-    //     }
-    // }
-    //
-    // [HttpGet]
-    // public async Task<ActionResult> GetPost([FromRoute] int postId)
-    // {
-    //     try
-    //     {
-    //         var post = await _postLogic.GetPost(postId);
-    //         return Ok(post);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e.Message);
-    //     }
-    // }
+    [HttpPatch]
+    public async Task<ActionResult> UpdatePost(UpdatePostDTO dto)
+    {
+        try
+        {
+            if(!string.IsNullOrEmpty(dto.Content) && !string.IsNullOrEmpty(dto.Title) && dto.CategoryId != 0 && dto.AccountId != 0)
+                await _postLogic.UpdatePost(dto);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> DeletePost([FromRoute] int id)
+    {
+        try
+        {
+            await _postLogic.DeletePost(id);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult> GetPostById([FromRoute] int id)
+    {
+        try
+        {
+            var result = await _postLogic.GetPost(id);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult> GetAllPosts()
+    {
+        try
+        {
+            var result = await _postLogic.GetAllPosts();
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpGet("GetFollowingPosts/{userId:int}")]
+    public async Task<ActionResult> GetFollowingPosts([FromRoute] int userId)
+    {
+        try
+        {
+            var result = await _postLogic.GetFollowingPosts(userId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

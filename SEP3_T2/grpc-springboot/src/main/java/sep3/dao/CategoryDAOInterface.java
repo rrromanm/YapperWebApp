@@ -1,8 +1,8 @@
 package sep3.dao;
 
-import sep3.dto.CategoryDTO;
-import sep3.dto.CreateCategoryDTO;
-import sep3.dto.UpdateCategoryDTO;
+import sep3.dto.category.CategoryDTO;
+import sep3.dto.category.CreateCategoryDTO;
+import sep3.dto.category.UpdateCategoryDTO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

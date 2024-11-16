@@ -11,7 +11,6 @@ builder.Services.AddSingleton<GRPCService>();
 builder.Services.AddScoped<ISMUserLogic, SMUserLogic>();
 builder.Services.AddScoped<ICategoryLogic, CategoryLogic>();
 builder.Services.AddScoped<ICommentLogic, CommentLogic>();
-builder.Services.AddScoped<IChatLogic, ChatLogic>();
 
 var app = builder.Build();
 

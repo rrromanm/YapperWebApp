@@ -25,7 +25,7 @@ public class SocialMediaUserHttpClient : IUserService
 
     public async Task UpdateSMUser(UpdateUserDTO dto)
     {
-        HttpResponseMessage response = await _client.PutAsJsonAsync($"/Users/{dto.AccountId}", dto);
+        HttpResponseMessage response = await _client.PutAsJsonAsync($"/Users/{dto.UserId}", dto);
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();
@@ -33,9 +33,9 @@ public class SocialMediaUserHttpClient : IUserService
         }
     }
 
-    public async Task DeleteSMUser(int accountId)
+    public async Task DeleteSMUser(int userId)
     {
-        HttpResponseMessage response = await _client.DeleteAsync($"/Users/{accountId}");
+        HttpResponseMessage response = await _client.DeleteAsync($"/Users/{userId}");
         if(!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();

@@ -1,25 +1,17 @@
-package sep3.dto;
+package sep3.dto.category;
 
-public class CategoryDTO {
+public class CreateCategoryDTO {
     private String name;
-    private int id;
-
     private int addedBy;
 
-    public CategoryDTO(String Name, int Id, int AddedBy) {
+    public CreateCategoryDTO(String Name, int AddedBy) {
         this.name = Name;
-        this.id = Id;
         this.addedBy = AddedBy;
     }
 
     public String getName() {
         return name;
     }
-
-    public int getId() {
-        return id;
-    }
-
     public int getAddedBy() {
         return addedBy;
     }

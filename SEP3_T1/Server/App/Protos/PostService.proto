@@ -6,12 +6,56 @@ package yapperPost;
 message CreatePostRequest {
   string title = 1;
   string content = 2;
-  int32 accountId = 3;
+  int32 categoryId = 3;
+  int32 accountId = 4;
+}
+
+message UpdatePostRequest {
+  string title = 1;
+  string content = 2;
+  int32 categoryId = 3;
+  int32 postId = 4;
+}
+
+message DeletePostRequest {
+  int32 postId = 1;
+}
+
+message GetPostRequest {
+  int32 postId = 1;
+}
+
+message GetAllPostsRequest {
+    string list = 1;
+}
+
+message GetAllFollowingPostsRequest {
+  int32 userId = 1;
+}
+
+message GetPostResponse {
+  int32 id = 1;
+  string title = 2;
+  string content = 3;
   int32 categoryId = 4;
+  int32 accountId = 5;
+}
+
+message GetAllPostsResponse {
+  string list = 1;
+}
+
+message GetAllFollowingPostsResponse {
+  string list = 1;
 }
 
 message PostEmptyMessage {}
 
 service PostService {
   rpc CreatePost (CreatePostRequest) returns (PostEmptyMessage);
+  rpc UpdatePost (UpdatePostRequest) returns (PostEmptyMessage);
+  rpc DeletePost (DeletePostRequest) returns (PostEmptyMessage);
+  rpc GetPost (GetPostRequest) returns (GetPostResponse);
+  rpc GetAllPosts (GetAllPostsRequest) returns (GetAllPostsResponse);
+  rpc GetAllFollowingPosts (GetAllFollowingPostsRequest) returns (GetAllFollowingPostsResponse);
 }

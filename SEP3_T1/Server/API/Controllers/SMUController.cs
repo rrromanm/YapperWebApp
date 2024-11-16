@@ -7,11 +7,11 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class SocialMediaUserController : ControllerBase
+public class SMUController : ControllerBase
 {
     private readonly ISMUserLogic _smUserLogic;
     
-    public SocialMediaUserController(ISMUserLogic smUserLogic)
+    public SMUController(ISMUserLogic smUserLogic)
     {
         _smUserLogic = smUserLogic;
     }
@@ -51,12 +51,12 @@ public class SocialMediaUserController : ControllerBase
     
     
     
-    [HttpDelete]
-    public async Task<ActionResult> DeleteUser([FromRoute] int accountId)
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> DeleteUser([FromRoute] int id)
     {
         try
         {
-            await _smUserLogic.DeleteUser(accountId);
+            await _smUserLogic.DeleteUser(id);
             return Ok();
         }
         catch (Exception e)

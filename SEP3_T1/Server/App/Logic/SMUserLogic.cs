@@ -42,7 +42,7 @@ public class SMUserLogic : ISMUserLogic
         {
             await client.UpdateEmailAsync(new UpdateSMUserEmailRequest
                 {
-                Id = dto.AccountId,
+                Id = dto.UserId,
                 Email = dto.Email
             });
         }catch (Exception e)
@@ -60,7 +60,7 @@ public class SMUserLogic : ISMUserLogic
         {
             await client.UpdateNicknameAsync(new UpdateSMUserNicknameRequest
             {
-                Id = dto.AccountId,
+                Id = dto.UserId,
                 Nickname = dto.Nickname
             });
         }catch (Exception e)
@@ -78,7 +78,7 @@ public class SMUserLogic : ISMUserLogic
         {
              await client.UpdatePasswordAsync(new UpdateSMUserPasswordRequest
             {
-                Id = dto.AccountId,
+                Id = dto.UserId,
                 Password = dto.Password
             });
         }catch (Exception e)
@@ -88,13 +88,13 @@ public class SMUserLogic : ISMUserLogic
         }
     }
 
-    public async Task DeleteUser(int accountId)
+    public async Task DeleteUser(int userId)
     {
         try
         {
             await client.DeleteUserAsync(new DeleteSMUserRequest
             {
-                Id = accountId
+                Id = userId
             });
         }catch (Exception e)
         {
