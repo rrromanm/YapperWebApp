@@ -59,4 +59,20 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
             responseObserver.onError(e);
         }
     }
+
+    @Override
+    public void getPost(GetPostRequest request, StreamObserver<Get> responseObserver) {
+        try
+        {
+            dao.getPost(request.getPostId());
+        }
+        catch (Exception e)
+        {
+            responseObserver.onError(e);
+
+        }
+    }
+
+    @Override
+    public void getAllPosts();
 }

@@ -1,4 +1,5 @@
 ﻿using App.LogicInterfaces;
+using DTOs.Models;
 using DTOs.User.PostDTOs;
 using Grpc.Net.Client;
 using GrpcClient;
@@ -69,8 +70,47 @@ public class PostLogic : IPostLogic
         }
     }
 
-    public Task GetPost(int postId)
+    public async Task GetPost(int postId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            client.GetPost(new GetPostRequest()
+            {
+                PostId = postId
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<List<Post>> GetPosts()
+    {
+        try
+        {
+            List<Post> posts = new List<Post>();
+            return posts;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<List<Post>> GetFollowingPosts(int userId)
+    {
+        try
+        {
+            List<Post> posts = new List<Post>();
+            return posts;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }
