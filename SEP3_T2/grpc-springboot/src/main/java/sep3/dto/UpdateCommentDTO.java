@@ -11,7 +11,7 @@ public class UpdateCommentDTO
     this.commentId = commentId;
   }
 
-  public int getCommentIdId()
+  public int getCommentId()
   {
     return commentId;
   }
