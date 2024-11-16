@@ -30,7 +30,7 @@ public class CategoriesController : ControllerBase
         }
     }
     
-    [HttpPut]
+    [HttpPatch]
     public async Task<ActionResult> UpdateCategory([FromBody] UpdateCategoryDTO category)
     {
         try

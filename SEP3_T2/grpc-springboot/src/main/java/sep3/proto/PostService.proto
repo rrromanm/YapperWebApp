@@ -32,7 +32,7 @@ message GetAllFollowingPostsRequest {
   int32 userId = 1;
 }
 
-message GetPostResponse {
+message GetPostRe sponse {
   int32 id = 1;
   string title = 2;
   string content = 3;

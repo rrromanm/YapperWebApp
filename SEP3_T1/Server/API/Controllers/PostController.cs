@@ -61,17 +61,45 @@ public class PostController : ControllerBase
         }
     }
     
-    // [HttpGet]
-    // public async Task<ActionResult> GetPost([FromRoute] int postId)
-    // {
-    //     try
-    //     {
-    //         var post = await _postLogic.GetPost(postId);
-    //         return Ok(post);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         return BadRequest(e.Message);
-    //     }
-    // }
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult> GetPostById([FromRoute] int id)
+    {
+        try
+        {
+            var result = await _postLogic.GetPost(id);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpGet]
+    public async Task<ActionResult> GetAllPosts()
+    {
+        try
+        {
+            var result = await _postLogic.GetAllPosts();
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpGet("GetFollowingPosts/{userId:int}")]
+    public async Task<ActionResult> GetFollowingPosts([FromRoute] int userId)
+    {
+        try
+        {
+            var result = await _postLogic.GetFollowingPosts(userId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

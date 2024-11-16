@@ -53,6 +53,9 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         try
         {
             dao.deletePost(request.getPostId());
+
+            responseObserver.onNext(PostEmptyMessage.newBuilder().build());
+            responseObserver.onCompleted();
         }
         catch (Exception e)
         {
@@ -61,18 +64,47 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
     }
 
     @Override
-    public void getPost(GetPostRequest request, StreamObserver<Get> responseObserver) {
+    public void getPost(GetPostRequest request, StreamObserver<GetPostResponse> responseObserver) {
         try
         {
             dao.getPost(request.getPostId());
+
+            responseObserver.onNext(GetPostResponse.newBuilder().build());
+            responseObserver.onCompleted();
         }
         catch (Exception e)
         {
             responseObserver.onError(e);
-
         }
     }
 
     @Override
-    public void getAllPosts();
+    public void getAllPosts(GetAllPostsRequest request, StreamObserver<GetAllPostsResponse> responseObserver) {
+        try
+        {
+            dao.getAllPosts();
+
+            responseObserver.onNext(GetAllPostsResponse.newBuilder().build());
+            responseObserver.onCompleted();
+        }
+        catch (Exception e)
+        {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void getAllFollowingPosts(GetAllFollowingPostsRequest request, StreamObserver<GetAllFollowingPostsResponse> responseObserver) {
+        try
+        {
+            dao.getAllFollowingPosts(request.getUserId());
+
+            responseObserver.onNext(GetAllFollowingPostsResponse.newBuilder().build());
+            responseObserver.onCompleted();
+        }
+        catch (Exception e)
+        {
+            responseObserver.onError(e);
+        }
+    }
 }

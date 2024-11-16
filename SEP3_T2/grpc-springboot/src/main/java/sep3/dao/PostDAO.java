@@ -15,7 +15,7 @@ public class PostDAO implements PostDAOInterface {
     }
 
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_schema", "postgres", "via");
+        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database", "postgres", "via");
     }
 
     public static PostDAO getInstance() throws SQLException {
@@ -88,8 +88,8 @@ public class PostDAO implements PostDAOInterface {
             {
                 return new PostDTO(
                         resultSet.getString("title"),
-                        resultSet.getString("content"),
-                        resultSet.getDate("post"),
+                        resultSet.getString("body"),
+                        resultSet.getDate("postdate"),
                         resultSet.getInt("likeCount"),
                         resultSet.getInt("commentCount")
                         );
@@ -120,8 +120,8 @@ public class PostDAO implements PostDAOInterface {
             {
                 posts.add(new PostDTO(
                         resultSet.getString("title"),
-                        resultSet.getString("content"),
-                        resultSet.getDate("post"),
+                        resultSet.getString("body"),
+                        resultSet.getDate("postDate"),
                         resultSet.getInt("likeCount"),
                         resultSet.getInt("commentCount")
                 ));
@@ -141,8 +141,8 @@ public class PostDAO implements PostDAOInterface {
             Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(
                     "SELECT p.title, p.body, p.postdate, p.likecount, p.commentcount\n" +
-                    "FROM post p\n" +
-                    "JOIN follows f ON p.userid = f.followeid\n" +
+                    "FROM post p \n" +
+                    "JOIN follows f ON p.userid = f.followerid\n" +
                     "WHERE f.followerid = ? \n" +
                     "ORDER BY p.postdate DESC;");
 
@@ -154,8 +154,8 @@ public class PostDAO implements PostDAOInterface {
             {
                 posts.add(new PostDTO(
                         resultSet.getString("title"),
-                        resultSet.getString("content"),
-                        resultSet.getDate("post"),
+                        resultSet.getString("body"),
+                        resultSet.getDate("postDate"),
                         resultSet.getInt("likeCount"),
                         resultSet.getInt("commentCount")
                 ));

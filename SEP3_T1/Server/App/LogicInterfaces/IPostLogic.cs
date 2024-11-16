@@ -8,7 +8,7 @@ public interface IPostLogic
     Task CreatePost(CreatePostDTO dto);
     Task UpdatePost(UpdatePostDTO dto);
     Task DeletePost(int postId);
-    Task GetPost(int postId);
-    Task<List<Post>> GetPosts();
+    Task<Post> GetPost(int postId);
+    Task<List<Post>> GetAllPosts();
     Task<List<Post>> GetFollowingPosts(int userId);
 }

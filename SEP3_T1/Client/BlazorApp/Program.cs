@@ -9,6 +9,8 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<IUserService, SocialMediaUserHttpClient>();
 builder.Services.AddScoped<IPostService, PostHttpClient>();
+builder.Services.AddScoped<ICommentService, CommentHttpClient>();
+builder.Services.AddScoped<ICategoryService, CategoryHttpClient>();
 builder.Services.AddScoped(
     sp => new HttpClient
     {

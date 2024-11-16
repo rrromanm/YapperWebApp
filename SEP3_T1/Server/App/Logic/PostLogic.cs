@@ -1,4 +1,5 @@
-﻿using App.LogicInterfaces;
+﻿using System.Text.Json;
+using App.LogicInterfaces;
 using DTOs.Models;
 using DTOs.User.PostDTOs;
 using Grpc.Net.Client;
@@ -70,14 +71,16 @@ public class PostLogic : IPostLogic
         }
     }
 
-    public async Task GetPost(int postId)
+    public async Task<Post> GetPost(int postId)
     {
         try
         {
-            client.GetPost(new GetPostRequest()
+            var response = await client.GetPostAsync(new GetPostRequest()
             {
                 PostId = postId
             });
+            Post post = new Post(response.Id, response.Title, response.Content, response.AccountId, response.CategoryId);
+            return post;
         }
         catch (Exception e)
         {
@@ -86,17 +89,24 @@ public class PostLogic : IPostLogic
         }
     }
 
-    public async Task<List<Post>> GetPosts()
+    public async Task<List<Post>> GetAllPosts()
     {
         try
         {
-            List<Post> posts = new List<Post>();
+            GetAllPostsResponse response = await client.GetAllPostsAsync(new GetAllPostsRequest());
+            string json = response.List;
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<Post> posts = JsonSerializer.Deserialize<List<Post>>(json, options);
             return posts;
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw;
+            throw new Exception("Error getting all posts");
         }
     }
 
@@ -104,8 +114,21 @@ public class PostLogic : IPostLogic
     {
         try
         {
-            List<Post> posts = new List<Post>();
+            GetAllFollowingPostsResponse response = await client.GetAllFollowingPostsAsync(new GetAllFollowingPostsRequest()
+            {
+                UserId = userId
+            });
+            string json = response.List;
+            
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<Post> posts = JsonSerializer.Deserialize<List<Post>>(json, options);
+            
             return posts;
+            
         }
         catch (Exception e)
         {
