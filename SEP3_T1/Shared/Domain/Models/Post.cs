@@ -2,18 +2,24 @@
 
 public class Post
 {
-    public int Id { get; set; }
     public string Title { get; set; }
-    public string Content { get; set; }
-    public int UserId { get; set; }
+    public string Body { get; set; }
+    public int LikeCount { get; set; }
+    public int CommentCount { get; set; }
+    public string Date { get; set; }
     public int CategoryId { get; set; }
-    
-    public Post(int id, string title, string content, int userId, int categoryId)
+    public int PostId { get; set; }
+    public int UserId { get; set; }
+
+    public Post(string title, string body, int likeCount, int commentCount, string date, int categoryId ,int postId ,int userId)
     {
-        this.Id = id;
-        this.Title = title;
-        this.Content = content;
-        this.UserId = userId;
-        this.CategoryId = categoryId;
+        Title = title;
+        Body = body;
+        LikeCount = likeCount;
+        CommentCount = commentCount;
+        Date = date;
+        CategoryId = categoryId;
+        PostId = postId;
+        UserId = userId;
     }
 }
