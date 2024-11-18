@@ -1,89 +1,52 @@
 package sep3.service;
 
-import com.google.gson.Gson;
-import postCategory.EmptyCategoryResponse;
-import sep3.dao.CategoryDAOInterface;
+import io.grpc.stub.StreamObserver;
 import sep3.dao.SMUserDAO;
 import sep3.dto.smuser.CreateSMUserDTO;
+import sep3.dto.smuser.UpdateSMUserDTO;
 import socialMediaUser.*;
-import io.grpc.stub.StreamObserver;
-import socialMediaUser.CreateSMUserRequest;
-import socialMediaUser.DeleteSMUserRequest;
-import socialMediaUser.SMUserEmptyResponse;
-import socialMediaUser.UpdateSMUserEmailRequest;
-import socialMediaUser.UpdateSMUserNicknameRequest;
-import socialMediaUser.UpdateSMUserPasswordRequest;
-
 
 public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
 
     private SMUserDAO dao;
-    private final Gson gson;
 
     public SMUserImpl(SMUserDAO dao) {
         this.dao = dao;
-        this.gson = new Gson();
     }
+
     @Override
     public void createUser(CreateSMUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
-        try{
+        try {
             System.out.println("User created with username: " + request.getUsername());
-            CreateSMUserDTO dto = new CreateSMUserDTO(request.getUsername(), request.getNickname(), request.getPassword(),  request.getEmail());
+            CreateSMUserDTO dto = new CreateSMUserDTO(request.getUsername(), request.getNickname(), request.getPassword(), request.getEmail());
             dao.createUser(dto);
             SMUserEmptyResponse response = SMUserEmptyResponse.newBuilder().build();
-            responseObserver.onNext(SMUserEmptyResponse.newBuilder().build());
+            responseObserver.onNext(response);
             responseObserver.onCompleted();
-        }catch (Exception e){
+        } catch (Exception e) {
             responseObserver.onError(e);
         }
     }
 
     @Override
-    public void updateEmail(UpdateSMUserEmailRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
-        try{
-            // Implement your logic here
-
-            // Complete the gRPC call
-            responseObserver.onNext(SMUserEmptyResponse.newBuilder().build());
-            responseObserver.onCompleted();
-        }catch (Exception e){
-            // Handle the exception
+    public void updateSMUser(UpdateSMUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
+        try {
+            //todo implement update user
+        } catch (Exception e) {
+            responseObserver.onError(e);
         }
-    }
-
-    @Override
-    public void updateNickname(UpdateSMUserNicknameRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
-        try{
-            // Implement your logic here
-            // Complete the gRPC call
-            responseObserver.onNext(SMUserEmptyResponse.newBuilder().build());
-            responseObserver.onCompleted();
-        }catch (Exception e){
-            // Handle the exception
-        }
-    }
-
-    @Override
-    public void updatePassword(UpdateSMUserPasswordRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
-
     }
 
     @Override
     public void deleteUser(DeleteSMUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
-        try{
-            int id = request.getId();
-
-            dao.deleteSMUser(id);
-            System.out.println("Social media user deleted with id: " + id);
-
-            responseObserver.onNext(SMUserEmptyResponse.newBuilder().build());
+        try {
+            System.out.println("User deleted with ID: " + request.getId());
+            dao.deleteSMUser(request.getId());
+            SMUserEmptyResponse response = SMUserEmptyResponse.newBuilder().build();
+            responseObserver.onNext(response);
             responseObserver.onCompleted();
-        }catch(Exception e){
+        } catch (Exception e) {
             responseObserver.onError(e);
         }
-
     }
-
-
 }
-
