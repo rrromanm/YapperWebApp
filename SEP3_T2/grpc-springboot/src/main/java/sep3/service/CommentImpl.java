@@ -5,9 +5,16 @@ import comment.CommentServiceGrpc;
 import comment.CreateCommentRequest;
 import comment.UpdateCommentRequest;
 import io.grpc.stub.StreamObserver;
+import sep3.dao.CommentDAO;
 
 public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
 {
+  private CommentDAO dao;
+
+  public CommentImpl(CommentDAO dao)
+  {
+    this.dao = dao;
+  }
   @Override public void createComment(CreateCommentRequest request, StreamObserver<CommentEmptyResponse> responseObserver)
   {
     try

@@ -1,8 +1,8 @@
 package sep3.dao;
 
-import sep3.dto.CommentDTO;
-import sep3.dto.CreateCommentDTO;
-import sep3.dto.UpdateCommentDTO;
+import sep3.dto.comment.CommentDTO;
+import sep3.dto.comment.CreateCommentDTO;
+import sep3.dto.comment.UpdateCommentDTO;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

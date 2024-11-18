@@ -9,19 +9,12 @@ message CreateSMUserRequest {
   string password = 4;
 }
 
-message UpdateSMUserEmailRequest {
-  int32 id = 1;
-  string email = 2;
-}
-
-message UpdateSMUserNicknameRequest {
-  int32 id = 1;
-  string nickname = 2;
-}
-
-message UpdateSMUserPasswordRequest {
-  int32 id = 1;
+message UpdateSMUserRequest {
+  string username = 1;
   string password = 2;
+  string nickname = 3;
+  string email = 4;
+  int32 id = 5;
 }
 
 message DeleteSMUserRequest {
@@ -34,8 +27,6 @@ message SMUserEmptyResponse {
 
 service SMUserService {
   rpc CreateUser (CreateSMUserRequest) returns (SMUserEmptyResponse);
-  rpc UpdateEmail (UpdateSMUserEmailRequest) returns (SMUserEmptyResponse);
-  rpc UpdateNickname (UpdateSMUserNicknameRequest) returns (SMUserEmptyResponse);
-  rpc UpdatePassword (UpdateSMUserPasswordRequest) returns (SMUserEmptyResponse);
+  rpc UpdateSMUser (UpdateSMUserRequest) returns (SMUserEmptyResponse);
   rpc DeleteUser (DeleteSMUserRequest) returns (SMUserEmptyResponse);
 }
