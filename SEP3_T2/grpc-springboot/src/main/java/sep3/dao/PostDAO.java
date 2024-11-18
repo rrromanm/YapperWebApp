@@ -17,7 +17,7 @@ public class PostDAO implements PostDAOInterface {
     }
 
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database", "postgres", "via");
+        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database", "postgres", "343460");
     }
 
     public static PostDAO getInstance() throws SQLException {

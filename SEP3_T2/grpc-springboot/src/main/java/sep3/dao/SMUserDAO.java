@@ -1,12 +1,12 @@
 package sep3.dao;
 
+import sep3.dto.post.PostDTO;
 import sep3.dto.smuser.CreateSMUserDTO;
+import sep3.dto.smuser.SMUserDTO;
 import sep3.dto.smuser.UpdateSMUserDTO;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class SMUserDAO implements SMUserDAOInterface {
     private static SMUserDAO instance;
@@ -17,7 +17,7 @@ public class SMUserDAO implements SMUserDAOInterface {
 
     private Connection getConnection() throws SQLException {
 
-        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database", "postgres", "via");
+        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database", "postgres", "343460");
 
     }
 
@@ -32,9 +32,12 @@ public class SMUserDAO implements SMUserDAOInterface {
     public void createUser(CreateSMUserDTO dto) throws SQLException {
         try{
             Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO yapper_database.social_media_user (username, password, nickname, email) VALUES (?,?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO yapper_database.social_media_user (username, password, nickname, email) VALUES (?,?,?,?)");
             statement.setString(1, dto.getUsername());
-
+            statement.setString(2, dto.getPassword());
+            statement.setString(3, dto.getNickname());
+            statement.setString(4, dto.getEmail());
+            statement.executeUpdate();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -64,6 +67,53 @@ public class SMUserDAO implements SMUserDAOInterface {
         } catch (Exception e) {
             e.printStackTrace();
             throw new SQLException("Failed to delete user");
+        }
+    }
+
+    public SMUserDTO getUserByUsername(String username) throws SQLException {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM yapper_database.social_media_user WHERE username = ?");
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return new SMUserDTO(
+                        resultSet.getInt("userid"),
+                        resultSet.getString("username"),
+                        resultSet.getString("nickname"),
+                        resultSet.getString("password"),
+                        resultSet.getString("email")
+                );
+            } else {
+                throw new SQLException("User not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to get user by username");
+        }
+    }
+    @Override
+    public ArrayList<SMUserDTO> getAllUsers() throws SQLException {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM yapper_database.social_media_user");
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<SMUserDTO> users = new ArrayList<>();
+
+            while (resultSet.next())
+            {
+                users.add(new SMUserDTO(
+                        resultSet.getInt("userid"),
+                        resultSet.getString("username"),
+                        resultSet.getString("nickname"),
+                        resultSet.getString("password"),
+                        resultSet.getString("email")
+                ));
+            }
+            return users;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to get all users");
         }
     }
 

@@ -83,7 +83,7 @@ public class PostLogic : IPostLogic
             Post post = new Post(response.Title, response.Body,response.LikeCount, response.CommentCount, response.Date, response.CategoryId, response.PostId, response.UserId);
             
             Console.WriteLine(response.Date);
-            
+
             return post;
         }
         catch (Exception e)
