@@ -33,11 +33,14 @@ message GetAllFollowingPostsRequest {
 }
 
 message GetPostResponse {
-  int32 id = 1;
-  string title = 2;
-  string content = 3;
-  int32 categoryId = 4;
-  int32 accountId = 5;
+  string title = 1;
+  string body = 2;
+  int32 likeCount = 3;
+  int32 commentCount = 4;
+  string date = 5;
+  int32 categoryId = 6;
+  int32 postId = 7;
+  int32 userId = 8;
 }
 
 message GetAllPostsResponse {
