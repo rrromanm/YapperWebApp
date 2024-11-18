@@ -79,7 +79,11 @@ public class PostLogic : IPostLogic
             {
                 PostId = postId
             });
-            Post post = new Post(response.Id, response.Title, response.Content, response.AccountId, response.CategoryId);
+            
+            Post post = new Post(response.Title, response.Body,response.LikeCount, response.CommentCount, response.Date, response.CategoryId, response.PostId, response.UserId);
+            
+            Console.WriteLine(response.Date);
+            
             return post;
         }
         catch (Exception e)
@@ -93,7 +97,7 @@ public class PostLogic : IPostLogic
     {
         try
         {
-            GetAllPostsResponse response = await client.GetAllPostsAsync(new GetAllPostsRequest());
+            GetAllPostsResponse response = await client.GetAllPostsAsync(new EmptyGetAllPostsRequest());
             string json = response.List;
             JsonSerializerOptions options = new JsonSerializerOptions
             {
