@@ -21,6 +21,27 @@ message DeleteSMUserRequest {
   int32 id = 1;
 }
 
+message GetSMUserRequest {
+  int32 id = 1;
+  string username = 2;
+}
+
+message GetAllUsersRequest{
+  string list = 1;
+}
+
+message GetAllUsersResponse{
+  string list = 1;
+}
+
+message SMUserResponse {
+  int32 id = 1;
+  string email = 2;
+  string username = 3;
+  string nickname = 4;
+  string password = 5;
+}
+
 message SMUserEmptyResponse {
 
 }
@@ -29,4 +50,6 @@ service SMUserService {
   rpc CreateUser (CreateSMUserRequest) returns (SMUserEmptyResponse);
   rpc UpdateSMUser (UpdateSMUserRequest) returns (SMUserEmptyResponse);
   rpc DeleteUser (DeleteSMUserRequest) returns (SMUserEmptyResponse);
+  rpc GetAllSMUsers (GetAllUsersRequest) returns (GetAllUsersResponse);
+  rpc GetByUserNameAsync (GetSMUserRequest) returns (SMUserResponse);
 }

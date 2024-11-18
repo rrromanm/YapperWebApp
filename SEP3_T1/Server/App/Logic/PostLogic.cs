@@ -79,7 +79,7 @@ public class PostLogic : IPostLogic
             {
                 PostId = postId
             });
-            Post post = new Post(response.Id, response.Title, response.Content, response.AccountId, response.CategoryId);
+            Post post = new Post(response.PostId, response.Title, response.Body, response.UserId, response.CategoryId);
             return post;
         }
         catch (Exception e)

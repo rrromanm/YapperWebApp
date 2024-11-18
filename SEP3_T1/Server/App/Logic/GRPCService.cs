@@ -13,8 +13,5 @@ public class GRPCService
         {
             Credentials = ChannelCredentials.Insecure
         });
-        
-        
-        
     }
 }
