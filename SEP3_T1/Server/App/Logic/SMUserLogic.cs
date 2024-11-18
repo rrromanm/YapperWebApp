@@ -34,58 +34,9 @@ public class SMUserLogic : ISMUserLogic
         }
     }
 
-    public async Task UpdateEmail(UpdateUserDTO dto)
+    public async Task UpdateSMUser(UpdateUserDTO dto)
     {
-        if(dto.Email == null)
-            throw new Exception("Email cannot be empty");
-        try
-        {
-            await client.UpdateEmailAsync(new UpdateSMUserEmailRequest
-                {
-                Id = dto.UserId,
-                Email = dto.Email
-            });
-        }catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception("Error updating email");
-        }
-    }
-
-    public async Task UpdateNickname(UpdateUserDTO dto)
-    {
-        if (dto.Nickname == null || dto.Nickname.Length > 50)
-            throw new Exception("Nickname cannot be empty or longer than 50 characters");
-        try
-        {
-            await client.UpdateNicknameAsync(new UpdateSMUserNicknameRequest
-            {
-                Id = dto.UserId,
-                Nickname = dto.Nickname
-            });
-        }catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception("Error updating nickname");
-        }
-    }
-
-    public async Task UpdatePassword(UpdateUserDTO dto)
-    {
-        if(dto.Password == null || dto.Password.Length < 8)
-            throw new Exception("Password cannot be empty or shorter than 8 characters");
-        try
-        {
-             await client.UpdatePasswordAsync(new UpdateSMUserPasswordRequest
-            {
-                Id = dto.UserId,
-                Password = dto.Password
-            });
-        }catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception("Error updating password");
-        }
+        
     }
 
     public async Task DeleteUser(int userId)
