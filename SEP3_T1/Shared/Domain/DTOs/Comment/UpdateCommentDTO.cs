@@ -1,4 +1,4 @@
-﻿namespace DTOs.DTOs;
+﻿namespace DTOs.DTOs.Comment;
 
 public class UpdateCommentDTO
 {

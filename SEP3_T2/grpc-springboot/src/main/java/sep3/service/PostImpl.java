@@ -1,19 +1,25 @@
 package sep3.service;
 
+import com.google.gson.Gson;
 import io.grpc.stub.StreamObserver;
 import sep3.dao.PostDAO;
+import sep3.dto.category.CategoryDTO;
 import sep3.dto.post.CreatePostDTO;
+import sep3.dto.post.PostDTO;
 import sep3.dto.post.UpdatePostDTO;
 import yapperPost.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
     private PostDAO dao;
+    private final Gson gson;
 
     public PostImpl(PostDAO dao)
     {
         this.dao = dao;
+        this.gson = new Gson();
     }
 
     @Override
@@ -67,9 +73,18 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
     public void getPost(GetPostRequest request, StreamObserver<GetPostResponse> responseObserver) {
         try
         {
-            dao.getPost(request.getPostId());
+            PostDTO post = dao.getPost(request.getPostId());
 
-            responseObserver.onNext(GetPostResponse.newBuilder().build());
+            responseObserver.onNext(GetPostResponse.newBuilder()
+                    .setTitle(post.getTitle())
+                    .setBody(post.getBody())
+                    .setLikeCount(post.getLikeCount())
+                    .setCommentCount(post.getCommentCount())
+                    .setDate(post.getPostDate())
+                    .setCategoryId(post.getCategoryId())
+                    .setPostId(post.getPostId())
+                    .setUserId(post.getUserId())
+                    .build());
             responseObserver.onCompleted();
         }
         catch (Exception e)
@@ -79,12 +94,15 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
     }
 
     @Override
-    public void getAllPosts(GetAllPostsRequest request, StreamObserver<GetAllPostsResponse> responseObserver) {
+    public void getAllPosts(EmptyGetAllPostsRequest request, StreamObserver<GetAllPostsResponse> responseObserver) {
         try
         {
-            dao.getAllPosts();
+            ArrayList<PostDTO> posts = dao.getAllPosts();
 
-            responseObserver.onNext(GetAllPostsResponse.newBuilder().build());
+            String string = gson.toJson(posts);
+            GetAllPostsResponse response = GetAllPostsResponse.newBuilder().setList(string).build();
+
+            responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
         catch (Exception e)
@@ -97,9 +115,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
     public void getAllFollowingPosts(GetAllFollowingPostsRequest request, StreamObserver<GetAllFollowingPostsResponse> responseObserver) {
         try
         {
-            dao.getAllFollowingPosts(request.getUserId());
+            ArrayList<PostDTO> posts = dao.getAllFollowingPosts(request.getUserId());
 
-            responseObserver.onNext(GetAllFollowingPostsResponse.newBuilder().build());
+            String string = gson.toJson(posts);
+            GetAllFollowingPostsResponse response = GetAllFollowingPostsResponse.newBuilder().setList(string).build();
+
+            responseObserver.onNext(response);
             responseObserver.onCompleted();
         }
         catch (Exception e)

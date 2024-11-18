@@ -11,10 +11,48 @@ message UpdateCommentRequest {
   string body = 1;
   int32 commentId = 2;
 }
+message DeleteCommentRequest {
+  int32 commentId = 1;
+}
+message GetCommentRequest {
+  int32 commentId = 1;
+}
+message EmptyGetAllCommentsRequest {}
+
+message GetCommentsByPostRequest {
+  int32 postId = 1;
+}
+message GetCommentsByUserRequest {
+  int32 userId = 1;
+}
+
+message GetCommentResponse {
+  string body = 1;
+  string commentDate = 2;
+  int32 likeCount = 3;
+  int32 commentId = 4;
+  int32 userId = 5;
+  int32 postId = 6;
+}
+message GetAllCommentsResponse {
+  string list = 1;
+}
+message GetCommentsByPostResponse {
+  string list = 1;
+}
+message GetCommentsByUserResponse {
+  string list = 1;
+}
+
 
 message CommentEmptyResponse {}
 
 service CommentService {
   rpc CreateComment (CreateCommentRequest) returns (CommentEmptyResponse);
   rpc UpdateComment (UpdateCommentRequest) returns (CommentEmptyResponse);
+  rpc DeleteComment (DeleteCommentRequest) returns (CommentEmptyResponse);
+  rpc GetComment (GetCommentRequest) returns (GetCommentResponse);
+  rpc GetAllComments (EmptyGetAllCommentsRequest) returns (GetAllCommentsResponse);
+  rpc GetCommentsByPost (GetCommentsByPostRequest) returns (GetCommentsByPostResponse);
+  rpc GetCommentsByUser (GetCommentsByUserRequest) returns (GetCommentsByUserResponse);
 }

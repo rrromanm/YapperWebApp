@@ -24,8 +24,8 @@ message GetPostRequest {
   int32 postId = 1;
 }
 
-message GetAllPostsRequest {
-  string list = 1;
+message EmptyGetAllPostsRequest {
+
 }
 
 message GetAllFollowingPostsRequest {
@@ -58,6 +58,6 @@ service PostService {
   rpc UpdatePost (UpdatePostRequest) returns (PostEmptyMessage);
   rpc DeletePost (DeletePostRequest) returns (PostEmptyMessage);
   rpc GetPost (GetPostRequest) returns (GetPostResponse);
-  rpc GetAllPosts (GetAllPostsRequest) returns (GetAllPostsResponse);
+  rpc GetAllPosts (EmptyGetAllPostsRequest) returns (GetAllPostsResponse);
   rpc GetAllFollowingPosts (GetAllFollowingPostsRequest) returns (GetAllFollowingPostsResponse);
 }

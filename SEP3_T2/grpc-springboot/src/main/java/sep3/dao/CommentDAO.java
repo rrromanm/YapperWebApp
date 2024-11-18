@@ -1,13 +1,13 @@
 package sep3.dao;
 
+import org.checkerframework.checker.units.qual.A;
 import sep3.dto.comment.CommentDTO;
 import sep3.dto.comment.CreateCommentDTO;
 import sep3.dto.comment.UpdateCommentDTO;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class CommentDAO implements CommentDAOInterface{
@@ -25,6 +25,12 @@ public class CommentDAO implements CommentDAOInterface{
             instance = new CommentDAO();
         }
         return instance;
+    }
+    private String formatTimestamp(Timestamp timestamp) {
+        // Converting commentDate to string
+        LocalDateTime commentDateTime = timestamp.toLocalDateTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return commentDateTime.format(formatter);
     }
     @Override
     public void createComment(CreateCommentDTO dto) throws SQLException {
@@ -74,25 +80,123 @@ public class CommentDAO implements CommentDAOInterface{
 
     @Override
     public CommentDTO getComment(int commentId) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        try{
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM comment WHERE commentId = ?");
+            statement.setInt(1, commentId);
+            ResultSet resultSet = statement.executeQuery();
+
+            if(resultSet.next())
+            {
+                String formattedDateTime = formatTimestamp(resultSet.getTimestamp("commentdate"));
+
+                return new CommentDTO(
+                    resultSet.getString("body"),
+                    formattedDateTime,
+                    resultSet.getInt("likecount"),
+                    resultSet.getInt("commentid"),
+                    resultSet.getInt("userid"),
+                    resultSet.getInt("postid")
+                );
+            }
+            else
+            {
+                throw new SQLException("Comment not found");
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new SQLException("Failed to retrieve comment");
+        }
     }
 
     @Override
     public ArrayList<CommentDTO> getAllComments() throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        try{
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM comment ORDER BY commentDate DESC");
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<CommentDTO> comments = new ArrayList<>();
+
+            while (resultSet.next())
+            {
+
+                String formattedDateTime = formatTimestamp(resultSet.getTimestamp("commentdate"));
+
+                comments.add(new CommentDTO(
+                    resultSet.getString("body"),
+                    formattedDateTime,
+                    resultSet.getInt("likecount"),
+                    resultSet.getInt("commentid"),
+                    resultSet.getInt("userid"),
+                    resultSet.getInt("postid")
+                ));
+            }
+            return comments;
+        }
+        catch (SQLException e)
+        {
+            throw new SQLException("Failed to retrieve all comments");
+        }
     }
 
     @Override
     public ArrayList<CommentDTO> getCommentsByPostId(int postId) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        try{
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM comment WHERE postId = ? ORDER BY commentDate DESC");
+            statement.setInt(1, postId);
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<CommentDTO> comments = new ArrayList<>();
+
+            while(resultSet.next())
+            {
+                String formattedDateTime = formatTimestamp(resultSet.getTimestamp("commentdate"));
+
+                comments.add(new CommentDTO(
+                    resultSet.getString("body"),
+                    formattedDateTime,
+                    resultSet.getInt("likecount"),
+                    resultSet.getInt("commentid"),
+                    resultSet.getInt("userid"),
+                    resultSet.getInt("postid")
+                ));
+            }
+            return comments;
+        }
+        catch (SQLException e)
+        {
+            throw new SQLException("Failed to retrieve comments by post id");
+        }
     }
 
     @Override
     public ArrayList<CommentDTO> getCommentsByUserId(int userId) throws SQLException {
-        // TODO Auto-generated method stub
-        return null;
+        try{
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM comment WHERE userId = ? ORDER BY commentDate DESC");
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<CommentDTO> comments = new ArrayList<>();
+
+            while(resultSet.next())
+            {
+                String formattedDateTime = formatTimestamp(resultSet.getTimestamp("commentdate"));
+
+                comments.add(new CommentDTO(
+                    resultSet.getString("body"),
+                    formattedDateTime,
+                    resultSet.getInt("likecount"),
+                    resultSet.getInt("commentid"),
+                    resultSet.getInt("userid"),
+                    resultSet.getInt("postid")
+                ));
+            }
+            return comments;
+        }
+        catch (SQLException e)
+        {
+            throw new SQLException("Failed to retrieve comments by user id");
+        }
     }
 }

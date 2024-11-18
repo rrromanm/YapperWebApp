@@ -1,5 +1,8 @@
-﻿using App.LogicInterfaces;
+﻿using System.Text.Json;
+using App.LogicInterfaces;
+using Comment;
 using DTOs.DTOs;
+using DTOs.DTOs.Comment;
 using Grpc.Net.Client;
 using GrpcClient;
 
@@ -15,7 +18,7 @@ public class CommentLogic : ICommentLogic
         client = new CommentService.CommentServiceClient(channel);
     }
     
-    public async Task CreateComment(CreateCommentDTO dto)
+    public async Task CreateCommentAsync(CreateCommentDTO dto)
     {
         try
         {
@@ -33,7 +36,7 @@ public class CommentLogic : ICommentLogic
         }
         
     }
-    public async Task UpdateComment(UpdateCommentDTO dto)
+    public async Task UpdateCommentAsync(UpdateCommentDTO dto)
     {
         try
         {
@@ -47,6 +50,108 @@ public class CommentLogic : ICommentLogic
         {
             Console.WriteLine(e);
             throw new Exception("Error updating comment");
+        }
+    }
+
+    public async Task DeleteCommentAsync(int id)
+    {
+        try 
+        {
+            await client.DeleteCommentAsync(new DeleteCommentRequest
+            {
+                CommentId = id
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error deleting comment");
+        }
+    }
+
+    public async Task<DTOs.Models.Comment> GetCommentAsync(int id)
+    {
+        try
+        {
+            var response = await client.GetCommentAsync(new GetCommentRequest
+            {
+                CommentId = id
+            });
+            return new DTOs.Models.Comment(response.Body, response.CommentDate, response.LikeCount, response.CommentId, response.UserId, response.PostId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error getting comment");
+        }
+    }
+
+    public async Task<List<DTOs.Models.Comment>> GetAllCommentsAsync()
+    {
+        try
+        {
+            GetAllCommentsResponse response = await client.GetAllCommentsAsync(new EmptyGetAllCommentsRequest());
+            string json = response.List;
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<DTOs.Models.Comment> comments = JsonSerializer.Deserialize<List<DTOs.Models.Comment>>(json, options);
+            return comments;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error getting all comments");
+        }
+    }
+
+    public async Task<List<DTOs.Models.Comment>> GetCommentsByPostIdAsync(int postId)
+    {
+        try
+        {
+            GetCommentsByPostResponse response = await client.GetCommentsByPostAsync(new GetCommentsByPostRequest
+            {
+                PostId = postId
+            });
+            string json = response.List;
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<DTOs.Models.Comment> comments = JsonSerializer.Deserialize<List<DTOs.Models.Comment>>(json, options);
+            return comments;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error getting comments by post id");
+        }
+    }
+
+    public async Task<List<DTOs.Models.Comment>> GetCommentsByUserIdAsync(int userId)
+    {
+        try
+        {
+            GetCommentsByUserResponse response = await client.GetCommentsByUserAsync(new GetCommentsByUserRequest
+            {
+                UserId = userId
+            });
+            string json = response.List;
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<DTOs.Models.Comment> comments = JsonSerializer.Deserialize<List<DTOs.Models.Comment>>(json, options);
+            return comments;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error getting comments by user id");
         }
     }
 }
