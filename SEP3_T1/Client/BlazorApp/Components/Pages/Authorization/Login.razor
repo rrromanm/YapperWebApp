@@ -1,0 +1,32 @@
+﻿@page "/Login"
+@using BlazorApp.Auth
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthProvider
+
+<h3>Login</h3>
+
+<div class="login-container">
+    <div class="login-form">
+        <input @bind="username" placeholder="Username" />
+        <input @bind="password" type="password" placeholder="Password" />
+        <button @onclick="LoginImpl">Login</button>
+    </div>
+</div>
+
+@code {
+    private string username;
+    private string password;
+
+    private async Task LoginImpl()
+    {
+        try
+        {
+            await ((SimpleAuthProvider)AuthProvider).Login(username, password);
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

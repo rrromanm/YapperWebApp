@@ -15,22 +15,21 @@ public class AuthController : ControllerBase
         _logic = logic;
     }
     
-    // // POST localhost:7078/login
-    // [HttpPost("/login")]
-    // public async Task<IResult> LoginAsync([FromBody] LoginRequestDTO requestDto)
-    // {
-    //     var user = await _logic.GetByUsernameAsync(requestDto.Username);
-    //     if (user == null)
-    //     {
-    //         return Results.NotFound($"User with username '{requestDto.Username}' not found.");
-    //     }
-    //
-    //     if (user.password != requestDto.Password)
-    //     {
-    //         return Results.Unauthorized();
-    //     }
-    //
-    //     return Results.Ok(user);
-    // }
+    [HttpPost("/login")]
+    public async Task<IResult> LoginAsync([FromBody] LoginRequestDTO requestDto)
+    {
+        var user = await _logic.GetByUsernameAsync(requestDto.Username);
+        if (user == null)
+        {
+            return Results.NotFound($"User with username '{requestDto.Username}' not found.");
+        }
+    
+        if (user.Password != requestDto.Password)
+        {
+            return Results.Unauthorized();
+        }
+    
+        return Results.Ok(user);
+    }
 
 }
