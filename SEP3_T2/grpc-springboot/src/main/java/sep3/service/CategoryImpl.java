@@ -39,8 +39,10 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
             System.out.println("Category updated with id: " + request.getId());
 
             UpdateCategoryDTO dto = new UpdateCategoryDTO(request.getName(), request.getId());
+
             dao.updateCategory(dto);
             EmptyCategoryResponse response = EmptyCategoryResponse.newBuilder().build();
+
             responseObserver.onNext(EmptyCategoryResponse.newBuilder().build());
             responseObserver.onCompleted();
         }catch(Exception e){
@@ -69,6 +71,7 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
             System.out.println("Category retrieved with id: " + request.getId());
 
             CategoryDTO category = dao.getCategory(request.getId());
+
             responseObserver.onNext(CategoryResponse.newBuilder().setId(category.getId()).setName(category.getName()).setAddedBy(category.getAddedBy()).build());
             responseObserver.onCompleted();
         }catch(Exception e){
@@ -80,6 +83,7 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
     public void getCategoryByName(GetCategoryByNameRequest request, StreamObserver<CategoryResponse> responseObserver) {
         try{
             CategoryDTO category = dao.getCategoryByName(request.getName());
+
             responseObserver.onNext(CategoryResponse.newBuilder().setId(category.getId()).setName(category.getName()).setAddedBy(category.getAddedBy()).build());
             responseObserver.onCompleted();
         }catch(Exception e){
@@ -91,8 +95,10 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
     public void getAllCategories(EmptyGetAllCategoriesRequest request, StreamObserver<GetAllCategoriesResponse> responseObserver) {
         try{
             ArrayList<CategoryDTO> categories = dao.getAllCategories();
+
             String string = gson.toJson(categories);
             GetAllCategoriesResponse response = GetAllCategoriesResponse.newBuilder().setList(string).build();
+
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }catch(Exception e){

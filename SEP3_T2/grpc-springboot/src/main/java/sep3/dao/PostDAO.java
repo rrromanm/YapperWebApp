@@ -5,6 +5,8 @@ import sep3.dto.post.PostDTO;
 import sep3.dto.post.UpdatePostDTO;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class PostDAO implements PostDAOInterface {
@@ -80,18 +82,33 @@ public class PostDAO implements PostDAOInterface {
     public PostDTO getPost(int id) throws SQLException {
         try {
             Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM yapper_database.post WHERE postid = ?");
+            PreparedStatement statement = connection.prepareStatement("SELECT p.*, pc.categoryId\n" +
+                    "FROM yapper_database.post p\n" +
+                    "LEFT JOIN yapper_database.post_category pc ON p.postId = pc.postId\n" +
+                    "WHERE p.postId = ?\n" +
+                    "ORDER BY p.postDate DESC;");
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
             if (resultSet.next())
             {
+                //Converting timestamp to string
+                Timestamp timestamp = resultSet.getTimestamp("postDate");
+                LocalDateTime postDateTime = timestamp.toLocalDateTime();
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String formattedDate = postDateTime.format(formatter);
+
+
                 return new PostDTO(
                         resultSet.getString("title"),
                         resultSet.getString("body"),
-                        resultSet.getDate("postdate"),
                         resultSet.getInt("likeCount"),
-                        resultSet.getInt("commentCount")
+                        resultSet.getInt("commentCount"),
+                        formattedDate,
+                        resultSet.getInt("categoryId"),
+                        resultSet.getInt("postId"),
+                        resultSet.getInt("userId")
                         );
             }
             else
@@ -111,19 +128,31 @@ public class PostDAO implements PostDAOInterface {
         try {
             Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM yapper_database.post\n" +
-                    "ORDER BY postdate DESC");
+                    "SELECT p.*, pc.categoryId\n" +
+                            "FROM yapper_database.post p\n" +
+                            "LEFT JOIN yapper_database.post_category pc ON p.postId = pc.postId\n" +
+                            "ORDER BY p.postDate DESC;");
             ResultSet resultSet = statement.executeQuery();
             ArrayList<PostDTO> posts = new ArrayList<>();
 
             while (resultSet.next())
             {
+                //Converting timestamp to string
+                Timestamp timestamp = resultSet.getTimestamp("postDate");
+                LocalDateTime postDateTime = timestamp.toLocalDateTime();
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                String formattedDate = postDateTime.format(formatter);
+
                 posts.add(new PostDTO(
                         resultSet.getString("title"),
                         resultSet.getString("body"),
-                        resultSet.getDate("postDate"),
                         resultSet.getInt("likeCount"),
-                        resultSet.getInt("commentCount")
+                        resultSet.getInt("commentCount"),
+                        formattedDate,
+                        resultSet.getInt("categoryId"),
+                        resultSet.getInt("postId"),
+                        resultSet.getInt("userId")
                 ));
             }
             return posts;
@@ -140,11 +169,12 @@ public class PostDAO implements PostDAOInterface {
         try {
             Connection connection = getConnection();
             PreparedStatement statement = connection.prepareStatement(
-                    "SELECT p.title, p.body, p.postdate, p.likecount, p.commentcount\n" +
-                    "FROM post p \n" +
-                    "JOIN follows f ON p.userid = f.followerid\n" +
-                    "WHERE f.followerid = ? \n" +
-                    "ORDER BY p.postdate DESC;");
+                    "SELECT p.*, pc.categoryId\n" +
+                            "FROM yapper_database.post p\n" +
+                            "LEFT JOIN yapper_database.post_category pc ON p.postId = pc.postId\n" +
+                            "JOIN yapper_database.follows f ON p.userId = f.followedId\n" +
+                            "WHERE f.followerId = ?\n" +
+                            "ORDER BY p.postDate DESC;");
 
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
@@ -152,12 +182,24 @@ public class PostDAO implements PostDAOInterface {
 
             while (resultSet.next())
             {
+                //Converting timestamp to string
+                Timestamp timestamp = resultSet.getTimestamp("postDate");
+                LocalDateTime postDateTime = timestamp.toLocalDateTime();
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                String formattedDate = postDateTime.format(formatter);
+
+                System.out.println("formattedDate: " + formattedDate);
+
                 posts.add(new PostDTO(
                         resultSet.getString("title"),
                         resultSet.getString("body"),
-                        resultSet.getDate("postDate"),
                         resultSet.getInt("likeCount"),
-                        resultSet.getInt("commentCount")
+                        resultSet.getInt("commentCount"),
+                        formattedDate,
+                        resultSet.getInt("categoryId"),
+                        resultSet.getInt("postId"),
+                        resultSet.getInt("userId")
                 ));
             }
             return posts;
