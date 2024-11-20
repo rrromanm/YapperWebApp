@@ -140,4 +140,22 @@ public class PostLogic : IPostLogic
             throw;
         }
     }
+
+    public async Task LikePost(int userId, int postId)
+    {
+        try
+        {
+            await client.LikePostAsync(userId, postId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public Task UnlikePost(int userId, int postId)
+    {
+        throw new NotImplementedException();
+    }
 }

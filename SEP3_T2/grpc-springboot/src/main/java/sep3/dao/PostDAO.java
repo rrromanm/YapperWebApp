@@ -40,6 +40,7 @@ public class PostDAO implements PostDAOInterface {
         }
         catch (SQLException e)
         {
+            e.printStackTrace();
             throw new SQLException("Failed to create post");
         }
     }
@@ -58,6 +59,7 @@ public class PostDAO implements PostDAOInterface {
         }
         catch (SQLException e)
         {
+            e.printStackTrace();
             throw new SQLException("Failed to update post");
         }
     }
@@ -74,6 +76,7 @@ public class PostDAO implements PostDAOInterface {
         }
         catch (SQLException e)
         {
+            e.printStackTrace();
             throw new SQLException("Failed to delete post");
         }
     }
@@ -208,6 +211,40 @@ public class PostDAO implements PostDAOInterface {
         {
             e.printStackTrace();
             throw new SQLException("Failed to retrieve posts");
+        }
+    }
+
+    @Override
+    public void likePost(int userId, int postId) throws SQLException {
+        try
+        {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO yapper_database.liked_post(userid, postid) VALUES (?.?)");
+            statement.setInt(1, userId);
+            statement.setInt(2, postId);
+            statement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            throw new SQLException("Failed to like post");
+        }
+    }
+
+    @Override
+    public void unlikePost(int userId, int postId) throws SQLException {
+        try
+        {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM yapper_database.liked_post WHERE userid = ? AND postid = ?");
+            statement.setInt(1, userId);
+            statement.setInt(2, postId);
+            statement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            throw new SQLException("Failed to unlike post");
         }
     }
 }
