@@ -114,7 +114,8 @@ public class SMUserDAO implements SMUserDAOInterface {
                         resultSet.getString("password"),
                         resultSet.getString("email")
                 );
-            } else {
+            }
+            else {
                 throw new SQLException("User not found");
             }
         } catch (Exception e) {

@@ -128,20 +128,12 @@ public class SMUserLogic : ISMUserLogic
 
     public async Task<User> GetByUsernameAsync(string userName)
     {
-        try
-        {
             var response = await client.GetByUserNameAsync(new GetSMUserRequest
             {
                 Username = userName
             });
             User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id);
             return user;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception("Error getting user by username");
-        }
     }
 
     public async Task<User> GetByIdAsync(int userId)
