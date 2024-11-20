@@ -10,13 +10,13 @@ namespace App.Logic;
 
 public class SMUserLogic : ISMUserLogic
 {
-   private SMUserService.SMUserServiceClient client;
+    private SMUserService.SMUserServiceClient client;
 
-   public SMUserLogic(GRPCService service)
-   {
-       GrpcChannel channel = service.Channel;
-       client = new SMUserService.SMUserServiceClient(channel);
-   }
+    public SMUserLogic(GRPCService service)
+    {
+        GrpcChannel channel = service.Channel;
+        client = new SMUserService.SMUserServiceClient(channel);
+    }
 
     public async Task CreateSMUser(CreateUserDTO dto)
     {
@@ -30,16 +30,63 @@ public class SMUserLogic : ISMUserLogic
                 Nickname = dto.Nickname
             });
 
-        }catch (Exception e)
+        }
+        catch (Exception e)
         {
             Console.WriteLine(e);
             throw new Exception("Error creating user");
         }
     }
 
-    public async Task UpdateSMUser(UpdateUserDTO dto)
+    public async Task UpdateEmail(UpdateUserDTO dto)
     {
+        try
+        {
+            await client.UpdateEmailAsync(new UpdateSMUserEmailRequest
+            {
+                Id = dto.UserId,
+                Email = dto.Email
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error updating email");
+        }
+    }
 
+    public async Task UpdatePassword(UpdateUserDTO dto)
+    {
+        try
+        {
+            await client.UpdatePasswordAsync(new UpdateSMUserPasswordRequest()
+            {
+                Id = dto.UserId,
+                Password = dto.Password
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error updating password");
+        }
+    }
+
+    public async Task UpdateNickname(UpdateUserDTO dto)
+    {
+        try
+        {
+            await client.UpdateNicknameAsync(new UpdateSMUserNicknameRequest()
+            {
+                Id = dto.UserId,
+                Nickname = dto.Nickname
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error updating nickname");
+        }
     }
 
     public async Task DeleteUser(int userId)
@@ -50,7 +97,8 @@ public class SMUserLogic : ISMUserLogic
             {
                 Id = userId
             });
-        }catch (Exception e)
+        }
+        catch (Exception e)
         {
             Console.WriteLine(e);
             throw new Exception("Error deleting user");
@@ -82,11 +130,11 @@ public class SMUserLogic : ISMUserLogic
     {
         try
         {
-            var response = await client.GetByUserNameAsyncAsync(new GetSMUserRequest
+            var response = await client.GetByUserNameAsync(new GetSMUserRequest
             {
                 Username = userName
             });
-            User user = new User( response.Username, response.Password, response.Email, response.Nickname, response.Id);
+            User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id);
             return user;
         }
         catch (Exception e)
@@ -96,28 +144,22 @@ public class SMUserLogic : ISMUserLogic
         }
     }
 
-    public Task<User> GetByIdAsync(int userId)
+    public async Task<User> GetByIdAsync(int userId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var response = await client.GetByIDAsync(new GetSMUserRequest
+            {
+                Id = userId
+            });
+            User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id);
+            return user;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error getting user by id");
+        }
     }
 
-    // public async Task<User> GetByIdAsync(int userId)
-    // {
-    //     try
-    //     {
-    //         var response = await client.GetUserByIdAsync(new GetUserByIdRequest { Id = userId });
-    //         return new User
-    //         {
-    //             Id = response.Id,
-    //             Username = response.Username,
-    //             Email = response.Email,
-    //             // Map other properties as needed
-    //         };
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         Console.WriteLine(e);
-    //         throw new Exception("Error getting user by ID");
-    //     }
-    // }
 }

@@ -36,6 +36,21 @@ public class SMUserController : ControllerBase
     {
         try
         {
+            if (!string.IsNullOrEmpty(dto.Email))
+            {
+                await _smUserLogic.UpdateEmail(dto);
+            }
+
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                await _smUserLogic.UpdatePassword(dto);
+            }
+            
+            if (!string.IsNullOrEmpty(dto.Nickname))
+            {
+                await _smUserLogic.UpdateNickname(dto);
+            }
+
             return Ok();
         }
         catch (Exception e)
@@ -51,6 +66,20 @@ public class SMUserController : ControllerBase
         {
             var users = await _smUserLogic.GetAllUsers();
             return Ok(users);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult> GetByIdAsync([FromRoute] int id)
+    {
+        try
+        {
+            var user = await _smUserLogic.GetByIdAsync(id);
+            return Ok(user);
         }
         catch (Exception e)
         {
