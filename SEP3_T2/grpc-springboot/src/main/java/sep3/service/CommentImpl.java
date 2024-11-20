@@ -1,22 +1,33 @@
 package sep3.service;
 
-import comment.CommentEmptyResponse;
-import comment.CommentServiceGrpc;
-import comment.CreateCommentRequest;
-import comment.UpdateCommentRequest;
+import com.google.gson.Gson;
+import comment.*;
 import io.grpc.stub.StreamObserver;
+import sep3.dao.CommentDAO;
+import sep3.dto.comment.CommentDTO;
+import sep3.dto.comment.CreateCommentDTO;
+import sep3.dto.comment.UpdateCommentDTO;
+
+import java.util.ArrayList;
 
 public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
 {
-  @Override public void createComment(CreateCommentRequest request, StreamObserver<CommentEmptyResponse> responseObserver)
+  private CommentDAO dao;
+  private final Gson gson;
+
+  public CommentImpl(CommentDAO dao)
+  {
+    this.dao = dao;
+    this.gson = new Gson();
+  }
+  @Override
+  public void createComment(CreateCommentRequest request, StreamObserver<CommentEmptyResponse> responseObserver)
   {
     try
     {
-      System.out.println("Comment created with content: " + request.getBody());
-      System.out.println("By: " + request.getUserId());
-      System.out.println("Post ID: " + request.getPostId());
+      CreateCommentDTO dto = new CreateCommentDTO(request.getBody(), request.getUserId(), request.getPostId());
+      dao.createComment(dto);
 
-      // Complete the gRPC call
       responseObserver.onNext(CommentEmptyResponse.newBuilder().build());
       responseObserver.onCompleted();
     }
@@ -26,16 +37,108 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
     }
   }
 
-  @Override public void updateComment(UpdateCommentRequest request,
+  @Override
+  public void updateComment(UpdateCommentRequest request,
       StreamObserver<CommentEmptyResponse> responseObserver)
   {
     try
     {
-      System.out.println("Comment updated with content: " + request.getBody());
-      System.out.println("Comment ID: " + request.getCommentId());
+      UpdateCommentDTO dto = new UpdateCommentDTO(request.getCommentId(), request.getBody());
+      dao.updateComment(dto);
 
-      // Complete the gRPC call
       responseObserver.onNext(CommentEmptyResponse.newBuilder().build());
+      responseObserver.onCompleted();
+    }
+    catch (Exception e)
+    {
+      responseObserver.onError(e);
+    }
+  }
+
+  @Override
+  public void deleteComment(DeleteCommentRequest request, StreamObserver<CommentEmptyResponse> responseObserver)
+  {
+    try
+    {
+      dao.deleteComment(request.getCommentId());
+
+      responseObserver.onNext(CommentEmptyResponse.newBuilder().build());
+      responseObserver.onCompleted();
+    }
+    catch (Exception e)
+    {
+      responseObserver.onError(e);
+    }
+  }
+
+  @Override
+  public void getComment(GetCommentRequest request, StreamObserver<GetCommentResponse> responseObserver)
+  {
+    try{
+      CommentDTO comment = dao.getComment(request.getCommentId());
+
+      responseObserver.onNext(GetCommentResponse.newBuilder()
+          .setCommentId(comment.getCommentId())
+          .setBody(comment.getBody())
+          .setUserId(comment.getUserId())
+          .setPostId(comment.getPostId())
+          .setCommentDate(comment.getCommentDate())
+          .setLikeCount(comment.getLikeCount())
+          .build());
+      responseObserver.onCompleted();
+    }
+    catch (Exception e)
+    {
+      responseObserver.onError(e);
+    }
+  }
+
+  @Override
+  public void getAllComments(EmptyGetAllCommentsRequest request, StreamObserver<GetAllCommentsResponse> responseObserver)
+  {
+    try{
+      ArrayList<CommentDTO> comments = dao.getAllComments();
+
+      String string = gson.toJson(comments);
+      GetAllCommentsResponse response = GetAllCommentsResponse.newBuilder().setList(string).build();
+
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    }
+    catch (Exception e)
+    {
+      responseObserver.onError(e);
+    }
+  }
+
+  @Override
+  public void getCommentsByPost(GetCommentsByPostRequest request, StreamObserver<GetCommentsByPostResponse> responseObserver)
+  {
+    try{
+      ArrayList<CommentDTO> comments = dao.getCommentsByPostId(request.getPostId());
+
+      String string = gson.toJson(comments);
+      GetCommentsByPostResponse response = GetCommentsByPostResponse.newBuilder().setList(string).build();
+
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    }
+    catch (Exception e)
+    {
+      responseObserver.onError(e);
+    }
+  }
+
+  @Override
+  public void getCommentsByUser(GetCommentsByUserRequest request, StreamObserver<GetCommentsByUserResponse> responseObserver)
+  {
+    try{
+      ArrayList<CommentDTO> comments = dao.getCommentsByUserId(request.getUserId());
+
+      String string = gson.toJson(comments);
+      GetCommentsByUserResponse response = GetCommentsByUserResponse.newBuilder().setList(string).build();
+
+      responseObserver.onNext(response);
       responseObserver.onCompleted();
     }
     catch (Exception e)

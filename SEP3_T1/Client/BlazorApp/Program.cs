@@ -1,5 +1,7 @@
+using BlazorApp.Auth;
 using HttpClients.ClientImplementations;
 using HttpClients.ClientInterfaces;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,15 +9,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddScoped<IUserService, SocialMediaUserHttpClient>();
-builder.Services.AddScoped<IPostService, PostHttpClient>();
 builder.Services.AddScoped(
     sp => new HttpClient
     {
         BaseAddress = new Uri("http://localhost:8080")
     });
 
-//builder.Services.AddScoped<IUserServices, HttpUserService>();
+builder.Services.AddScoped<IUserService, SocialMediaUserHttpClient>();
+builder.Services.AddScoped<IPostService, PostHttpClient>();
+builder.Services.AddScoped<ICommentService, CommentHttpClient>();
+builder.Services.AddScoped<ICategoryService, CategoryHttpClient>();
+builder.Services.AddScoped<AuthenticationStateProvider, SimpleAuthProvider>();
 
 var app = builder.Build();
 

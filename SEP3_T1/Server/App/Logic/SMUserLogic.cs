@@ -1,7 +1,10 @@
+using System.Text.Json;
 using App.LogicInterfaces;
+using DTOs.Models;
 using DTOs.User;
 using Grpc.Net.Client;
 using GrpcClient;
+using Microsoft.AspNetCore.Mvc;
 
 namespace App.Logic;
 
@@ -14,7 +17,7 @@ public class SMUserLogic : ISMUserLogic
        GrpcChannel channel = service.Channel;
        client = new SMUserService.SMUserServiceClient(channel);
    }
-    
+
     public async Task CreateSMUser(CreateUserDTO dto)
     {
         try
@@ -34,58 +37,9 @@ public class SMUserLogic : ISMUserLogic
         }
     }
 
-    public async Task UpdateEmail(UpdateUserDTO dto)
+    public async Task UpdateSMUser(UpdateUserDTO dto)
     {
-        if(dto.Email == null)
-            throw new Exception("Email cannot be empty");
-        try
-        {
-            await client.UpdateEmailAsync(new UpdateSMUserEmailRequest
-                {
-                Id = dto.UserId,
-                Email = dto.Email
-            });
-        }catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception("Error updating email");
-        }
-    }
 
-    public async Task UpdateNickname(UpdateUserDTO dto)
-    {
-        if (dto.Nickname == null || dto.Nickname.Length > 50)
-            throw new Exception("Nickname cannot be empty or longer than 50 characters");
-        try
-        {
-            await client.UpdateNicknameAsync(new UpdateSMUserNicknameRequest
-            {
-                Id = dto.UserId,
-                Nickname = dto.Nickname
-            });
-        }catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception("Error updating nickname");
-        }
-    }
-
-    public async Task UpdatePassword(UpdateUserDTO dto)
-    {
-        if(dto.Password == null || dto.Password.Length < 8)
-            throw new Exception("Password cannot be empty or shorter than 8 characters");
-        try
-        {
-             await client.UpdatePasswordAsync(new UpdateSMUserPasswordRequest
-            {
-                Id = dto.UserId,
-                Password = dto.Password
-            });
-        }catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception("Error updating password");
-        }
     }
 
     public async Task DeleteUser(int userId)
@@ -102,4 +56,68 @@ public class SMUserLogic : ISMUserLogic
             throw new Exception("Error deleting user");
         }
     }
+
+    public async Task<List<User>> GetAllUsers()
+    {
+        try
+        {
+            GetAllUsersResponse response = await client.GetAllSMUsersAsync(new GetAllUsersRequest());
+            string json = response.List;
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<User> users = JsonSerializer.Deserialize<List<User>>(json, options);
+            return users;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error getting all users");
+        }
+    }
+
+    public async Task<User> GetByUsernameAsync(string userName)
+    {
+        try
+        {
+            var response = await client.GetByUserNameAsyncAsync(new GetSMUserRequest
+            {
+                Username = userName
+            });
+            User user = new User( response.Username, response.Password, response.Email, response.Nickname, response.Id);
+            return user;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error getting user by username");
+        }
+    }
+
+    public Task<User> GetByIdAsync(int userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    // public async Task<User> GetByIdAsync(int userId)
+    // {
+    //     try
+    //     {
+    //         var response = await client.GetUserByIdAsync(new GetUserByIdRequest { Id = userId });
+    //         return new User
+    //         {
+    //             Id = response.Id,
+    //             Username = response.Username,
+    //             Email = response.Email,
+    //             // Map other properties as needed
+    //         };
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         Console.WriteLine(e);
+    //         throw new Exception("Error getting user by ID");
+    //     }
+    // }
 }

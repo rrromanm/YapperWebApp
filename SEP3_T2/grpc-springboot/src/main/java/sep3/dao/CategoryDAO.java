@@ -19,7 +19,7 @@ public class CategoryDAO implements CategoryDAOInterface {
 
     private Connection getConnection() throws SQLException {
 
-        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_schema", "postgres", "343460");
+        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database", "postgres", "343460");
 
     }
 
@@ -79,7 +79,10 @@ public class CategoryDAO implements CategoryDAOInterface {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new CategoryDTO(resultSet.getString("name"), resultSet.getInt("categoryid"), resultSet.getInt("addedBy"));
+                return new CategoryDTO(
+                        resultSet.getString("name"),
+                        resultSet.getInt("categoryid"),
+                        resultSet.getInt("addedBy"));
             } else {
                 throw new SQLException("Category not found with id: " + id);
             }
@@ -97,7 +100,10 @@ public class CategoryDAO implements CategoryDAOInterface {
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new CategoryDTO(resultSet.getString("name"), resultSet.getInt("categoryid"), resultSet.getInt("addedBy"));
+                return new CategoryDTO(
+                        resultSet.getString("name"),
+                        resultSet.getInt("categoryid"),
+                        resultSet.getInt("addedBy"));
             } else {
                 throw new SQLException("Category not found with name: " + name);
             }
@@ -115,7 +121,10 @@ public class CategoryDAO implements CategoryDAOInterface {
             ResultSet resultSet = statement.executeQuery();
             ArrayList<CategoryDTO> categories = new ArrayList<>();
             while(resultSet.next()){
-                categories.add(new CategoryDTO(resultSet.getString("name"), resultSet.getInt("categoryid"), resultSet.getInt("addedBy")));
+                categories.add(new CategoryDTO(
+                        resultSet.getString("name"),
+                        resultSet.getInt("categoryid"),
+                        resultSet.getInt("addedBy")));
             }
             return categories;
         }catch (Exception e){

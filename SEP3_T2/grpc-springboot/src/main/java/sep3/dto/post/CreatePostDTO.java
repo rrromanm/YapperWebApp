@@ -6,9 +6,10 @@ public class CreatePostDTO {
     private int accountId;
     private int categoryId;
 
-    public CreatePostDTO(String title, String content, int accountId) {
+    public CreatePostDTO(String title, String content, int categoryId, int accountId) {
         this.title = title;
         this.content = content;
+        this.categoryId = categoryId;
         this.accountId = accountId;
     }
 
