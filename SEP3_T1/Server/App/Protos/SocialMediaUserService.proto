@@ -32,6 +32,21 @@ message GetAllUsersRequest{
   string list = 1;
 }
 
+message UpdateSMUserEmailRequest {
+  int32 id = 1;
+  string email = 2;
+}
+
+message UpdateSMUserNicknameRequest {
+  int32 id = 1;
+  string nickname = 2;
+}
+
+message UpdateSMUserPasswordRequest {
+  int32 id = 1;
+  string password = 2;
+}
+
 
 //Responses
 message GetAllUsersResponse{
@@ -52,7 +67,9 @@ message SMUserEmptyResponse {
 
 service SMUserService {
   rpc CreateUser (CreateSMUserRequest) returns (SMUserEmptyResponse);
-  rpc UpdateSMUser (UpdateSMUserRequest) returns (SMUserEmptyResponse);
+  rpc UpdateEmail (UpdateSMUserEmailRequest) returns (SMUserEmptyResponse);
+  rpc UpdateNickname (UpdateSMUserNicknameRequest) returns (SMUserEmptyResponse);
+  rpc UpdatePassword (UpdateSMUserPasswordRequest) returns (SMUserEmptyResponse);
   rpc DeleteUser (DeleteSMUserRequest) returns (SMUserEmptyResponse);
   rpc GetAllSMUsers (GetAllUsersRequest) returns (GetAllUsersResponse);
   rpc GetByUserName (GetSMUserRequest) returns (SMUserResponse);

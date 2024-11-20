@@ -7,6 +7,7 @@ import sep3.dto.smuser.CreateSMUserDTO;
 import sep3.dto.smuser.SMUserDTO;
 import socialMediaUser.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
@@ -34,10 +35,40 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
     }
 
     @Override
-    public void updateSMUser(UpdateSMUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
+    public void updateEmail(UpdateSMUserEmailRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
         try {
-            //todo implement update user
-        } catch (Exception e) {
+            dao.updateEmail(request.getId(), request.getEmail());
+            SMUserEmptyResponse response = SMUserEmptyResponse.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (SQLException e) {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void updateNickname(UpdateSMUserNicknameRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
+        try {
+            dao.updateNickname(request.getId(), request.getNickname());
+            SMUserEmptyResponse response = SMUserEmptyResponse.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (SQLException e) {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void updatePassword(UpdateSMUserPasswordRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
+        try {
+            dao.updatePassword(request.getId(), request.getPassword());
+            SMUserEmptyResponse response = SMUserEmptyResponse.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (SQLException e) {
             responseObserver.onError(e);
         }
     }

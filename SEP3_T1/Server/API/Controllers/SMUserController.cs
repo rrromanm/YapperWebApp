@@ -36,6 +36,21 @@ public class SMUserController : ControllerBase
     {
         try
         {
+            if (!string.IsNullOrEmpty(dto.Email))
+            {
+                await _smUserLogic.UpdateEmail(dto);
+            }
+
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                await _smUserLogic.UpdatePassword(dto);
+            }
+            
+            if (!string.IsNullOrEmpty(dto.Nickname))
+            {
+                await _smUserLogic.UpdateNickname(dto);
+            }
+
             return Ok();
         }
         catch (Exception e)

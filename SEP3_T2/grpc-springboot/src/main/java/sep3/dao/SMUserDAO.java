@@ -42,8 +42,42 @@ public class SMUserDAO implements SMUserDAOInterface {
     }
 
     @Override
-    public void updateSMUser(UpdateSMUserDTO dto) throws SQLException {
+    public void updateEmail(int userId, String email) throws SQLException {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("UPDATE yapper_database.social_media_user SET email = ? WHERE userid = ?");
+            statement.setString(1, email);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
+    @Override
+    public void updateNickname(int userId, String nickname) throws SQLException {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("UPDATE yapper_database.social_media_user SET nickname = ? WHERE userid = ?");
+            statement.setString(1, nickname);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void updatePassword(int userId, String password) throws SQLException {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("UPDATE yapper_database.social_media_user SET password = ? WHERE userid = ?");
+            statement.setString(1, password);
+            statement.setInt(2, userId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

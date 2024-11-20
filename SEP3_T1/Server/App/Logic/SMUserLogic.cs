@@ -38,9 +38,55 @@ public class SMUserLogic : ISMUserLogic
         }
     }
 
-    public async Task UpdateSMUser(UpdateUserDTO dto)
+    public async Task UpdateEmail(UpdateUserDTO dto)
     {
+        try
+        {
+            await client.UpdateEmailAsync(new UpdateSMUserEmailRequest
+            {
+                Id = dto.UserId,
+                Email = dto.Email
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error updating email");
+        }
+    }
 
+    public async Task UpdatePassword(UpdateUserDTO dto)
+    {
+        try
+        {
+            await client.UpdatePasswordAsync(new UpdateSMUserPasswordRequest()
+            {
+                Id = dto.UserId,
+                Password = dto.Password
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error updating password");
+        }
+    }
+
+    public async Task UpdateNickname(UpdateUserDTO dto)
+    {
+        try
+        {
+            await client.UpdateNicknameAsync(new UpdateSMUserNicknameRequest()
+            {
+                Id = dto.UserId,
+                Nickname = dto.Nickname
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error updating nickname");
+        }
     }
 
     public async Task DeleteUser(int userId)
