@@ -1,10 +1,6 @@
 package sep3.dao;
 
-import sep3.dto.post.PostDTO;
-import sep3.dto.smuser.CreateSMUserDTO;
-import sep3.dto.smuser.SMUserDTO;
-import sep3.dto.smuser.UpdateSMUserDTO;
-
+import sep3.dto.smuser.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -92,6 +88,31 @@ public class SMUserDAO implements SMUserDAOInterface {
             throw new SQLException("Failed to get user by username");
         }
     }
+
+    @Override
+    public SMUserDTO getUserById(int id) throws SQLException {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM yapper_database.social_media_user WHERE userid = ?");
+            statement.setInt(1, id);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return new SMUserDTO(
+                        resultSet.getInt("userid"),
+                        resultSet.getString("username"),
+                        resultSet.getString("nickname"),
+                        resultSet.getString("password"),
+                        resultSet.getString("email")
+                );
+            } else {
+                throw new SQLException("User not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to get user by id");
+        }
+    }
+
     @Override
     public ArrayList<SMUserDTO> getAllUsers() throws SQLException {
         try {

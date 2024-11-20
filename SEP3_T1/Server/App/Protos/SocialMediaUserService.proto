@@ -17,6 +17,8 @@ message UpdateSMUserRequest {
   int32 id = 5;
 }
 
+//Requests
+
 message DeleteSMUserRequest {
   int32 id = 1;
 }
@@ -30,6 +32,8 @@ message GetAllUsersRequest{
   string list = 1;
 }
 
+
+//Responses
 message GetAllUsersResponse{
   string list = 1;
 }
@@ -51,5 +55,6 @@ service SMUserService {
   rpc UpdateSMUser (UpdateSMUserRequest) returns (SMUserEmptyResponse);
   rpc DeleteUser (DeleteSMUserRequest) returns (SMUserEmptyResponse);
   rpc GetAllSMUsers (GetAllUsersRequest) returns (GetAllUsersResponse);
-  rpc GetByUserNameAsync (GetSMUserRequest) returns (SMUserResponse);
+  rpc GetByUserName (GetSMUserRequest) returns (SMUserResponse);
+  rpc GetByID (GetSMUserRequest) returns (SMUserResponse);
 }

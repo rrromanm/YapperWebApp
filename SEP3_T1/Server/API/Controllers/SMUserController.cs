@@ -58,6 +58,20 @@ public class SMUserController : ControllerBase
         }
     }
     
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult> GetByIdAsync([FromRoute] int id)
+    {
+        try
+        {
+            var user = await _smUserLogic.GetByIdAsync(id);
+            return Ok(user);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
     [HttpGet("{username}")]
     public async Task<ActionResult> GetByUsernameAsync([FromRoute] string username)
     {

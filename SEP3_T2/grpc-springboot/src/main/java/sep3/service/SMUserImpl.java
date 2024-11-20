@@ -56,7 +56,7 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
     }
 
     @Override
-    public void getByUserNameAsync(GetSMUserRequest request, StreamObserver<SMUserResponse> responseObserver) {
+    public void getByUserName(GetSMUserRequest request, StreamObserver<SMUserResponse> responseObserver) {
         try {
             SMUserDTO user = dao.getUserByUsername(request.getUsername());
             SMUserResponse response = SMUserResponse.newBuilder()
@@ -69,6 +69,25 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void getByID(GetSMUserRequest request, StreamObserver<SMUserResponse> responseObserver) {
+        try {
+            SMUserDTO userDTO = dao.getUserById(request.getId());
+            SMUserResponse response = SMUserResponse.newBuilder()
+                    .setId(userDTO.getId())
+                    .setUsername(userDTO.getUsername())
+                    .setNickname(userDTO.getNickname())
+                    .setPassword(userDTO.getPassword())
+                    .setEmail(userDTO.getEmail())
+                    .build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (Exception e) {
             responseObserver.onError(e);
         }
     }

@@ -51,5 +51,6 @@ service SMUserService {
   rpc UpdateSMUser (UpdateSMUserRequest) returns (SMUserEmptyResponse);
   rpc DeleteUser (DeleteSMUserRequest) returns (SMUserEmptyResponse);
   rpc GetAllSMUsers (GetAllUsersRequest) returns (GetAllUsersResponse);
-  rpc GetByUserNameAsync (GetSMUserRequest) returns (SMUserResponse);
+  rpc GetByUserName (GetSMUserRequest) returns (SMUserResponse);
+  rpc GetByID (GetSMUserRequest) returns (SMUserResponse);
 }
