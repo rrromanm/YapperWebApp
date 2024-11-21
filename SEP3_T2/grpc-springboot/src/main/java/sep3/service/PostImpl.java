@@ -3,13 +3,11 @@ package sep3.service;
 import com.google.gson.Gson;
 import io.grpc.stub.StreamObserver;
 import sep3.dao.PostDAO;
-import sep3.dto.category.CategoryDTO;
 import sep3.dto.post.CreatePostDTO;
 import sep3.dto.post.PostDTO;
 import sep3.dto.post.UpdatePostDTO;
 import yapperPost.*;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
@@ -120,6 +118,38 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
             String string = gson.toJson(posts);
             GetAllFollowingPostsResponse response = GetAllFollowingPostsResponse.newBuilder().setList(string).build();
 
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (Exception e)
+        {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void likePost(LikePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
+        try
+        {
+            dao.likePost(request.getUserId(), request.getPostId());
+
+            PostEmptyMessage response = PostEmptyMessage.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (Exception e)
+        {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void unlikePost(UnlikePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
+        try
+        {
+            dao.unlikePost(request.getUserId(), request.getPostId());
+
+            PostEmptyMessage response = PostEmptyMessage.newBuilder().build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }

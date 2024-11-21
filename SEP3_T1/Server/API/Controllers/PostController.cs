@@ -1,5 +1,6 @@
 ﻿using App.Logic;
 using App.LogicInterfaces;
+using DTOs.DTOs;
 using DTOs.User.PostDTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -96,6 +97,34 @@ public class PostController : ControllerBase
         {
             var result = await _postLogic.GetFollowingPosts(userId);
             return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpPost("LikePost")]
+    public async Task<ActionResult> LikePost([FromBody] LikePostDTO dto)
+    {
+        try
+        {
+            await _postLogic.LikePost(dto.UserId, dto.PostId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpPost("UnlikePost")]
+    public async Task<ActionResult> UnlikePost([FromBody] LikePostDTO dto)
+    {
+        try
+        {
+            await _postLogic.UnlikePost(dto.UserId, dto.PostId);
+            return Ok();
         }
         catch (Exception e)
         {
