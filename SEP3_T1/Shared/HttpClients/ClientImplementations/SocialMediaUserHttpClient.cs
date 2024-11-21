@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using DTOs.Models;
 using DTOs.User;
 using HttpClients.ClientInterfaces;
 
@@ -41,5 +42,16 @@ public class SocialMediaUserHttpClient : IUserService
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
+    }
+
+    public async Task<User> GetByUsername(string username)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"https://localhost:7211/SMUser/{username}");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+        return await response.Content.ReadFromJsonAsync<User>();
     }
 }
