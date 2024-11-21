@@ -18,7 +18,7 @@ public class SMUserLogic : ISMUserLogic
         client = new SMUserService.SMUserServiceClient(channel);
     }
 
-    public async Task CreateSMUser(CreateUserDTO dto)
+    public async Task<User> CreateSMUser(CreateUserDTO dto)
     {
         try
         {
@@ -29,6 +29,16 @@ public class SMUserLogic : ISMUserLogic
                 Email = dto.Email,
                 Nickname = dto.Nickname
             });
+            
+            var user = new User
+            {
+                Username = dto.Username,
+                Email = dto.Email,
+                Nickname = dto.Nickname,
+                Password = dto.Password
+            };
+
+            return user;
 
         }
         catch (Exception e)

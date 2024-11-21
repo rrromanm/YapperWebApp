@@ -38,14 +38,21 @@ public class AuthController : ControllerBase
     {
         try
         {
-            await _logic.CreateSMUser(dto);
-            return Results.Ok("User created successfully.");
+            var user = await _logic.CreateSMUser(dto);
+            var userDto = new UserDTO
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email
+            };
+            return Results.Ok(userDto);
         }
         catch (Exception e)
         {
             return Results.BadRequest(e.Message);
         }
     }
+
 
 
 }
