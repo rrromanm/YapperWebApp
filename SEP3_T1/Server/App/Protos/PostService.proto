@@ -72,5 +72,5 @@ service PostService {
   rpc GetAllPosts (EmptyGetAllPostsRequest) returns (GetAllPostsResponse);
   rpc GetAllFollowingPosts (GetAllFollowingPostsRequest) returns (GetAllFollowingPostsResponse);
   rpc LikePost (LikePostRequest) returns (PostEmptyMessage);
-  rpc UnlikePost (LikePostRequest) returns (PostEmptyMessage);
+  rpc UnlikePost (UnlikePostRequest) returns (PostEmptyMessage);
 }

@@ -132,6 +132,10 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         try
         {
             dao.likePost(request.getUserId(), request.getPostId());
+
+            PostEmptyMessage response = PostEmptyMessage.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
         }
         catch (Exception e)
         {
@@ -144,6 +148,10 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         try
         {
             dao.unlikePost(request.getUserId(), request.getPostId());
+
+            PostEmptyMessage response = PostEmptyMessage.newBuilder().build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
         }
         catch (Exception e)
         {

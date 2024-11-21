@@ -219,7 +219,7 @@ public class PostDAO implements PostDAOInterface {
         try
         {
             Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO yapper_database.liked_post(userid, postid) VALUES (?.?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO yapper_database.liked_post(userid, postid) VALUES (?,?)");
             statement.setInt(1, userId);
             statement.setInt(2, postId);
             statement.executeUpdate();
