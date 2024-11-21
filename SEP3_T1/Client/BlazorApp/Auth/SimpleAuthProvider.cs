@@ -54,6 +54,41 @@ public class SimpleAuthProvider : AuthenticationStateProvider
         );
     }
     
+    public async Task Register(CreateUserDTO dto)
+    {
+        HttpResponseMessage response = await client.PostAsJsonAsync(
+            $"https://localhost:7211/register",
+            dto);
+
+        string content = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
+
+        UserDTO userDto = JsonSerializer.Deserialize<UserDTO>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+
+        string serialisedData = JsonSerializer.Serialize(userDto);
+        await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
+
+        List<Claim> claims = new List<Claim>()
+        {
+            new Claim(ClaimTypes.Name, userDto.Username),
+            new Claim(ClaimTypes.Email, userDto.Email),
+            new Claim("Id", userDto.Id.ToString())
+        };
+
+        ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
+        ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
+
+        NotifyAuthenticationStateChanged(
+            Task.FromResult(new AuthenticationState(claimsPrincipal))
+        );
+    }
+    
     public async Task Logout()
     {
         await jsRuntime.InvokeVoidAsync("sessionStorage.removeItem", "currentUser");

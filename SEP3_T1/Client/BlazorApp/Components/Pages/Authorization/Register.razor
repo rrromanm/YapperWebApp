@@ -1,0 +1,53 @@
+﻿@page "/Register"
+@using BlazorApp.Auth
+@using DTOs.User
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthProvider
+
+<h3>Register</h3>
+
+<div class="register-container">
+    <div class="register-form">
+        <input @bind="username" placeholder="Username" />
+        <input @bind="nickname" placeholder="Nickname" />
+        <input @bind="email" type="email" placeholder="Email" />
+        <input @bind="password" type="password" placeholder="Password" />
+        <input @bind="repeatPassword" type="password" placeholder="Repeat Password" />
+        <button @onclick="RegisterImpl">Register</button>
+    </div>
+</div>
+
+@code {
+    private string username;
+    private string nickname;
+    private string email;
+    private string password;
+    private string repeatPassword;
+
+    private async Task RegisterImpl()
+    {
+        if (password != repeatPassword)
+        {
+            Console.WriteLine("Passwords do not match.");
+            return;
+        }
+
+        try
+        {
+            var registerDto = new CreateUserDTO()
+            {
+                Username = username,
+                Nickname = nickname,
+                Email = email,
+                Password = password
+            };
+
+            await ((SimpleAuthProvider)AuthProvider).Register(registerDto);
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using App.LogicInterfaces;
 using DTOs.DTOs.Auth;
+using DTOs.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -31,5 +32,27 @@ public class AuthController : ControllerBase
     
         return Results.Ok(user);
     }
+    
+    [HttpPost("/register")]
+    public async Task<IResult> RegisterAsync(CreateUserDTO dto)
+    {
+        try
+        {
+            var user = await _logic.CreateSMUser(dto);
+            var userDto = new UserDTO
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email
+            };
+            return Results.Ok(userDto);
+        }
+        catch (Exception e)
+        {
+            return Results.BadRequest(e.Message);
+        }
+    }
+
+
 
 }
