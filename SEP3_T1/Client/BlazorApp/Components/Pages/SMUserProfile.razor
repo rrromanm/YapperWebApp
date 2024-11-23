@@ -1,6 +1,5 @@
-﻿@page "/{username}"
+﻿@page "/profiles/{username}"
 @using HttpClients.ClientInterfaces
-@inherits LayoutComponentBase
 @inject IUserService userService
 
 <div class="profile-page">
@@ -30,16 +29,27 @@
     private string nickname;
     private string errorMessage;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        var user = await userService.GetByUsername(username);
-        if (user != null)
+        errorMessage = null; // Clear previous error messages
+
+        try
         {
-            nickname = user.Nickname;
+            var user = await userService.GetByUsername(username);
+            if (user != null)
+            {
+                nickname = user.Nickname;
+            }
+            else
+            {
+                errorMessage = $"Account with username '{username}' doesn't exist.";
+            }
+
         }
-        else
+        catch (Exception ex)
         {
-            errorMessage = $"Account with {username} doesn't exist";
+            errorMessage = $"Failed to load user profile: {ex.Message}";
         }
     }
+
 }
