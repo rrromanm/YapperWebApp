@@ -36,6 +36,7 @@ if (app.Configuration.GetValue<bool>("UseHttpsRedirection", false))
     app.UseHttpsRedirection();
 }
 
+
 app.UseStaticFiles();
 app.UseAntiforgery();
 

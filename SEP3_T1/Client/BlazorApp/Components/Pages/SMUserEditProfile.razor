@@ -1,0 +1,133 @@
+﻿@page "/EditProfile"
+@using DTOs.User
+@using HttpClients.ClientInterfaces
+@inject NavigationManager NavMgr
+@inject AuthenticationStateProvider AuthProvider
+@inject IUserService userService
+
+@attribute [Authorize]
+
+<div class="edit-profile-page">
+    <button @onclick="NavigateBack" class="back-btn">Back</button>
+    <h2>Edit Profile</h2>
+    <div class="edit-profile-container">
+        <div class="left-column">
+            <label for="nickname">Nickname:</label>
+            <input type="text" id="nickname" placeholder="@nickname" @bind="newNickname" />
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="@email" @bind="newEmail" />
+        </div>
+        <div class="right-column">
+            <label for="oldPassword">Current Password:</label>
+            <div class="password-container">
+                <input type="password" id="oldPassword" @bind="oldPassword" class="password-input"/>
+            </div>
+
+            <label for="newPassword">New Password:</label>
+            <div class="password-container">
+                <input type="password" id="newPassword" @bind="newPassword" class="password-input"/>
+            </div>
+
+            <label for="repeatPassword">Repeat Password:</label>
+            <div class="password-container">
+                <input type="password" id="repeatPassword" @bind="repeatPassword" class="password-input"/>
+            </div>
+        </div>
+    </div>
+    <button @onclick="SaveProfile" class="save-btn">Save</button>
+</div>
+
+@code {
+    private int userId;
+    private string username;
+    private string nickname;
+    private string email;
+    
+    private string newNickname;
+    private string newEmail;
+    
+    private string oldPassword;
+    private string newPassword;
+    private string repeatPassword;
+    private string currentPassword;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userIdClaim = user.FindFirst(c => c.Type == "Id")?.Value;
+            if (int.TryParse(userIdClaim, out int userId))
+            {
+                await LoadUserProfile(userId);
+            }
+        }
+    }
+
+    private async Task LoadUserProfile(int userId)
+    {
+        try
+        {
+            var user = await userService.GetByUserId(userId);
+            if (user != null)
+            {
+                this.userId = user.Id;
+                nickname = user.Nickname;
+                email = user.Email;
+                username = user.Username;
+                currentPassword = user.Password;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle error (e.g., log it, show a message to the user)
+        }
+    }
+
+    private void NavigateBack()
+    {
+        NavMgr.NavigateTo($"/profiles/{username}");
+    }
+
+    private async Task SaveProfile()
+    {
+        // Validate the current password
+        if (oldPassword != currentPassword)
+        {
+            Console.WriteLine("Incorrect current password");
+            return;
+        }
+
+        // Validate new password and confirmation
+        if (!string.IsNullOrEmpty(newPassword) && newPassword != repeatPassword)
+        {
+            Console.WriteLine("New passwords do not match");
+            return;
+        }
+
+        
+        // Prepare DTO for update
+        var updateUserDto = new UpdateUserDTO
+        {
+            UserId = userId,
+            Email = email != newEmail && !string.IsNullOrWhiteSpace(newEmail) ? newEmail : "",
+            Password = !string.IsNullOrEmpty(newPassword) ? newPassword : "",
+            Nickname = nickname != newNickname && !string.IsNullOrWhiteSpace(newNickname) ? newNickname : ""
+        };
+
+        Console.WriteLine($"Sending UpdateUserDTO: UserId = {updateUserDto.UserId}, Email = {updateUserDto.Email}, Nickname = {updateUserDto.Nickname}, Password = {updateUserDto.Password}");
+
+        // Call the user service to update the profile
+        await userService.UpdateSMUser(updateUserDto);
+
+        Console.WriteLine("Profile updated successfully");
+
+        await LoadUserProfile(userId);
+        NavMgr.NavigateTo($"/profiles/{username}");
+    }
+
+
+
+}

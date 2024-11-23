@@ -1,0 +1,140 @@
+﻿.profile-page {
+    display: flex;
+    flex-direction: column; /* Allow the container to stack elements vertically */
+}
+
+/* Profile Content */
+.profile-container {
+    flex: 1;
+    background-color: white;
+    padding: 20px;
+    
+    border: 1px solid #ccc; /* Add a border */
+    padding: 10px; /* Add some padding */
+    border-radius: 5px; /* Optional: Add rounded corners */
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.profile-picture {
+    font-size: 50px;
+    margin-right: 20px;
+}
+
+.profile-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-details h2 {
+    margin: 0;
+}
+
+.profile-details p {
+    margin: 5px 0;
+}
+
+.follow-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.follow-btn:hover {
+    background-color: #0056b3;
+}
+
+.edit-btn {
+    background-color: #f8f9fa;
+    color: #333;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background-color: #e2e6ea;
+}
+
+/* Post area */
+.profile-posts h3 {
+    margin-top: 0;
+    font-size: 24px;
+}
+
+.post-area {
+    margin-top: 20px;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.profile-posts {
+    margin-top: 20px;
+}
+
+.post-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.post-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 0 10px; /* Add margin to space out the buttons */
+}
+
+.post-btn:hover {
+    background-color: #0056b3;
+}
+
+.posts, .liked-posts {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.post-btn.grey {
+    background-color: grey;
+    color: white;
+    border: 2px solid darkgrey;
+}
+
+.post-btn.active {
+    background-color: #0056b3;
+    color: white;
+    border: 2px solid #003f7f;
+}
+
+.nickname-follow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-btn, .follow-btn {
+    margin-left: 10px;
+}

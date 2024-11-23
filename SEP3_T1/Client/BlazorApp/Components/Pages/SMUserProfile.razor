@@ -1,0 +1,114 @@
+﻿@page "/profiles/{username}"
+@using HttpClients.ClientInterfaces
+@inject IUserService userService
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavMgr
+
+<AuthorizeView>
+    <Authorized>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <p>@errorMessage</p>
+        }
+        else
+        {
+            <div class="profile-page">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <img src="https://via.placeholder.com/250" alt="Profile Picture" class="profile-picture" />
+                        <div class="profile-details">
+                            <div class="nickname-follow">
+                                <h2>@nickname</h2>
+                                <div class="button-container">
+                                    @if (isCurrentUser)
+                                    {
+                                        <button @onclick='() => NavMgr.NavigateTo("EditProfile")' class="edit-btn">Edit</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="follow-btn">Follow</button>
+                                    }
+                                </div>
+                            </div>
+                            <p>Followers: 100</p>
+                            <p>Following: 50</p>
+                        </div>
+                    </div>
+                    <p class="username">@username</p>
+                </div>
+            </div>
+
+            <div class="profile-posts">
+                <div class="post-buttons">
+                    <button @onclick="ShowPosts" class="post-btn @(showPosts ? "active" : "grey")">Posts</button>
+                    <button @onclick="ShowLikedPosts" class="post-btn @(showLikedPosts ? "active" : "grey")">Liked Posts</button>
+                </div>
+                @if (showPosts)
+                {
+                    <div class="posts">
+                        <!-- Render user posts here -->
+                        <p>User posts will be displayed here.</p>
+                    </div>
+                }
+                else if (showLikedPosts)
+                {
+                    <div class="liked-posts">
+                        <!-- Render liked posts here -->
+                        <p>Liked posts will be displayed here.</p>
+                    </div>
+                }
+            </div>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not authorized to view this profile.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+    [Parameter] public string username { get; set; }
+    private string nickname;
+    private string errorMessage;
+    private bool isCurrentUser;
+
+    private bool showPosts = true;
+    private bool showLikedPosts = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        errorMessage = null; // Clear previous error messages
+
+        try
+        {
+            var user = await userService.GetByUsername(username);
+            if (user != null)
+            {
+                nickname = user.Nickname;
+                var authState = await AuthProvider.GetAuthenticationStateAsync();
+                var currentUser = authState.User.Identity.Name;
+                isCurrentUser = currentUser == username;
+            }
+            else
+            {
+                errorMessage = $"Account with username '{username}' doesn't exist.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Account with username '{username}' doesn't exist.";
+        }
+    }
+
+    private void ShowPosts()
+    {
+        showPosts = true;
+        showLikedPosts = false;
+    }
+
+    private void ShowLikedPosts()
+    {
+        showPosts = false;
+        showLikedPosts = true;
+    }
+}
