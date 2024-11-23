@@ -1,4 +1,5 @@
 ﻿@page "/EditProfile"
+@using DTOs.User
 @using HttpClients.ClientInterfaces
 @inject NavigationManager NavMgr
 @inject AuthenticationStateProvider AuthProvider
@@ -12,27 +13,24 @@
     <div class="edit-profile-container">
         <div class="left-column">
             <label for="nickname">Nickname:</label>
-            <input type="text" id="nickname" @bind="nickname" />
+            <input type="text" id="nickname" placeholder="@nickname" @bind="newNickname" />
             <label for="email">Email:</label>
-            <input type="email" id="email" @bind="email" />
+            <input type="email" id="email" placeholder="@email" @bind="newEmail" />
         </div>
         <div class="right-column">
             <label for="oldPassword">Current Password:</label>
             <div class="password-container">
-                <input type="@oldPasswordType" id="oldPassword" @bind="oldPassword" class="password-input"/>
-                <span @onclick="ToggleOldPasswordVisibility" class="eye-icon">👁️</span>
+                <input type="password" id="oldPassword" @bind="oldPassword" class="password-input"/>
             </div>
 
             <label for="newPassword">New Password:</label>
             <div class="password-container">
-                <input type="@newPasswordType" id="newPassword" @bind="newPassword" class="password-input"/>
-                <span @onclick="ToggleNewPasswordVisibility" class="eye-icon">👁️</span>
+                <input type="password" id="newPassword" @bind="newPassword" class="password-input"/>
             </div>
 
             <label for="repeatPassword">Repeat Password:</label>
             <div class="password-container">
-                <input type="@repeatPasswordType" id="repeatPassword" @bind="repeatPassword" class="password-input"/>
-                <span @onclick="ToggleRepeatPasswordVisibility" class="eye-icon">👁️</span>
+                <input type="password" id="repeatPassword" @bind="repeatPassword" class="password-input"/>
             </div>
         </div>
     </div>
@@ -40,17 +38,18 @@
 </div>
 
 @code {
+    private int userId;
     private string username;
     private string nickname;
     private string email;
+    
+    private string newNickname;
+    private string newEmail;
+    
     private string oldPassword;
     private string newPassword;
     private string repeatPassword;
     private string currentPassword;
-
-    private string oldPasswordType = "password";
-    private string newPasswordType = "password";
-    private string repeatPasswordType = "password";
 
     protected override async Task OnInitializedAsync()
     {
@@ -74,6 +73,7 @@
             var user = await userService.GetByUserId(userId);
             if (user != null)
             {
+                this.userId = user.Id;
                 nickname = user.Nickname;
                 email = user.Email;
                 username = user.Username;
@@ -93,32 +93,41 @@
 
     private async Task SaveProfile()
     {
+        // Validate the current password
         if (oldPassword != currentPassword)
         {
-            Console.WriteLine("Password incorrect");
+            Console.WriteLine("Incorrect current password");
             return;
         }
 
-        if (newPassword != repeatPassword)
+        // Validate new password and confirmation
+        if (!string.IsNullOrEmpty(newPassword) && newPassword != repeatPassword)
         {
-            Console.WriteLine("Passwords do not match");
+            Console.WriteLine("New passwords do not match");
             return;
         }
+
         
+        // Prepare DTO for update
+        var updateUserDto = new UpdateUserDTO
+        {
+            UserId = userId,
+            Email = email != newEmail && !string.IsNullOrWhiteSpace(newEmail) ? newEmail : "",
+            Password = !string.IsNullOrEmpty(newPassword) ? newPassword : "",
+            Nickname = nickname != newNickname && !string.IsNullOrWhiteSpace(newNickname) ? newNickname : ""
+        };
+
+        Console.WriteLine($"Sending UpdateUserDTO: UserId = {updateUserDto.UserId}, Email = {updateUserDto.Email}, Nickname = {updateUserDto.Nickname}, Password = {updateUserDto.Password}");
+
+        // Call the user service to update the profile
+        await userService.UpdateSMUser(updateUserDto);
+
+        Console.WriteLine("Profile updated successfully");
+
+        await LoadUserProfile(userId);
+        NavMgr.NavigateTo($"/profiles/{username}");
     }
 
-    private void ToggleOldPasswordVisibility()
-    {
-        oldPasswordType = oldPasswordType == "password" ? "text" : "password";
-    }
 
-    private void ToggleNewPasswordVisibility()
-    {
-        newPasswordType = newPasswordType == "password" ? "text" : "password";
-    }
 
-    private void ToggleRepeatPasswordVisibility()
-    {
-        repeatPasswordType = repeatPasswordType == "password" ? "text" : "password";
-    }
 }

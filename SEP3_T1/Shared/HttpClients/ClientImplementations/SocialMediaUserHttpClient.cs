@@ -26,13 +26,25 @@ public class SocialMediaUserHttpClient : IUserService
 
     public async Task UpdateSMUser(UpdateUserDTO dto)
     {
-        HttpResponseMessage response = await _client.PutAsJsonAsync($"/Users/{dto.UserId}", dto);
+        // Create a PATCH request
+        var request = new HttpRequestMessage(HttpMethod.Patch, "https://localhost:7211/SMUser")
+        {
+            Content = JsonContent.Create(dto) // Use JsonContent to serialize the DTO into JSON
+        };
+
+        // Send the PATCH request
+        HttpResponseMessage response = await _client.SendAsync(request);
+
+        // Check if the response indicates success
         if (!response.IsSuccessStatusCode)
         {
-            string e = await response.Content.ReadAsStringAsync();
-            throw new Exception(e);
+            string responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"API Error: {responseContent}");
+            throw new Exception($"API call failed with status code {response.StatusCode}. Details: {responseContent}");
         }
     }
+
+
 
     public async Task DeleteSMUser(int userId)
     {
