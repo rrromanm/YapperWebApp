@@ -6,12 +6,4 @@ public class UpdateUserDTO
     public string? Email { get; set; }
     public string? Password { get; set; }
     public string? Nickname { get; set; }
-    
-    public UpdateUserDTO(int userId, string? email, string? password, string? nickname)
-    {
-        UserId = userId;
-        Email = email;
-        Password = password;
-        Nickname = nickname;
-    }
 }

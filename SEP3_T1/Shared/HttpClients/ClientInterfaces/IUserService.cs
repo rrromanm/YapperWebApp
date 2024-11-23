@@ -10,4 +10,5 @@ public interface IUserService
     Task UpdateSMUser(UpdateUserDTO dto);
     Task DeleteSMUser(int accountId);
     Task<User> GetByUsername(string username);
+    Task<User> GetByUserId(int userId);
 }

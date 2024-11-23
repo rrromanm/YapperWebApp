@@ -1,0 +1,124 @@
+﻿@page "/EditProfile"
+@using HttpClients.ClientInterfaces
+@inject NavigationManager NavMgr
+@inject AuthenticationStateProvider AuthProvider
+@inject IUserService userService
+
+@attribute [Authorize]
+
+<div class="edit-profile-page">
+    <button @onclick="NavigateBack" class="back-btn">Back</button>
+    <h2>Edit Profile</h2>
+    <div class="edit-profile-container">
+        <div class="left-column">
+            <label for="nickname">Nickname:</label>
+            <input type="text" id="nickname" @bind="nickname" />
+            <label for="email">Email:</label>
+            <input type="email" id="email" @bind="email" />
+        </div>
+        <div class="right-column">
+            <label for="oldPassword">Current Password:</label>
+            <div class="password-container">
+                <input type="@oldPasswordType" id="oldPassword" @bind="oldPassword" class="password-input"/>
+                <span @onclick="ToggleOldPasswordVisibility" class="eye-icon">👁️</span>
+            </div>
+
+            <label for="newPassword">New Password:</label>
+            <div class="password-container">
+                <input type="@newPasswordType" id="newPassword" @bind="newPassword" class="password-input"/>
+                <span @onclick="ToggleNewPasswordVisibility" class="eye-icon">👁️</span>
+            </div>
+
+            <label for="repeatPassword">Repeat Password:</label>
+            <div class="password-container">
+                <input type="@repeatPasswordType" id="repeatPassword" @bind="repeatPassword" class="password-input"/>
+                <span @onclick="ToggleRepeatPasswordVisibility" class="eye-icon">👁️</span>
+            </div>
+        </div>
+    </div>
+    <button @onclick="SaveProfile" class="save-btn">Save</button>
+</div>
+
+@code {
+    private string username;
+    private string nickname;
+    private string email;
+    private string oldPassword;
+    private string newPassword;
+    private string repeatPassword;
+    private string currentPassword;
+
+    private string oldPasswordType = "password";
+    private string newPasswordType = "password";
+    private string repeatPasswordType = "password";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userIdClaim = user.FindFirst(c => c.Type == "Id")?.Value;
+            if (int.TryParse(userIdClaim, out int userId))
+            {
+                await LoadUserProfile(userId);
+            }
+        }
+    }
+
+    private async Task LoadUserProfile(int userId)
+    {
+        try
+        {
+            var user = await userService.GetByUserId(userId);
+            if (user != null)
+            {
+                nickname = user.Nickname;
+                email = user.Email;
+                username = user.Username;
+                currentPassword = user.Password;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle error (e.g., log it, show a message to the user)
+        }
+    }
+
+    private void NavigateBack()
+    {
+        NavMgr.NavigateTo($"/profiles/{username}");
+    }
+
+    private async Task SaveProfile()
+    {
+        if (oldPassword != currentPassword)
+        {
+            Console.WriteLine("Password incorrect");
+            return;
+        }
+
+        if (newPassword != repeatPassword)
+        {
+            Console.WriteLine("Passwords do not match");
+            return;
+        }
+        
+    }
+
+    private void ToggleOldPasswordVisibility()
+    {
+        oldPasswordType = oldPasswordType == "password" ? "text" : "password";
+    }
+
+    private void ToggleNewPasswordVisibility()
+    {
+        newPasswordType = newPasswordType == "password" ? "text" : "password";
+    }
+
+    private void ToggleRepeatPasswordVisibility()
+    {
+        repeatPasswordType = repeatPasswordType == "password" ? "text" : "password";
+    }
+}

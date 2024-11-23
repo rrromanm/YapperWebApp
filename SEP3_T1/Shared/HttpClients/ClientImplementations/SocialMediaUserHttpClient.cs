@@ -49,6 +49,25 @@ public class SocialMediaUserHttpClient : IUserService
         HttpResponseMessage response = await _client.GetAsync($"https://localhost:7211/SMUser/{username}");
         if (!response.IsSuccessStatusCode)
         {
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null; // Return null if the user is not found
+            }
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+        return await response.Content.ReadFromJsonAsync<User>();
+    }
+
+    public async Task<User> GetByUserId(int userId)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"https://localhost:7211/SMUser/{userId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                return null; // Return null if the user is not found
+            }
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
