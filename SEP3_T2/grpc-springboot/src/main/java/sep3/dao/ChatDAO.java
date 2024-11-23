@@ -29,7 +29,7 @@ public class ChatDAO implements ChatDAOInterface {
     @Override
     public void sendMessage(SendMessageDTO dto) throws SQLException {
         try {
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_schema", "postgres", "343460");
+            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_schema", "postgres", "via");
             PreparedStatement statement = connection.prepareStatement("INSERT INTO message (body, senderId, receiverId) VALUES (?,?,?)");
             statement.setString(1, dto.getMessage());
             statement.setInt(2, dto.getSender());

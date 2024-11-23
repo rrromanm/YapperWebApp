@@ -3,6 +3,7 @@ package sep3.dao;
 import sep3.dto.post.CreatePostDTO;
 import sep3.dto.post.PostDTO;
 import sep3.dto.post.UpdatePostDTO;
+import sep3.shared.YapDate;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class PostDAO implements PostDAOInterface {
     }
 
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database", "postgres", "343460");
+        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database", "postgres", "via");
     }
 
     public static PostDAO getInstance() throws SQLException {
@@ -95,20 +96,14 @@ public class PostDAO implements PostDAOInterface {
 
             if (resultSet.next())
             {
-                //Converting timestamp to string
-                Timestamp timestamp = resultSet.getTimestamp("postDate");
-                LocalDateTime postDateTime = timestamp.toLocalDateTime();
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                String formattedDate = postDateTime.format(formatter);
-
+                YapDate date = new YapDate(resultSet.getTimestamp("postDate"));
 
                 return new PostDTO(
                         resultSet.getString("title"),
                         resultSet.getString("body"),
                         resultSet.getInt("likeCount"),
                         resultSet.getInt("commentCount"),
-                        formattedDate,
+                        date.toString(),
                         resultSet.getInt("categoryId"),
                         resultSet.getInt("postId"),
                         resultSet.getInt("userId")
@@ -140,19 +135,14 @@ public class PostDAO implements PostDAOInterface {
 
             while (resultSet.next())
             {
-                //Converting timestamp to string
-                Timestamp timestamp = resultSet.getTimestamp("postDate");
-                LocalDateTime postDateTime = timestamp.toLocalDateTime();
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                String formattedDate = postDateTime.format(formatter);
+                YapDate date = new YapDate(resultSet.getTimestamp("postDate"));
 
                 posts.add(new PostDTO(
                         resultSet.getString("title"),
                         resultSet.getString("body"),
                         resultSet.getInt("likeCount"),
                         resultSet.getInt("commentCount"),
-                        formattedDate,
+                        date.toString(),
                         resultSet.getInt("categoryId"),
                         resultSet.getInt("postId"),
                         resultSet.getInt("userId")
@@ -185,21 +175,14 @@ public class PostDAO implements PostDAOInterface {
 
             while (resultSet.next())
             {
-                //Converting timestamp to string
-                Timestamp timestamp = resultSet.getTimestamp("postDate");
-                LocalDateTime postDateTime = timestamp.toLocalDateTime();
-
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-                String formattedDate = postDateTime.format(formatter);
-
-                System.out.println("formattedDate: " + formattedDate);
+                YapDate date = new YapDate(resultSet.getTimestamp("postDate"));
 
                 posts.add(new PostDTO(
                         resultSet.getString("title"),
                         resultSet.getString("body"),
                         resultSet.getInt("likeCount"),
                         resultSet.getInt("commentCount"),
-                        formattedDate,
+                        date.toString(),
                         resultSet.getInt("categoryId"),
                         resultSet.getInt("postId"),
                         resultSet.getInt("userId")
@@ -210,7 +193,62 @@ public class PostDAO implements PostDAOInterface {
         catch (SQLException e)
         {
             e.printStackTrace();
-            throw new SQLException("Failed to retrieve posts");
+            throw new SQLException("Failed to retrieve following posts");
+        }
+    }
+
+    @Override
+    public ArrayList<PostDTO> getAllPostsById(int userId) throws SQLException {
+        try
+        {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("SElECT * FROM yapper_database.post WHERE userid = ?");
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<PostDTO> posts = new ArrayList<>();
+
+            while (resultSet.next())
+            {
+                YapDate date = new YapDate(resultSet.getTimestamp("postDate"));
+
+                posts.add(new PostDTO(
+                        resultSet.getString("title"),
+                        resultSet.getString("body"),
+                        resultSet.getInt("likeCount"),
+                        resultSet.getInt("commentCount"),
+                        date.toString(),
+                        resultSet.getInt("categoryId"),
+                        resultSet.getInt("postId"),
+                        resultSet.getInt("userId")
+                ));
+            }
+            return posts;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            throw new SQLException("Failed to retrieve posts by id");
+        }
+    }
+
+    @Override
+    public ArrayList<PostDTO> getAllPostsByCategory(int categoryId) throws SQLException {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("");
+            statement.setInt(1, categoryId);
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<PostDTO> posts = new ArrayList<>();
+
+            while (resultSet.next())
+            {
+            }
+            return posts;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            throw new SQLException("Failed to retrieve posts by category");
         }
     }
 

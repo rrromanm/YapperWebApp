@@ -17,7 +17,7 @@ public class CommentDAO implements CommentDAOInterface{
         DriverManager.registerDriver(new org.postgresql.Driver());
     }
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database", "postgres", "343460");
+        return DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database", "postgres", "via");
     }
     public static CommentDAO getInstance() throws SQLException {
         if (instance == null) {
