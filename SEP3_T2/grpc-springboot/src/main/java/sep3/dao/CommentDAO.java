@@ -3,6 +3,7 @@ package sep3.dao;
 import sep3.dto.comment.CommentDTO;
 import sep3.dto.comment.CreateCommentDTO;
 import sep3.dto.comment.UpdateCommentDTO;
+import sep3.shared.YapDate;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -120,11 +121,11 @@ public class CommentDAO implements CommentDAOInterface{
             while (resultSet.next())
             {
 
-                String formattedDateTime = formatTimestamp(resultSet.getTimestamp("commentdate"));
+                String date = new YapDate(resultSet.getTimestamp("commentdate")).toString();
 
                 comments.add(new CommentDTO(
                     resultSet.getString("body"),
-                    formattedDateTime,
+                    date,
                     resultSet.getInt("likecount"),
                     resultSet.getInt("commentid"),
                     resultSet.getInt("userid"),
