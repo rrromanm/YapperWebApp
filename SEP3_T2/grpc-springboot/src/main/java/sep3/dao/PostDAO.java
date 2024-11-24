@@ -202,7 +202,12 @@ public class PostDAO implements PostDAOInterface {
         try
         {
             Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement("SElECT * FROM yapper_database.post WHERE userid = ?");
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT post.*, pc.categoryId\n" +
+                            "FROM yapper_database.post\n" +
+                            "LEFT JOIN yapper_database.post_category pc ON post.postId = pc.postId\n" +
+                            "WHERE post.userid = ?\n" +
+                            "ORDER BY post.postDate DESC");
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
             ArrayList<PostDTO> posts = new ArrayList<>();

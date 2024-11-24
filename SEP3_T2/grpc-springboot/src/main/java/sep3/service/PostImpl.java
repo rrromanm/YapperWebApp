@@ -129,6 +129,24 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
     }
 
     @Override
+    public void getAllPostsById(GetAllPostsByIdRequest request, StreamObserver<GetAllPostsByIdResponse> responseObserver) {
+        try
+        {
+            ArrayList<PostDTO> posts = dao.getAllPostsById(request.getUserId());
+
+            String string = gson.toJson(posts);
+            GetAllPostsByIdResponse response = GetAllPostsByIdResponse.newBuilder().setList(string).build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (Exception e)
+        {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
     public void likePost(LikePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
         try
         {

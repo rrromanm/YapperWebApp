@@ -142,6 +142,32 @@ public class PostLogic : IPostLogic
         }
     }
 
+    public async Task<List<Post>> GetPostsByUser(int userId)
+    {
+        try
+        {
+            GetAllPostsByIdResponse response = await client.GetAllPostsByIdAsync(new GetAllPostsByIdRequest
+            {
+                UserId = userId
+            });
+            string json = response.List;
+            
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<Post> posts = JsonSerializer.Deserialize<List<Post>>(json, options);
+            
+            return posts;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
     public async Task LikePost(int userId, int postId)
     {
         try

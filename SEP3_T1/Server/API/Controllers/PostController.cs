@@ -104,6 +104,20 @@ public class PostController : ControllerBase
         }
     }
     
+    [HttpGet("GetPostsByUser/{userId:int}")]
+    public async Task<ActionResult> GetPostsByUser([FromRoute] int userId)
+    {
+        try
+        {
+            var result = await _postLogic.GetPostsByUser(userId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
     [HttpPost("LikePost")]
     public async Task<ActionResult> LikePost([FromBody] LikePostDTO dto)
     {
