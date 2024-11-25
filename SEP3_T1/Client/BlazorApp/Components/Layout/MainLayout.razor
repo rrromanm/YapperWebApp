@@ -2,15 +2,22 @@
 
 @using BlazorApp.Auth
 @inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu/>
+    <div class="sidebar" style="background: linear-gradient(180deg, #7f6d57 0%, #8c7b5a 33%, #5e4e46 66%, #3e2b27 100%);">
+        <NavMenu />
     </div>
+
+
 
     <main>
         <div class="top-row px-4">
-            <a href="#" @onclick="Logout">Logout</a>
+            <AuthorizeView>
+                <Authorized>
+                    <a href="#" @onclick="Logout">Logout</a>
+                </Authorized>
+            </AuthorizeView>
         </div>
 
         <article class="content px-4">
