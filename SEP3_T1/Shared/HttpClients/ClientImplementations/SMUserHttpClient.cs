@@ -88,7 +88,7 @@ public class SMUserHttpClient : ISMUserService
 
     public async Task FollowUser(int followerId, int followedId)
     {
-        HttpResponseMessage response = await _client.GetAsync($"/Users/{followerId}/Follow/{followedId}");
+        HttpResponseMessage response = await _client.PostAsync($"/Users/{followerId}/Follow/{followedId}", null);
         if(!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();
@@ -99,7 +99,7 @@ public class SMUserHttpClient : ISMUserService
 
     public async Task UnfollowUser(int followerId, int followedId)
     {
-        HttpResponseMessage response = await _client.GetAsync($"/Users/{followerId}/Unfollow/{followedId}");
+        HttpResponseMessage response = await _client.PostAsync($"/Users/{followerId}/Unfollow/{followedId}", null);
         if(!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();

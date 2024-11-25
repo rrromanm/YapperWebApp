@@ -96,7 +96,7 @@ public class CommentHttpClient : ICommentService
 
    public async Task LikeCommentAsync(int commentId, int userId)
    {
-         HttpResponseMessage response = await _client.GetAsync($"/Comments/{commentId}/Like/{userId}");
+         HttpResponseMessage response = await _client.PostAsync($"/Comments/{commentId}/Like/{userId}", null);
          if (!response.IsSuccessStatusCode)
          {
              string e = await response.Content.ReadAsStringAsync();
@@ -105,7 +105,7 @@ public class CommentHttpClient : ICommentService
    }
    public async Task UnlikeCommentAsync(int commentId, int userId)
    {
-         HttpResponseMessage response = await _client.GetAsync($"/Comments/{commentId}/Unlike/{userId}");
+         HttpResponseMessage response = await _client.PostAsync($"/Comments/{commentId}/Unlike/{userId}", null);
          if (!response.IsSuccessStatusCode)
          {
              string e = await response.Content.ReadAsStringAsync();
