@@ -15,7 +15,7 @@ builder.Services.AddScoped(
         BaseAddress = new Uri("http://localhost:8080")
     });
 
-builder.Services.AddScoped<IUserService, SocialMediaUserHttpClient>();
+builder.Services.AddScoped<ISMUserService, SMUserHttpClient>();
 builder.Services.AddScoped<IPostService, PostHttpClient>();
 builder.Services.AddScoped<ICommentService, CommentHttpClient>();
 builder.Services.AddScoped<ICategoryService, CategoryHttpClient>();

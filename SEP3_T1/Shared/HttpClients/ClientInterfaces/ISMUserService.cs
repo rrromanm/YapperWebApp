@@ -4,7 +4,7 @@ using DTOs.User;
 namespace HttpClients.ClientInterfaces;
 using Microsoft.AspNetCore.Mvc;
 
-public interface IUserService
+public interface ISMUserService
 {
     Task CreateSMUser(CreateUserDTO dto);
     Task UpdateSMUser(UpdateUserDTO dto);

@@ -1,7 +1,7 @@
 ﻿@page "/create-user"
 @using DTOs.User
 @using HttpClients.ClientInterfaces
-@inject IUserService HttpUserService
+@inject ISMUserService HttpIsmUserService
 
 <h2>Create User</h2>
 <form @onsubmit="createUser">

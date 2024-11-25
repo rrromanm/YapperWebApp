@@ -2,7 +2,7 @@
 @using BlazorApp.Components.Components
 @using DTOs.Models
 @using HttpClients.ClientInterfaces
-@inject IUserService userService
+@inject ISMUserService userService
 @inject IPostService postService
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavMgr
@@ -94,7 +94,7 @@
 
         try
         {
-            var user = await userService.GetByUsername(username);
+            var user = await IsmUserService.GetByUsername(username);
             if (user != null)
             {
                 nickname = user.Nickname;
