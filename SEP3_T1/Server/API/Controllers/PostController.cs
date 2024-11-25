@@ -104,6 +104,48 @@ public class PostController : ControllerBase
         }
     }
     
+    [HttpGet("GetPostsByUserId/{userId:int}")]
+    public async Task<ActionResult> GetPostsByUserId([FromRoute] int userId)
+    {
+        try
+        {
+            var result = await _postLogic.GetPostsByUserId(userId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpGet("GetPostsByCategoryId/{categoryId:int}")]
+    public async Task<ActionResult> GetPostsByCategoryId([FromRoute] int categoryId)
+    {
+        try
+        {
+            var result = await _postLogic.GetPostsByCategoryId(categoryId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpGet("GetLikedPosts/{userId:int}")]
+    public async Task<ActionResult> GetLikedPosts([FromRoute] int userId)
+    {
+        try
+        {
+            var result = await _postLogic.GetLikedPosts(userId);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
     [HttpPost("LikePost")]
     public async Task<ActionResult> LikePost([FromBody] LikePostDTO dto)
     {

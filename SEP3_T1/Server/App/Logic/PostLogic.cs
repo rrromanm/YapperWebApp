@@ -105,6 +105,7 @@ public class PostLogic : IPostLogic
                 PropertyNameCaseInsensitive = true
             };
             List<Post> posts = JsonSerializer.Deserialize<List<Post>>(json, options);
+            Console.WriteLine(posts);
             return posts;
         }
         catch (Exception e)
@@ -133,6 +134,84 @@ public class PostLogic : IPostLogic
             
             return posts;
             
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<List<Post>> GetPostsByUserId(int userId)
+    {
+        try
+        {
+            GetAllPostsByIdResponse response = await client.GetAllPostsByIdAsync(new GetAllPostsByIdRequest
+            {
+                UserId = userId
+            });
+            string json = response.List;
+            
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<Post> posts = JsonSerializer.Deserialize<List<Post>>(json, options);
+            
+            return posts;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<List<Post>> GetPostsByCategoryId(int categoryId)
+    {
+        try
+        {
+            GetAllPostsByCategoryResponse response = await client.GetAllPostsByCategoryAsync(new GetAllPostsByCategoryRequest
+            {
+                CategoryId = categoryId
+            });
+            string json = response.List;
+            
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<Post> posts = JsonSerializer.Deserialize<List<Post>>(json, options);
+            
+            return posts;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<List<Post>> GetLikedPosts(int userId)
+    {
+        try
+        {
+            GetAllLikedPostsResponse response = await client.GetAllLikedPostsAsync(new GetAllLikedPostsRequest
+            {
+                UserId = userId
+            });
+            string json = response.List;
+            
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<Post> posts = JsonSerializer.Deserialize<List<Post>>(json, options);
+            
+            return posts;
         }
         catch (Exception e)
         {

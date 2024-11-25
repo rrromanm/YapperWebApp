@@ -5,11 +5,11 @@ using HttpClients.ClientInterfaces;
 
 namespace HttpClients.ClientImplementations;
 
-public class SocialMediaUserHttpClient : IUserService
+public class SMUserHttpClient : ISMUserService
 {
     private readonly HttpClient _client;
     
-    public SocialMediaUserHttpClient(HttpClient client)
+    public SMUserHttpClient(HttpClient client)
     {
         _client = client;
     }

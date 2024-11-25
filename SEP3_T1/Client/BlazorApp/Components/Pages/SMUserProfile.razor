@@ -1,6 +1,6 @@
 ﻿@page "/profiles/{username}"
 @using HttpClients.ClientInterfaces
-@inject IUserService userService
+@inject ISMUserService IsmUserService
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavMgr
 
@@ -81,7 +81,7 @@
 
         try
         {
-            var user = await userService.GetByUsername(username);
+            var user = await IsmUserService.GetByUsername(username);
             if (user != null)
             {
                 nickname = user.Nickname;
