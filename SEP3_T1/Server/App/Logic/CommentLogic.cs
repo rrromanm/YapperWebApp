@@ -154,4 +154,36 @@ public class CommentLogic : ICommentLogic
             throw new Exception("Error getting comments by user id");
         }
     }
+    public async Task LikeCommentAsync(int commentId, int userId)
+    {
+        try
+        {
+            await client.LikeCommentAsync(new LikeCommentRequest
+            {
+                CommentId = commentId,
+                UserId = userId
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error liking comment");
+        }
+    }
+    public async Task UnlikeCommentAsync(int commentId, int userId)
+    {
+        try
+        {
+            await client.UnlikeCommentAsync(new UnlikeCommentRequest
+            {
+                CommentId = commentId,
+                UserId = userId
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error unliking comment");
+        }
+    }
 }

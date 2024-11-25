@@ -12,4 +12,6 @@ public interface ICommentLogic
     Task<List<DTOs.Models.Comment>> GetAllCommentsAsync();
     Task<List<DTOs.Models.Comment>> GetCommentsByPostIdAsync(int postId);
     Task<List<DTOs.Models.Comment>> GetCommentsByUserIdAsync(int userId);
+    Task LikeCommentAsync(int commentId, int userId);
+    Task UnlikeCommentAsync(int commentId, int userId);
 }

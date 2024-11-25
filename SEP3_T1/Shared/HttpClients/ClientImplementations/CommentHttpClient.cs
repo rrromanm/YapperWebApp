@@ -93,4 +93,23 @@ public class CommentHttpClient : ICommentService
          string content = await response.Content.ReadAsStringAsync();
          return JsonSerializer.Deserialize<List<Comment>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
    }
+
+   public async Task LikeCommentAsync(int commentId, int userId)
+   {
+         HttpResponseMessage response = await _client.GetAsync($"/Comments/{commentId}/Like/{userId}");
+         if (!response.IsSuccessStatusCode)
+         {
+             string e = await response.Content.ReadAsStringAsync();
+             throw new Exception(e);
+         }
+   }
+   public async Task UnlikeCommentAsync(int commentId, int userId)
+   {
+         HttpResponseMessage response = await _client.GetAsync($"/Comments/{commentId}/Unlike/{userId}");
+         if (!response.IsSuccessStatusCode)
+         {
+             string e = await response.Content.ReadAsStringAsync();
+             throw new Exception(e);
+         }
+   }
 }

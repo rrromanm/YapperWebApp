@@ -13,4 +13,6 @@ public interface ICommentService
     Task<List<Comment>> GetAllCommentsAsync();
     Task<List<Comment>> GetCommentsByPostIdAsync(int postId);
     Task<List<Comment>> GetCommentsByUserIdAsync(int userId);
+    Task LikeCommentAsync(int commentId, int userId);
+    Task UnlikeCommentAsync(int commentId, int userId);
 }

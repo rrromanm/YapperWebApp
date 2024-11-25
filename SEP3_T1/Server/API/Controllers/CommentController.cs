@@ -105,4 +105,30 @@ public class CommentController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    [HttpPost("like/{commentId:int}/{userId:int}")]
+    public async Task<ActionResult> LikeComment(int commentId, int userId)
+    {
+        try
+        {
+            await _commentLogic.LikeCommentAsync(commentId, userId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    [HttpPost("unlike/{commentId:int}/{userId:int}")]
+    public async Task<ActionResult> UnlikeComment(int commentId, int userId)
+    {
+        try
+        {
+            await _commentLogic.UnlikeCommentAsync(commentId, userId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

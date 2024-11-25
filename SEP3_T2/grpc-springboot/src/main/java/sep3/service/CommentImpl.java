@@ -146,4 +146,34 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
       responseObserver.onError(e);
     }
   }
+  @Override
+  public void likeComment(LikeCommentRequest request, StreamObserver<CommentEmptyResponse> responseObserver)
+  {
+    try
+    {
+      dao.likeComment(request.getCommentId(), request.getUserId());
+
+      responseObserver.onNext(CommentEmptyResponse.newBuilder().build());
+      responseObserver.onCompleted();
+    }
+    catch (Exception e)
+    {
+      responseObserver.onError(e);
+    }
+  }
+  @Override
+  public void unlikeComment(UnlikeCommentRequest request, StreamObserver<CommentEmptyResponse> responseObserver)
+  {
+    try
+    {
+      dao.unlikeComment(request.getCommentId(), request.getUserId());
+
+      responseObserver.onNext(CommentEmptyResponse.newBuilder().build());
+      responseObserver.onCompleted();
+    }
+    catch (Exception e)
+    {
+      responseObserver.onError(e);
+    }
+  }
 }

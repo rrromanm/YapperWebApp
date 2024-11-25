@@ -25,6 +25,14 @@ message GetCommentsByPostRequest {
 message GetCommentsByUserRequest {
   int32 userId = 1;
 }
+message LikeCommentRequest {
+  int32 commentId = 1;
+  int32 userId = 2;
+}
+message UnlikeCommentRequest {
+  int32 commentId = 1;
+  int32 userId = 2;
+}
 
 message GetCommentResponse {
   string body = 1;
@@ -45,6 +53,7 @@ message GetCommentsByUserResponse {
 }
 
 
+
 message CommentEmptyResponse {}
 
 service CommentService {
@@ -55,4 +64,6 @@ service CommentService {
   rpc GetAllComments (EmptyGetAllCommentsRequest) returns (GetAllCommentsResponse);
   rpc GetCommentsByPost (GetCommentsByPostRequest) returns (GetCommentsByPostResponse);
   rpc GetCommentsByUser (GetCommentsByUserRequest) returns (GetCommentsByUserResponse);
+  rpc LikeComment (LikeCommentRequest) returns (CommentEmptyResponse);
+  rpc UnlikeComment (UnlikeCommentRequest) returns (CommentEmptyResponse);
 }

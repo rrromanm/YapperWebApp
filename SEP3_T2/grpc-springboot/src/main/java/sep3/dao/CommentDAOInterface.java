@@ -16,5 +16,7 @@ public interface CommentDAOInterface
     ArrayList<CommentDTO> getAllComments() throws SQLException;
     ArrayList<CommentDTO> getCommentsByPostId(int postId) throws SQLException; // including the commentDate recent to latest or based on likeCount
     ArrayList<CommentDTO> getCommentsByUserId(int userId) throws SQLException; // including the commentDate recent to latest or based on likeCount
+    void likeComment(int commentId, int userId) throws SQLException;
+    void unlikeComment(int commentId, int userId) throws SQLException;
 
 }

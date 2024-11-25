@@ -199,4 +199,37 @@ public class CommentDAO implements CommentDAOInterface{
             throw new SQLException("Failed to retrieve comments by user id");
         }
     }
+
+    @Override
+    public void likeComment(int commentId, int userId) throws SQLException
+    {
+        try{
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO liked_comment (userId, commentId) VALUES (?, ?)");
+            statement.setInt(1, userId);
+            statement.setInt(2, commentId);
+            statement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            throw new SQLException("Failed to like comment");
+        }
+    }
+
+    @Override public void unlikeComment(int commentId, int userId) throws SQLException
+    {
+        try{
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM liked_comment WHERE userId = ? AND commentId = ?");
+            statement.setInt(1, userId);
+            statement.setInt(2, commentId);
+            statement.executeUpdate();
+        }
+        catch (SQLException e)
+        {
+            throw new SQLException("Failed to unlike comment");
+        }
+
+    }
+
 }
