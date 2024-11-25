@@ -32,6 +32,10 @@ message GetAllFollowingPostsRequest {
   int32 userId = 1;
 }
 
+message GetAllPostsByIdRequest {
+  int32 userId = 1;
+}
+
 message LikePostRequest {
   int32 userId = 1;
   int32 postId = 2;
@@ -61,6 +65,10 @@ message GetAllFollowingPostsResponse {
   string list = 1;
 }
 
+message GetAllPostsByIdResponse {
+  string list = 1;
+}
+
 message PostEmptyMessage {}
 
 service PostService {
@@ -70,6 +78,7 @@ service PostService {
   rpc GetPost (GetPostRequest) returns (GetPostResponse);
   rpc GetAllPosts (EmptyGetAllPostsRequest) returns (GetAllPostsResponse);
   rpc GetAllFollowingPosts (GetAllFollowingPostsRequest) returns (GetAllFollowingPostsResponse);
+  rpc GetAllPostsById (GetAllPostsByIdRequest) returns (GetAllPostsByIdResponse);
   rpc LikePost (LikePostRequest) returns (PostEmptyMessage);
   rpc UnlikePost (UnlikePostRequest) returns (PostEmptyMessage);
 }

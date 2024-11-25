@@ -98,6 +98,7 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
             ArrayList<PostDTO> posts = dao.getAllPosts();
 
             String string = gson.toJson(posts);
+            System.out.println(string);
             GetAllPostsResponse response = GetAllPostsResponse.newBuilder().setList(string).build();
 
             responseObserver.onNext(response);
@@ -117,6 +118,24 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
 
             String string = gson.toJson(posts);
             GetAllFollowingPostsResponse response = GetAllFollowingPostsResponse.newBuilder().setList(string).build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (Exception e)
+        {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void getAllPostsById(GetAllPostsByIdRequest request, StreamObserver<GetAllPostsByIdResponse> responseObserver) {
+        try
+        {
+            ArrayList<PostDTO> posts = dao.getAllPostsById(request.getUserId());
+
+            String string = gson.toJson(posts);
+            GetAllPostsByIdResponse response = GetAllPostsByIdResponse.newBuilder().setList(string).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
