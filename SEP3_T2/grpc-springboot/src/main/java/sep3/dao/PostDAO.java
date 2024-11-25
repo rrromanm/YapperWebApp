@@ -3,7 +3,7 @@ package sep3.dao;
 import sep3.dto.post.CreatePostDTO;
 import sep3.dto.post.PostDTO;
 import sep3.dto.post.UpdatePostDTO;
-import sep3.shared.YapDate;
+import sep3.util.YapDate;
 import sep3.util.DatabaseConnectionManager;
 
 import java.sql.*;

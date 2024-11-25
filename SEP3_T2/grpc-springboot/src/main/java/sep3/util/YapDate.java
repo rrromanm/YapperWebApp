@@ -1,4 +1,4 @@
-package sep3.shared;
+package sep3.util;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
