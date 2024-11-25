@@ -1,0 +1,95 @@
+﻿@using DTOs.Models
+@using HttpClients.ClientInterfaces
+@inject NavigationManager NavigationManager
+@inject IPostService PostService
+@inject ISMUserService userService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="post-item">
+    <h3>@Post.Title</h3>
+    <p>@Post.Body</p>
+    <div class="post-meta">
+        <span>@Post.Date</span> |
+        <span>@Post.LikeCount Likes</span> |
+        <span>@Post.CommentCount Comments</span>
+    </div>
+
+    <div class="post-actions">
+        <button class="btn btn-like" @onclick="() => LikePost(Post.PostId)">
+            👍 Like
+        </button>
+
+        @if (IsCurrentUser(Post.UserId))
+        {
+            <button class="btn btn-edit" @onclick="() => EditPost(Post.PostId)">
+                ✏️ Edit
+            </button>
+        }
+
+        <button class="btn btn-comment" @onclick="() => ToggleComments(Post.PostId)">
+            💬 Comments
+        </button>
+    </div>
+
+    @if (CommentsVisibility.TryGetValue(Post.PostId, out var isVisible) && isVisible)
+    {
+        <div class="comments-section">
+            <PostComments PostId="Post.PostId" />
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public Post Post { get; set; }
+    public int CurrentUserId { get; set; }
+
+    private Dictionary<int, bool> CommentsVisibility = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userId = user.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+            CurrentUserId = int.Parse(userId);
+        }
+    }
+
+    private bool IsCurrentUser(int userId)
+    {
+        return CurrentUserId == userId;
+    }
+
+    private async Task LikePost(int postId)
+    {
+        try
+        {
+            await PostService.LikePost(CurrentUserId, postId);
+            Post = await PostService.GetPost(postId); // Fetch the updated post data
+            StateHasChanged(); // Re-render the component to reflect the updated data
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error liking post: {ex.Message}");
+        }
+    }
+
+    private void EditPost(int postId)
+    {
+        NavigationManager.NavigateTo($"/edit-post/{postId}");
+    }
+
+    private void ToggleComments(int postId)
+    {
+        if (CommentsVisibility.ContainsKey(postId))
+        {
+            CommentsVisibility[postId] = !CommentsVisibility[postId];
+        }
+        else
+        {
+            CommentsVisibility[postId] = true;
+        }
+    }
+}

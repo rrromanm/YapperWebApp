@@ -1,4 +1,4 @@
-﻿using DTOs.Models;
+using DTOs.Models;
 using DTOs.User.PostDTOs;
 
 namespace HttpClients.ClientInterfaces;

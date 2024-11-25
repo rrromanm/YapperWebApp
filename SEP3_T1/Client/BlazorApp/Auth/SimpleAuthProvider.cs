@@ -21,7 +21,7 @@ public class SimpleAuthProvider : AuthenticationStateProvider
     public async Task Login(string username, string password)
     {
         HttpResponseMessage response = await client.PostAsJsonAsync(
-            $"https://localhost:7211/login",
+            $"/login",
             new LoginRequestDTO(username, password));
     
         string content = await response.Content.ReadAsStringAsync();
@@ -57,7 +57,7 @@ public class SimpleAuthProvider : AuthenticationStateProvider
     public async Task Register(CreateUserDTO dto)
     {
         HttpResponseMessage response = await client.PostAsJsonAsync(
-            $"https://localhost:7211/register",
+            $"/register",
             dto);
 
         string content = await response.Content.ReadAsStringAsync();

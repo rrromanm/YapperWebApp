@@ -146,12 +146,12 @@ public class PostController : ControllerBase
         }
     }
     
-    [HttpPost("LikePost")]
-    public async Task<ActionResult> LikePost([FromBody] LikePostDTO dto)
+    [HttpPost("LikePost/{userId:int}/{postId:int}")]
+    public async Task<ActionResult> LikePost([FromRoute] int userId, [FromRoute] int postId)
     {
         try
         {
-            await _postLogic.LikePost(dto.UserId, dto.PostId);
+            await _postLogic.LikePost(userId, postId);
             return Ok();
         }
         catch (Exception e)
@@ -160,12 +160,12 @@ public class PostController : ControllerBase
         }
     }
     
-    [HttpPost("UnlikePost")]
-    public async Task<ActionResult> UnlikePost([FromBody] LikePostDTO dto)
+    [HttpPost("UnlikePost/{userId:int}/{postId:int}")]
+    public async Task<ActionResult> UnlikePost([FromRoute] int userId, [FromRoute] int postId)
     {
         try
         {
-            await _postLogic.UnlikePost(dto.UserId, dto.PostId);
+            await _postLogic.UnlikePost(userId, postId);
             return Ok();
         }
         catch (Exception e)
