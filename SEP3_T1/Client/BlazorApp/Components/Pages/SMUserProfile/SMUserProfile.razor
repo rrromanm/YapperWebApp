@@ -1,6 +1,9 @@
 ﻿@page "/profiles/{username}"
+@using DTOs.DTOs.Post
+@using BlazorApp.Components.Components
 @using HttpClients.ClientInterfaces
 @inject IUserService userService
+@inject IPostService postService
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavMgr
 
@@ -46,8 +49,17 @@
                 @if (showPosts)
                 {
                     <div class="posts">
-                        <!-- Render user posts here -->
-                        <p>User posts will be displayed here.</p>
+                        @if (posts != null && posts.Count > 0)
+                        {
+                            @foreach (var post in posts)
+                            {
+                                <PostComponent Post="post" />
+                            }
+                        }
+                        else
+                        {
+                            <p>No posts available.</p>
+                        }
                     </div>
                 }
                 else if (showLikedPosts)
@@ -69,8 +81,9 @@
 {
     [Parameter] public string username { get; set; }
     private string nickname;
-    private string errorMessage;
+    private string? errorMessage;
     private bool isCurrentUser;
+    private List<PostDTO> posts = new List<PostDTO>();
 
     private bool showPosts = true;
     private bool showLikedPosts = false;
@@ -88,6 +101,11 @@
                 var authState = await AuthProvider.GetAuthenticationStateAsync();
                 var currentUser = authState.User.Identity.Name;
                 isCurrentUser = currentUser == username;
+
+                if (showPosts)
+                {
+                    await loadPosts(user.Id);
+                }
             }
             else
             {
@@ -100,10 +118,27 @@
         }
     }
 
-    private void ShowPosts()
+    private async Task loadPosts(int userId)
+    {
+        try
+        {
+            posts = await postService.GetPostsByUserId(userId);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to load posts.";
+        }
+    }
+
+    private async void ShowPosts()
     {
         showPosts = true;
         showLikedPosts = false;
+        var user = await userService.GetByUsername(username);
+        if (user != null)
+        {
+            await loadPosts(user.Id);
+        }
     }
 
     private void ShowLikedPosts()

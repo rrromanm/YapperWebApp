@@ -1,0 +1,11 @@
+﻿@using DTOs.DTOs.Post
+
+<div class="post">
+    <h3>@Post.Title</h3>
+    <p>@Post.Body</p>
+    <p><small>Posted by @Post.UserId on @Post.Date</small></p>
+</div>
+
+@code {
+    [Parameter] public PostDTO Post { get; set; }
+}

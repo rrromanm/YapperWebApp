@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using DTOs.DTOs.Post;
 using DTOs.Models;
 using DTOs.User.PostDTOs;
 using HttpClients.ClientInterfaces;
@@ -43,8 +44,19 @@ public class PostHttpClient : IPostService
             throw new Exception(e);
         }
     }
-    
-    public async Task<Post> GetPost(int id)
+
+    public async Task<List<PostDTO>> GetPostsByUserId(int userId)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"https://localhost:7211/Post/GetPostsByUserId/{userId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+        return await response.Content.ReadFromJsonAsync<List<PostDTO>>();
+    }
+
+    public async Task<PostDTO> GetPost(int id)
     {
         HttpResponseMessage response = await _client.GetAsync($"/Posts/{id}");
         if (!response.IsSuccessStatusCode)
@@ -52,10 +64,10 @@ public class PostHttpClient : IPostService
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
-        return await response.Content.ReadFromJsonAsync<Post>();
+        return await response.Content.ReadFromJsonAsync<PostDTO>();
     }
     
-    public async Task<List<Post>> GetAllPosts()
+    public async Task<List<PostDTO>> GetAllPosts()
     {
         HttpResponseMessage response = await _client.GetAsync("/Posts");
         if (!response.IsSuccessStatusCode)
@@ -63,10 +75,10 @@ public class PostHttpClient : IPostService
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
-        return await response.Content.ReadFromJsonAsync<List<Post>>();
+        return await response.Content.ReadFromJsonAsync<List<PostDTO>>();
     }
     
-    public async Task<List<Post>> GetPostsByCategory(int categoryId)
+    public async Task<List<PostDTO>> GetPostsByCategory(int categoryId)
     {
         HttpResponseMessage response = await _client.GetAsync($"/Posts/Category/{categoryId}");
         
@@ -76,10 +88,10 @@ public class PostHttpClient : IPostService
             throw new Exception(e);
         }
         
-        return await response.Content.ReadFromJsonAsync<List<Post>>();
+        return await response.Content.ReadFromJsonAsync<List<PostDTO>>();
     }
     
-    public async Task<List<Post>> GetPostsByUser(int userId)
+    public async Task<List<PostDTO>> GetPostsByUser(int userId)
     {
         HttpResponseMessage response = await _client.GetAsync($"/Posts/User/{userId}");
         
@@ -89,7 +101,7 @@ public class PostHttpClient : IPostService
             throw new Exception(e);
         }
         
-        return await response.Content.ReadFromJsonAsync<List<Post>>();
+        return await response.Content.ReadFromJsonAsync<List<PostDTO>>();
     }
 }
 
