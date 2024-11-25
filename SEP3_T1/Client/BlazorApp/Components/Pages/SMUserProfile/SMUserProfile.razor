@@ -80,6 +80,7 @@
 @code
 {
     [Parameter] public string username { get; set; }
+    private int userId { get; set; }
     private string nickname;
     private string? errorMessage;
     private bool isCurrentUser;
@@ -94,10 +95,11 @@
 
         try
         {
-            var user = await IsmUserService.GetByUsername(username);
+            var user = await userService.GetByUsername(username);
             if (user != null)
             {
                 nickname = user.Nickname;
+                userId = user.Id;
                 var authState = await AuthProvider.GetAuthenticationStateAsync();
                 var currentUser = authState.User.Identity.Name;
                 isCurrentUser = currentUser == username;
@@ -127,6 +129,7 @@
         catch (Exception ex)
         {
             errorMessage = "Failed to load posts.";
+            Console.WriteLine(ex);
         }
     }
 

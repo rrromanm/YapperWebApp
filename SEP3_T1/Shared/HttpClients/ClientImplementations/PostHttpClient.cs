@@ -8,15 +8,15 @@ namespace HttpClients.ClientImplementations;
 public class PostHttpClient : IPostService
 {
     private readonly HttpClient _client;
-    
+
     public PostHttpClient(HttpClient client)
     {
         _client = client;
     }
-    
+
     public async Task CreatePost(CreatePostDTO dto)
     {
-        HttpResponseMessage response = await _client.PostAsJsonAsync("/Posts", dto);
+        HttpResponseMessage response = await _client.PostAsJsonAsync("/Post", dto);
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();
@@ -26,7 +26,7 @@ public class PostHttpClient : IPostService
 
     public async Task UpdatePost(UpdatePostDTO dto)
     {
-        HttpResponseMessage response = await _client.PutAsJsonAsync($"/Posts/{dto.PostId}", dto);
+        HttpResponseMessage response = await _client.PutAsJsonAsync($"/Post/{dto.PostId}", dto);
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();
@@ -36,111 +36,105 @@ public class PostHttpClient : IPostService
 
     public async Task DeletePost(int id)
     {
-        HttpResponseMessage response = await _client.DeleteAsync($"/Posts/{id}");
-        if(!response.IsSuccessStatusCode)
-        {
-            string e = await response.Content.ReadAsStringAsync();
-            throw new Exception(e);
-        }
-    }
-
-    public async Task<List<Post>> GetPostsByUserId(int userId)
-    {
-        HttpResponseMessage response = await _client.GetAsync($"https://localhost:7211/Post/GetPostsByUserId/{userId}");
+        HttpResponseMessage response = await _client.DeleteAsync($"/Post/{id}");
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
-        return await response.Content.ReadFromJsonAsync<List<Post>>();
     }
 
     public async Task<Post> GetPost(int id)
     {
-        HttpResponseMessage response = await _client.GetAsync($"/Posts/{id}");
+        HttpResponseMessage response = await _client.GetAsync($"/Post/{id}");
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
+
         return await response.Content.ReadFromJsonAsync<Post>();
     }
-    
+
     public async Task<List<Post>> GetAllPosts()
     {
-        HttpResponseMessage response = await _client.GetAsync("/Posts");
+        HttpResponseMessage response = await _client.GetAsync("/Post");
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
+
         return await response.Content.ReadFromJsonAsync<List<Post>>();
     }
 
-    public Task<List<Post>> GetFollowingPosts(int userId)
+    public async Task<List<Post>> GetFollowingPosts(int userId)
     {
-        HttpResponseMessage responseMessage = _client.GetAsync($"/Posts/GetFollowingPosts/{userId}").Result;
-        if (!responseMessage.IsSuccessStatusCode)
-        {
-            string e = responseMessage.Content.ReadAsStringAsync().Result;
-            throw new Exception(e);
-        }
-        return responseMessage.Content.ReadFromJsonAsync<List<Post>>();
-    }
-
-    public Task<List<Post>> GetPostsByUserId(int userId)
-    {
-        HttpResponseMessage responseMessage = _client.GetAsync($"/Posts/User/{userId}").Result;
-        if (!responseMessage.IsSuccessStatusCode)
-        {
-            string e = responseMessage.Content.ReadAsStringAsync().Result;
-            throw new Exception(e);
-        }
-        return responseMessage.Content.ReadFromJsonAsync<List<Post>>();
-    }
-
-    public Task<List<Post>> GetPostsByCategoryId(int categoryId)
-    {
-        HttpResponseMessage responseMessage = _client.GetAsync($"/Posts/Category/{categoryId}").Result;
-        if (!responseMessage.IsSuccessStatusCode)
-        {
-            string e = responseMessage.Content.ReadAsStringAsync().Result;
-            throw new Exception(e);
-        }
-        return responseMessage.Content.ReadFromJsonAsync<List<Post>>();
-    }
-
-    public Task<List<Post>> GetLikedPosts(int userId)
-    {
-        HttpResponseMessage responseMessage = _client.GetAsync($"/Posts/Liked/{userId}").Result;
-        if (!responseMessage.IsSuccessStatusCode)
-        {
-            string e = responseMessage.Content.ReadAsStringAsync().Result;
-            throw new Exception(e);
-        }
-        return responseMessage.Content.ReadFromJsonAsync<List<Post>>();
-    }
-
-    public Task LikePost(int userId, int postId)
-    {
-        HttpResponseMessage response = _client.GetAsync($"/Posts/Like/{userId}/{postId}").Result;
+        HttpResponseMessage response = await _client.GetAsync($"/Post/GetFollowingPosts/{userId}");
         if (!response.IsSuccessStatusCode)
         {
-            string e = response.Content.ReadAsStringAsync().Result;
+            string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
-        return Task.CompletedTask;
+
+        return await response.Content.ReadFromJsonAsync<List<Post>>();
     }
 
-    public Task UnlikePost(int userId, int postId)
+    public async Task<List<Post>> GetPostsByUserId(int userId)
     {
-        HttpResponseMessage response = _client.GetAsync($"/Posts/Unlike/{userId}/{postId}").Result;
+        HttpResponseMessage response = await _client.GetAsync($"/Post/GetPostsByUserId/{userId}");
         if (!response.IsSuccessStatusCode)
         {
-            string e = response.Content.ReadAsStringAsync().Result;
+            string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
-        return Task.CompletedTask;
+
+        return await response.Content.ReadFromJsonAsync<List<Post>>();
     }
+
+    public async Task<List<Post>> GetPostsByCategoryId(int categoryId)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/Post/GetPostsByCategoryId/{categoryId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+
+        return await response.Content.ReadFromJsonAsync<List<Post>>();
+    }
+
+    public async Task<List<Post>> GetLikedPosts(int userId)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/Post/GetLikedPosts/{userId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+
+        return await response.Content.ReadFromJsonAsync<List<Post>>();
+    }
+
+    public async Task LikePost(int userId, int postId)
+    {
+        HttpResponseMessage response = await _client.PostAsync($"/Post/LikePost/{userId}/{postId}", null);
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+    }
+
+    public async Task UnlikePost(int userId, int postId)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/Post/UnlikePost/{userId}/{postId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+    }
+
 }
-
+    

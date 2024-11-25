@@ -1,80 +1,78 @@
-﻿@typeparam TPost
-@using DTOs.Models
+﻿@using DTOs.Models
 @using HttpClients.ClientInterfaces
 @inject NavigationManager NavigationManager
 @inject IPostService PostService
+@inject ISMUserService userService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="post-list">
-    @foreach (var post in Posts)
+<div class="post-item">
+    <h3>@Post.Title</h3>
+    <p>@Post.Body</p>
+    <div class="post-meta">
+        <span>@Post.Date</span> |
+        <span>@Post.LikeCount Likes</span> |
+        <span>@Post.CommentCount Comments</span>
+    </div>
+
+    <div class="post-actions">
+        <button class="btn btn-like" @onclick="() => LikePost(Post.PostId)">
+            👍 Like
+        </button>
+
+        @if (IsCurrentUser(Post.UserId))
+        {
+            <button class="btn btn-edit" @onclick="() => EditPost(Post.PostId)">
+                ✏️ Edit
+            </button>
+        }
+
+        <button class="btn btn-comment" @onclick="() => ToggleComments(Post.PostId)">
+            💬 Comments
+        </button>
+    </div>
+
+    @if (CommentsVisibility.TryGetValue(Post.PostId, out var isVisible) && isVisible)
     {
-        <div class="post-item">
-            <h3>@post.Title</h3>
-            <p>@post.Body</p>
-            <div class="post-meta">
-                <span>@post.Date</span> | 
-                <span>@post.LikeCount Likes</span> | 
-                <span>@post.CommentCount Comments</span>
-            </div>
-
-            <div class="post-actions">
-                <button class="btn btn-like" @onclick="() => LikePost(post.PostId)">
-                    👍 Like
-                </button>
-
-                @if (IsCurrentUser(post.UserId))
-                {
-                    <button class="btn btn-edit" @onclick="() => EditPost(post.PostId)">
-                        ✏️ Edit
-                    </button>
-                }
-
-                <button class="btn btn-comment" @onclick="() => ToggleComments(post.PostId)">
-                    💬 Comments
-                </button>
-            </div>
-
-            @if (CommentsVisibility.TryGetValue(post.PostId, out var isVisible) && isVisible)
-            {
-                <div class="comments-section">
-                    <PostComments PostId="post.PostId" />
-                </div>
-            }
+        <div class="comments-section">
+            <PostComments PostId="Post.PostId" />
         </div>
     }
 </div>
 
 @code {
-    [Parameter] public List<Post> Posts { get; set; } = new List<Post>();
+    [Parameter] public Post Post { get; set; }
+    public int CurrentUserId { get; set; }
 
     private Dictionary<int, bool> CommentsVisibility = new();
-    private string CurrentUserId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        CurrentUserId = authState.User?.FindFirst("sub")?.Value;
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userId = user.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+            CurrentUserId = int.Parse(userId);
+        }
     }
 
     private bool IsCurrentUser(int userId)
     {
-        return CurrentUserId != null && int.Parse(CurrentUserId) == userId;
+        return CurrentUserId == userId;
     }
 
     private async Task LikePost(int postId)
     {
         try
         {
-            await PostService(int.Parse(CurrentUserId), postId);
-            var post = Posts.FirstOrDefault(p => p.PostId == postId);
-            if (post != null)
-            {
-                post.LikeCount++;
-            }
+            await PostService.LikePost(CurrentUserId, postId);
+            Post = await PostService.GetPost(postId); // Fetch the updated post data
+            StateHasChanged(); // Re-render the component to reflect the updated data
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error liking post: {ex.Message}");
+            throw new Exception($"Error liking post: {ex.Message}");
         }
     }
 

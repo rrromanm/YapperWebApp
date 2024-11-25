@@ -16,7 +16,7 @@ public class SMUserHttpClient : ISMUserService
     
     public async Task CreateSMUser(CreateUserDTO dto)
     {
-        HttpResponseMessage response = await _client.PostAsJsonAsync("/Users", dto);
+        HttpResponseMessage response = await _client.PostAsJsonAsync("/SMUser", dto);
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();
@@ -27,7 +27,7 @@ public class SMUserHttpClient : ISMUserService
     public async Task UpdateSMUser(UpdateUserDTO dto)
     {
         // Create a PATCH request
-        var request = new HttpRequestMessage(HttpMethod.Patch, "https://localhost:7211/SMUser")
+        var request = new HttpRequestMessage(HttpMethod.Patch, "/SMUser")
         {
             Content = JsonContent.Create(dto) // Use JsonContent to serialize the DTO into JSON
         };
@@ -48,7 +48,7 @@ public class SMUserHttpClient : ISMUserService
 
     public async Task DeleteSMUser(int userId)
     {
-        HttpResponseMessage response = await _client.DeleteAsync($"/Users/{userId}");
+        HttpResponseMessage response = await _client.DeleteAsync($"/SMUser/{userId}");
         if(!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();
@@ -58,7 +58,7 @@ public class SMUserHttpClient : ISMUserService
 
     public async Task<User> GetByUsername(string username)
     {
-        HttpResponseMessage response = await _client.GetAsync($"https://localhost:7211/SMUser/{username}");
+        HttpResponseMessage response = await _client.GetAsync($"/SMUser/{username}");
         if (!response.IsSuccessStatusCode)
         {
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -73,7 +73,7 @@ public class SMUserHttpClient : ISMUserService
 
     public async Task<User> GetByUserId(int userId)
     {
-        HttpResponseMessage response = await _client.GetAsync($"https://localhost:7211/SMUser/{userId}");
+        HttpResponseMessage response = await _client.GetAsync($"/SMUser/{userId}");
         if (!response.IsSuccessStatusCode)
         {
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
