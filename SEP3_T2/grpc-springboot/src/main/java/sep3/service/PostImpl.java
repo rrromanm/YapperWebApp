@@ -8,6 +8,7 @@ import sep3.dto.post.PostDTO;
 import sep3.dto.post.UpdatePostDTO;
 import yapperPost.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
@@ -136,6 +137,41 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
 
             String string = gson.toJson(posts);
             GetAllPostsByIdResponse response = GetAllPostsByIdResponse.newBuilder().setList(string).build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (Exception e)
+        {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void getAllPostsByCategory(GetAllPostsByCategoryRequest request, StreamObserver<GetAllPostsByCategoryResponse> responseObserver) {
+        try
+        {
+            ArrayList<PostDTO> posts = dao.getAllPostsByCategory(request.getCategoryId());
+
+            String string = gson.toJson(posts);
+            GetAllPostsByCategoryResponse response = GetAllPostsByCategoryResponse.newBuilder().setList(string).build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (Exception e)
+        {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void getAllLikedPosts(GetAllLikedPostsRequest request, StreamObserver<GetAllLikedPostsResponse> responseObserver) {
+        try {
+            ArrayList<PostDTO> posts = dao.getAllLikedPosts(request.getUserId());
+
+            String string = gson.toJson(posts);
+            GetAllLikedPostsResponse response = GetAllLikedPostsResponse.newBuilder().setList(string).build();
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();

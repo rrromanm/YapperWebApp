@@ -240,13 +240,69 @@ public class PostDAO implements PostDAOInterface {
     public ArrayList<PostDTO> getAllPostsByCategory(int categoryId) throws SQLException {
         try {
             Connection connection = getConnection();
-            PreparedStatement statement = connection.prepareStatement("");
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT p.*, pc.categoryId\n" +
+                    "FROM post p\n" +
+                    "JOIN post_category pc ON p.postId = pc.postId\n" +
+                    "WHERE pc.categoryId = ?\n" +
+                    "ORDER BY p.postDate DESC;");
             statement.setInt(1, categoryId);
             ResultSet resultSet = statement.executeQuery();
             ArrayList<PostDTO> posts = new ArrayList<>();
 
             while (resultSet.next())
             {
+                YapDate date = new YapDate(resultSet.getTimestamp("postDate"));
+
+                posts.add(new PostDTO(
+                        resultSet.getString("title"),
+                        resultSet.getString("body"),
+                        resultSet.getInt("likeCount"),
+                        resultSet.getInt("commentCount"),
+                        date.toString(),
+                        resultSet.getInt("categoryId"),
+                        resultSet.getInt("postId"),
+                        resultSet.getInt("userId")
+                ));
+            }
+            return posts;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            throw new SQLException("Failed to retrieve posts by category");
+        }
+    }
+
+    @Override
+    public ArrayList<PostDTO> getAllLikedPosts(int userId) throws SQLException {
+        try {
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT p.*, pc.categoryId\n" +
+                    "FROM liked_post lp\n" +
+                    "JOIN post p ON lp.postId = p.postId\n" +
+                    "LEFT JOIN post_category pc ON p.postId = pc.postId\n" +
+                    "WHERE lp.userId = ?\n" +
+                    "ORDER BY p.postDate DESC;");
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<PostDTO> posts = new ArrayList<>();
+
+            while (resultSet.next())
+            {
+                YapDate date = new YapDate(resultSet.getTimestamp("postDate"));
+
+                posts.add(new PostDTO(
+                        resultSet.getString("title"),
+                        resultSet.getString("body"),
+                        resultSet.getInt("likeCount"),
+                        resultSet.getInt("commentCount"),
+                        date.toString(),
+                        resultSet.getInt("categoryId"),
+                        resultSet.getInt("postId"),
+                        resultSet.getInt("userId")
+                ));
             }
             return posts;
         }

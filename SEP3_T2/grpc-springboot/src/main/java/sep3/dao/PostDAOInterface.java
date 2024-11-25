@@ -17,6 +17,7 @@ public interface PostDAOInterface {
     ArrayList<PostDTO> getAllFollowingPosts(int userId) throws SQLException;
     ArrayList<PostDTO> getAllPostsById(int userId) throws SQLException;
     ArrayList<PostDTO> getAllPostsByCategory(int categoryId) throws SQLException;
+    ArrayList<PostDTO> getAllLikedPosts(int userId) throws SQLException;
     void likePost(int userId, int postId) throws SQLException;
     void unlikePost(int userId, int postId) throws SQLException;
 }

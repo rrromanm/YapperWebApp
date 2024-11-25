@@ -11,7 +11,9 @@ public interface IPostLogic
     Task<Post> GetPost(int postId);
     Task<List<Post>> GetAllPosts();
     Task<List<Post>> GetFollowingPosts(int userId);
-    Task<List<Post>> GetPostsByUser(int userId);
+    Task<List<Post>> GetPostsByUserId(int userId);
+    Task<List<Post>> GetPostsByCategoryId(int categoryId);
+    Task<List<Post>> GetLikedPosts(int userId);
     Task LikePost(int userId, int postId);
     Task UnlikePost(int userId, int postId);
 }
