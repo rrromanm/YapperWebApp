@@ -3,7 +3,7 @@
 @using HttpClients.ClientInterfaces
 @inject NavigationManager NavMgr
 @inject AuthenticationStateProvider AuthProvider
-@inject IUserService userService
+@inject ISMUserService IsmUserService
 
 @attribute [Authorize]
 
@@ -70,7 +70,7 @@
     {
         try
         {
-            var user = await userService.GetByUserId(userId);
+            var user = await IsmUserService.GetByUserId(userId);
             if (user != null)
             {
                 this.userId = user.Id;
@@ -120,7 +120,7 @@
         Console.WriteLine($"Sending UpdateUserDTO: UserId = {updateUserDto.UserId}, Email = {updateUserDto.Email}, Nickname = {updateUserDto.Nickname}, Password = {updateUserDto.Password}");
 
         // Call the user service to update the profile
-        await userService.UpdateSMUser(updateUserDto);
+        await IsmUserService.UpdateSMUser(updateUserDto);
 
         Console.WriteLine("Profile updated successfully");
 
