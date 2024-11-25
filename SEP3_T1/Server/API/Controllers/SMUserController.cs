@@ -114,6 +114,32 @@ public class SMUserController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    [HttpPost("{followerId:int}/Follow/{followedId:int}")]
+    public async Task<ActionResult> FollowUser([FromRoute] int followerId, [FromRoute] int followedId)
+    {
+        try
+        {
+            await _smUserLogic.FollowUser(followerId, followedId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    [HttpPost("{followerId:int}/Unfollow/{followedId:int}")]
+    public async Task<ActionResult> UnfollowUser([FromRoute] int followerId, [FromRoute] int followedId)
+    {
+        try
+        {
+            await _smUserLogic.UnfollowUser(followerId, followedId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
     
     
 }

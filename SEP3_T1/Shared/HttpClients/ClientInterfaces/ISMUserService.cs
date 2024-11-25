@@ -11,4 +11,6 @@ public interface ISMUserService
     Task DeleteSMUser(int accountId);
     Task<User> GetByUsername(string username);
     Task<User> GetByUserId(int userId);
+    Task FollowUser(int followerId, int followedId);
+    Task UnfollowUser(int followerId, int followedId);
 }

@@ -15,4 +15,6 @@ public interface SMUserDAOInterface
     ArrayList<SMUserDTO> getAllUsers() throws SQLException;
     SMUserDTO getUserByUsername(String username) throws SQLException;
     SMUserDTO getUserById(int id) throws SQLException;
+    void followUser(int followerId, int followingId) throws SQLException;
+    void unfollowUser(int followerId, int followingId) throws SQLException;
 }

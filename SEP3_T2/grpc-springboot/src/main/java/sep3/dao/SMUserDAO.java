@@ -172,5 +172,34 @@ public class SMUserDAO implements SMUserDAOInterface {
             throw new SQLException("Failed to get all users");
         }
     }
+    @Override public void followUser(int followerId, int followedId) throws SQLException
+    {
+        try{
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO follows (followerId, followedId) VALUES (?, ?)");
+            statement.setInt(1, followerId);
+            statement.setInt(2, followedId);
+            statement.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("Failed to follow user");
+        }
+
+    }
+
+    @Override public void unfollowUser(int followerId, int followedId)
+        throws SQLException
+    {
+        try{
+            Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM follows WHERE followerId = ? AND followedId = ?");
+            statement.setInt(1, followerId);
+            statement.setInt(2, followedId);
+            statement.executeUpdate();
+        }
+        catch (SQLException e){
+            throw new SQLException("Failed to unfollow user");
+        }
+    }
 
 }

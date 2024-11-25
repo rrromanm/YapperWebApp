@@ -14,4 +14,6 @@ public interface ISMUserLogic
     Task<List<User>> GetAllUsers();
     Task<User> GetByUsernameAsync(string username);
     Task<User> GetByIdAsync(int userId); // Add this method
+    Task FollowUser(int followerId, int followedId);
+    Task UnfollowUser(int followerId, int followedId);
 }

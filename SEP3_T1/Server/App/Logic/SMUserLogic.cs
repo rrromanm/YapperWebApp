@@ -5,6 +5,7 @@ using DTOs.User;
 using Grpc.Net.Client;
 using GrpcClient;
 using Microsoft.AspNetCore.Mvc;
+using SocialMediaUser;
 
 namespace App.Logic;
 
@@ -164,4 +165,37 @@ public class SMUserLogic : ISMUserLogic
         }
     }
 
+    public async Task FollowUser(int followerId, int followedId)
+    {
+        try
+        {
+            await client.FollowUserAsync(new FollowUserRequest
+            {
+                FollowerId = followerId,
+                FollowedId = followedId
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error following user");
+        }
+    }
+
+    public async Task UnfollowUser(int followerId, int followedId)
+    {
+        try
+        {
+            await client.UnfollowUserAsync(new UnfollowUserRequest
+            {
+                FollowerId = followerId,
+                FollowedId = followedId
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error unfollowing user");
+        }
+    }
 }

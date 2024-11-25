@@ -46,6 +46,14 @@ message UpdateSMUserPasswordRequest {
   int32 id = 1;
   string password = 2;
 }
+message FollowUserRequest {
+  int32 followerId = 1;
+  int32 followedId = 2;
+}
+message UnfollowUserRequest {
+  int32 followerId = 1;
+  int32 followedId = 2;
+}
 
 
 //Responses
@@ -74,4 +82,6 @@ service SMUserService {
   rpc GetAllSMUsers (GetAllUsersRequest) returns (GetAllUsersResponse);
   rpc GetByUserName (GetSMUserRequest) returns (SMUserResponse);
   rpc GetByID (GetSMUserRequest) returns (SMUserResponse);
+  rpc FollowUser (FollowUserRequest) returns (SMUserEmptyResponse);
+  rpc UnfollowUser (UnfollowUserRequest) returns (SMUserEmptyResponse);
 }

@@ -85,4 +85,26 @@ public class SMUserHttpClient : ISMUserService
         }
         return await response.Content.ReadFromJsonAsync<User>();
     }
+
+    public async Task FollowUser(int followerId, int followedId)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/Users/{followerId}/Follow/{followedId}");
+        if(!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+        
+    }
+
+    public async Task UnfollowUser(int followerId, int followedId)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/Users/{followerId}/Unfollow/{followedId}");
+        if(!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+        
+    }
 }
