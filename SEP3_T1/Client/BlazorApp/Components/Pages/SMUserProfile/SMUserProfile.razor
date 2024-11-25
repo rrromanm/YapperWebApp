@@ -1,6 +1,6 @@
 ﻿@page "/profiles/{username}"
-@using DTOs.DTOs.Post
 @using BlazorApp.Components.Components
+@using DTOs.Models
 @using HttpClients.ClientInterfaces
 @inject IUserService userService
 @inject IPostService postService
@@ -83,7 +83,7 @@
     private string nickname;
     private string? errorMessage;
     private bool isCurrentUser;
-    private List<PostDTO> posts = new List<PostDTO>();
+    private List<Post> posts = new List<Post>();
 
     private bool showPosts = true;
     private bool showLikedPosts = false;

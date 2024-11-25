@@ -1,11 +1,97 @@
-﻿@using DTOs.DTOs.Post
+﻿@typeparam TPost
+@using DTOs.Models
+@using HttpClients.ClientInterfaces
+@inject NavigationManager NavigationManager
+@inject IPostService PostService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="post">
-    <h3>@Post.Title</h3>
-    <p>@Post.Body</p>
-    <p><small>Posted by @Post.UserId on @Post.Date</small></p>
+<div class="post-list">
+    @foreach (var post in Posts)
+    {
+        <div class="post-item">
+            <h3>@post.Title</h3>
+            <p>@post.Body</p>
+            <div class="post-meta">
+                <span>@post.Date</span> | 
+                <span>@post.LikeCount Likes</span> | 
+                <span>@post.CommentCount Comments</span>
+            </div>
+
+            <div class="post-actions">
+                <button class="btn btn-like" @onclick="() => LikePost(post.PostId)">
+                    👍 Like
+                </button>
+
+                @if (IsCurrentUser(post.UserId))
+                {
+                    <button class="btn btn-edit" @onclick="() => EditPost(post.PostId)">
+                        ✏️ Edit
+                    </button>
+                }
+
+                <button class="btn btn-comment" @onclick="() => ToggleComments(post.PostId)">
+                    💬 Comments
+                </button>
+            </div>
+
+            @if (CommentsVisibility.TryGetValue(post.PostId, out var isVisible) && isVisible)
+            {
+                <div class="comments-section">
+                    <PostComments PostId="post.PostId" />
+                </div>
+            }
+        </div>
+    }
 </div>
 
 @code {
-    [Parameter] public PostDTO Post { get; set; }
+    [Parameter] public List<Post> Posts { get; set; } = new List<Post>();
+
+    private Dictionary<int, bool> CommentsVisibility = new();
+    private string CurrentUserId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        CurrentUserId = authState.User?.FindFirst("sub")?.Value;
+    }
+
+    private bool IsCurrentUser(int userId)
+    {
+        return CurrentUserId != null && int.Parse(CurrentUserId) == userId;
+    }
+
+    private async Task LikePost(int postId)
+    {
+        try
+        {
+            await PostService(int.Parse(CurrentUserId), postId);
+            var post = Posts.FirstOrDefault(p => p.PostId == postId);
+            if (post != null)
+            {
+                post.LikeCount++;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error liking post: {ex.Message}");
+        }
+    }
+
+    private void EditPost(int postId)
+    {
+        NavigationManager.NavigateTo($"/edit-post/{postId}");
+    }
+
+    private void ToggleComments(int postId)
+    {
+        if (CommentsVisibility.ContainsKey(postId))
+        {
+            CommentsVisibility[postId] = !CommentsVisibility[postId];
+        }
+        else
+        {
+            CommentsVisibility[postId] = true;
+        }
+    }
 }
