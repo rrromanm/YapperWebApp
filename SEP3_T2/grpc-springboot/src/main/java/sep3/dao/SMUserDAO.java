@@ -89,17 +89,45 @@ public class SMUserDAO implements SMUserDAOInterface {
 
     public SMUserDTO getUserByUsername(String username) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM yapper_database.social_media_user WHERE username = ?");
-            statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery();
+            PreparedStatement userStatement = connection.prepareStatement(
+                    "SELECT * FROM yapper_database.social_media_user WHERE username = ?"
+            );
+            userStatement.setString(1, username);
+            ResultSet userResultSet = userStatement.executeQuery();
 
-            if (resultSet.next()) {
+            if (userResultSet.next()) {
+                int userId = userResultSet.getInt("userid");
+
+                // Query to count followers
+                PreparedStatement followersStatement = connection.prepareStatement(
+                        "SELECT COUNT(*) AS followersCount FROM yapper_database.follows WHERE followedid = ?"
+                );
+                followersStatement.setInt(1, userId);
+                ResultSet followersResultSet = followersStatement.executeQuery();
+                int followersCount = 0;
+                if (followersResultSet.next()) {
+                    followersCount = followersResultSet.getInt("followersCount");
+                }
+
+                // Query to count followings
+                PreparedStatement followingsStatement = connection.prepareStatement(
+                        "SELECT COUNT(*) AS followingCount FROM yapper_database.follows WHERE followerid = ?"
+                );
+                followingsStatement.setInt(1, userId);
+                ResultSet followingsResultSet = followingsStatement.executeQuery();
+                int followingCount = 0;
+                if (followingsResultSet.next()) {
+                    followingCount = followingsResultSet.getInt("followingCount");
+                }
+
                 return new SMUserDTO(
-                        resultSet.getInt("userid"),
-                        resultSet.getString("username"),
-                        resultSet.getString("nickname"),
-                        resultSet.getString("password"),
-                        resultSet.getString("email")
+                        userId,
+                        userResultSet.getString("username"),
+                        userResultSet.getString("nickname"),
+                        userResultSet.getString("password"),
+                        userResultSet.getString("email"),
+                        followersCount,
+                        followingCount
                 );
             } else {
                 throw new SQLException("User not found");
@@ -113,17 +141,45 @@ public class SMUserDAO implements SMUserDAOInterface {
     @Override
     public SMUserDTO getUserById(int id) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM yapper_database.social_media_user WHERE userid = ?");
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
+            // Query to get user details
+            PreparedStatement userStatement = connection.prepareStatement(
+                    "SELECT * FROM yapper_database.social_media_user WHERE userid = ?"
+            );
+            userStatement.setInt(1, id);
+            ResultSet userResultSet = userStatement.executeQuery();
 
-            if (resultSet.next()) {
+            if (userResultSet.next()) {
+                // Query to count followers
+                PreparedStatement followersStatement = connection.prepareStatement(
+                        "SELECT COUNT(*) AS followersCount FROM yapper_database.follows WHERE followedid = ?"
+                );
+                followersStatement.setInt(1, id);
+                ResultSet followersResultSet = followersStatement.executeQuery();
+                int followersCount = 0;
+                if (followersResultSet.next()) {
+                    followersCount = followersResultSet.getInt("followersCount");
+                }
+
+                // Query to count followings
+                PreparedStatement followingsStatement = connection.prepareStatement(
+                        "SELECT COUNT(*) AS followingCount FROM yapper_database.follows WHERE followerid = ?"
+                );
+                followingsStatement.setInt(1, id);
+                ResultSet followingsResultSet = followingsStatement.executeQuery();
+                int followingCount = 0;
+                if (followingsResultSet.next()) {
+                    followingCount = followingsResultSet.getInt("followingCount");
+                }
+
+                // Return SMUserDTO with additional counts
                 return new SMUserDTO(
-                        resultSet.getInt("userid"),
-                        resultSet.getString("username"),
-                        resultSet.getString("nickname"),
-                        resultSet.getString("password"),
-                        resultSet.getString("email")
+                        userResultSet.getInt("userid"),
+                        userResultSet.getString("username"),
+                        userResultSet.getString("nickname"),
+                        userResultSet.getString("password"),
+                        userResultSet.getString("email"),
+                        followersCount,
+                        followingCount
                 );
             } else {
                 throw new SQLException("User not found");
@@ -137,17 +193,43 @@ public class SMUserDAO implements SMUserDAOInterface {
     @Override
     public ArrayList<SMUserDTO> getAllUsers() throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM yapper_database.social_media_user");
-            ResultSet resultSet = statement.executeQuery();
+            PreparedStatement userStatement = connection.prepareStatement(
+                    "SELECT * FROM yapper_database.social_media_user"
+            );
+            ResultSet userResultSet = userStatement.executeQuery();
             ArrayList<SMUserDTO> users = new ArrayList<>();
 
-            while (resultSet.next()) {
+            while (userResultSet.next()) {
+                int userId = userResultSet.getInt("userid");
+
+                PreparedStatement followersStatement = connection.prepareStatement(
+                        "SELECT COUNT(*) AS followersCount FROM yapper_database.follows WHERE followedid = ?"
+                );
+                followersStatement.setInt(1, userId);
+                ResultSet followersResultSet = followersStatement.executeQuery();
+                int followersCount = 0;
+                if (followersResultSet.next()) {
+                    followersCount = followersResultSet.getInt("followersCount");
+                }
+
+                PreparedStatement followingsStatement = connection.prepareStatement(
+                        "SELECT COUNT(*) AS followingCount FROM yapper_database.follows WHERE followerid = ?"
+                );
+                followingsStatement.setInt(1, userId);
+                ResultSet followingsResultSet = followingsStatement.executeQuery();
+                int followingCount = 0;
+                if (followingsResultSet.next()) {
+                    followingCount = followingsResultSet.getInt("followingCount");
+                }
+
                 users.add(new SMUserDTO(
-                        resultSet.getInt("userid"),
-                        resultSet.getString("username"),
-                        resultSet.getString("nickname"),
-                        resultSet.getString("password"),
-                        resultSet.getString("email")
+                        userId,
+                        userResultSet.getString("username"),
+                        userResultSet.getString("nickname"),
+                        userResultSet.getString("password"),
+                        userResultSet.getString("email"),
+                        followersCount,
+                        followingCount
                 ));
             }
             return users;
@@ -156,6 +238,7 @@ public class SMUserDAO implements SMUserDAOInterface {
             throw new SQLException("Failed to get all users");
         }
     }
+
     @Override public void followUser(int followerId, int followedId) throws SQLException
     {
         try{

@@ -1,1 +1,62 @@
-﻿
+﻿/* Custom styles for the post component */
+.custom-card {
+    background-color: #BDB19A;
+    border: 1px solid #A79078;
+    border-radius: 8px;
+    color: #563D39;
+}
+
+.card-title {
+    color: #563D39;
+    font-weight: bold;
+}
+
+.card-text {
+    color: #74655E;
+}
+
+.profile-icon {
+    color: #563D39;
+}
+
+.btn-primary {
+    background-color: #A79078;
+    border-color: #A79078;
+    color: #FFFFFF;
+}
+
+.btn-outline-primary {
+    border-color: #A79078;
+    color: #A79078;
+}
+
+.btn-outline-primary:hover {
+    background-color: #A79078;
+    color: #FFFFFF;
+}
+
+.btn-outline-secondary {
+    border-color: #74655E;
+    color: #74655E;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #74655E;
+    color: #FFFFFF;
+}
+
+.btn-outline-danger {
+    border-color: #563D39;
+    color: #563D39;
+}
+
+.btn-outline-danger:hover {
+    background-color: #563D39;
+    color: #FFFFFF;
+}
+
+.comments-section {
+    background-color: #F7F3EF;
+    padding: 15px;
+    border-radius: 8px;
+}

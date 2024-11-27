@@ -103,12 +103,15 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         try {
             SMUserDTO user = dao.getUserByUsername(request.getUsername());
             SMUserResponse response = SMUserResponse.newBuilder()
-                .setId(user.getId())
-                .setEmail(user.getEmail())
-                .setUsername(user.getUsername())
-                .setNickname(user.getNickname())
-                .setPassword(user.getPassword())
-                .build();
+                    .setId(user.getId())
+                    .setEmail(user.getEmail())
+                    .setUsername(user.getUsername())
+                    .setNickname(user.getNickname())
+                    .setPassword(user.getPassword())
+                    .setFollowersCount(user.getFollowerCount()) // Assuming SMUserDTO has these fields
+                    .setFollowingCount(user.getFollowingCount()) // Assuming SMUserDTO has these fields
+                    .build();
+
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
@@ -121,12 +124,15 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         try {
             SMUserDTO userDTO = dao.getUserById(request.getId());
             SMUserResponse response = SMUserResponse.newBuilder()
-                .setId(userDTO.getId())
-                .setUsername(userDTO.getUsername())
-                .setNickname(userDTO.getNickname())
-                .setPassword(userDTO.getPassword())
-                .setEmail(userDTO.getEmail())
-                .build();
+                    .setId(userDTO.getId())
+                    .setUsername(userDTO.getUsername())
+                    .setNickname(userDTO.getNickname())
+                    .setPassword(userDTO.getPassword())
+                    .setEmail(userDTO.getEmail())
+                    .setFollowersCount(userDTO.getFollowerCount()) // Assuming SMUserDTO has these fields
+                    .setFollowingCount(userDTO.getFollowingCount()) // Assuming SMUserDTO has these fields
+                    .build();
+
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         }

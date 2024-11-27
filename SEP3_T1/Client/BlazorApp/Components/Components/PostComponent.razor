@@ -5,35 +5,55 @@
 @inject ISMUserService userService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="post-item">
-    <h3>@Post.Title</h3>
-    <p>@Post.Body</p>
-    <div class="post-meta">
-        <span>@Post.Date</span> |
-        <span>@Post.LikeCount Likes</span> |
-        <span>@Post.CommentCount Comments</span>
+<div class="post-item card my-3 custom-card">
+    <div class="card-body">
+        <!-- Header Section -->
+        <div class="d-flex align-items-center mb-3">
+            <i class="bi bi-person-circle fs-3 me-2 profile-icon"></i>
+            <div>
+                <span class="fw-bold">@Post.UserId</span> <br />
+                <small class="text-muted">@Post.Date</small>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h5 class="card-title">@Post.Title</h5>
+
+        <!-- Body -->
+        <p class="card-text">@Post.Body</p>
+
+        <!-- Actions Section -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                @* <button class="btn btn-sm @LikeButtonClass" @onclick="() => LikePost(Post.PostId)"> *@
+                @*     <i class="@LikeIconClass"></i> @LikeText (@Post.LikeCount) *@
+                @* </button> *@
+                <button class="btn btn-sm btn-outline-secondary" @onclick="() => ToggleComments(Post.PostId)">
+                    <i class="bi bi-chat"></i> Comment (@Post.CommentCount)
+                </button>
+            </div>
+
+            <div>
+                @if (IsCurrentUser(Post.UserId))
+                {
+                    <button class="btn btn-sm btn-outline-primary" @onclick="() => EditPost(Post.PostId)">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-sm btn-outline-danger" @onclick="() => ReportPost(Post.PostId)">
+                        <i class="bi bi-flag"></i> Report
+                    </button>
+                }
+            </div>
+        </div>
     </div>
 
-    <div class="post-actions">
-        <button class="btn btn-like" @onclick="() => LikePost(Post.PostId)">
-            👍 Like
-        </button>
-
-        @if (IsCurrentUser(Post.UserId))
-        {
-            <button class="btn btn-edit" @onclick="() => EditPost(Post.PostId)">
-                ✏️ Edit
-            </button>
-        }
-
-        <button class="btn btn-comment" @onclick="() => ToggleComments(Post.PostId)">
-            💬 Comments
-        </button>
-    </div>
-
+    <!-- Comments Section -->
     @if (CommentsVisibility.TryGetValue(Post.PostId, out var isVisible) && isVisible)
     {
-        <div class="comments-section">
+        <div class="comments-section border-top mt-3 pt-3">
             <PostComments PostId="Post.PostId" />
         </div>
     }
@@ -62,6 +82,10 @@
         return CurrentUserId == userId;
     }
 
+    // private string LikeText => Post.UserLiked ? "Unlike" : "Like";
+    // private string LikeIconClass => Post.UserLiked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up";
+    // private string LikeButtonClass => Post.UserLiked ? "btn-primary" : "btn-outline-primary";
+
     private async Task LikePost(int postId)
     {
         try
@@ -79,6 +103,12 @@
     private void EditPost(int postId)
     {
         NavigationManager.NavigateTo($"/edit-post/{postId}");
+    }
+
+    private void ReportPost(int postId)
+    {
+        // Handle report post logic (e.g., show a confirmation modal or call a service)
+        Console.WriteLine($"Post {postId} reported by user {CurrentUserId}");
     }
 
     private void ToggleComments(int postId)
