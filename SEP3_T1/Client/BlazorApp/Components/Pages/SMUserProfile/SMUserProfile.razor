@@ -33,8 +33,8 @@
                                     }
                                 </div>
                             </div>
-                            <p>Followers: 100</p>
-                            <p>Following: 50</p>
+                            <p>Followers: @followersCount</p>
+                            <p>Following: @followingCount</p>
                         </div>
                     </div>
                     <p class="username">@username</p>
@@ -82,6 +82,8 @@
     [Parameter] public string username { get; set; }
     private int userId { get; set; }
     private string nickname;
+    private int followersCount;
+    private int followingCount;
     private string? errorMessage;
     private bool isCurrentUser;
     private List<Post> posts = new List<Post>();
@@ -100,6 +102,8 @@
             {
                 nickname = user.Nickname;
                 userId = user.Id;
+                followersCount = user.followersCount;
+                followingCount = user.followingCount;
                 var authState = await AuthProvider.GetAuthenticationStateAsync();
                 var currentUser = authState.User.Identity.Name;
                 isCurrentUser = currentUser == username;

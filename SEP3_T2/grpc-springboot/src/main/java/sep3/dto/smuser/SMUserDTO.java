@@ -8,12 +8,17 @@ public class SMUserDTO
     private String password;
     private String email;
 
-    public SMUserDTO(int id, String username, String nickname, String password, String email) {
+    private int followerCount;
+    private int followingCount;
+
+    public SMUserDTO(int id, String username, String nickname, String password, String email, int followerCount, int followingCount) {
         this.id = id;
         this.username = username;
         this.nickname = nickname;
         this.password = password;
         this.email = email;
+        this.followerCount = followerCount;
+        this.followingCount = followingCount;
     }
 
     public int getId() {
@@ -34,5 +39,13 @@ public class SMUserDTO
 
     public String getEmail() {
         return email;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
+    }
+
+    public int getFollowerCount() {
+        return followerCount;
     }
 }

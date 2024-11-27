@@ -142,7 +142,7 @@ public class SMUserLogic : ISMUserLogic
             {
                 Username = userName
             });
-            User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id);
+            User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id, response.FollowersCount, response.FollowingCount);
             return user;
     }
 
@@ -154,7 +154,7 @@ public class SMUserLogic : ISMUserLogic
             {
                 Id = userId
             });
-            User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id);
+            User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id, response.FollowersCount, response.FollowingCount);
             return user;
         }
         catch (Exception e)

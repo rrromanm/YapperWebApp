@@ -59,6 +59,8 @@ message SMUserResponse {
   string username = 3;
   string nickname = 4;
   string password = 5;
+  int32 followersCount = 6;
+  int32 followingCount = 7;
 }
 
 message SMUserEmptyResponse {

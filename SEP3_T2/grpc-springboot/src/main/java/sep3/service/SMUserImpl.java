@@ -90,13 +90,18 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
     public void getByUserName(GetSMUserRequest request, StreamObserver<SMUserResponse> responseObserver) {
         try {
             SMUserDTO user = dao.getUserByUsername(request.getUsername());
+
+            // Prepare response with follower and following counts
             SMUserResponse response = SMUserResponse.newBuilder()
                     .setId(user.getId())
                     .setEmail(user.getEmail())
                     .setUsername(user.getUsername())
                     .setNickname(user.getNickname())
                     .setPassword(user.getPassword())
+                    .setFollowersCount(user.getFollowerCount()) // Assuming SMUserDTO has these fields
+                    .setFollowingCount(user.getFollowingCount()) // Assuming SMUserDTO has these fields
                     .build();
+
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
@@ -104,24 +109,30 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+
     @Override
     public void getByID(GetSMUserRequest request, StreamObserver<SMUserResponse> responseObserver) {
         try {
             SMUserDTO userDTO = dao.getUserById(request.getId());
+
+            // Prepare response with follower and following counts
             SMUserResponse response = SMUserResponse.newBuilder()
                     .setId(userDTO.getId())
                     .setUsername(userDTO.getUsername())
                     .setNickname(userDTO.getNickname())
                     .setPassword(userDTO.getPassword())
                     .setEmail(userDTO.getEmail())
+                    .setFollowersCount(userDTO.getFollowerCount()) // Assuming SMUserDTO has these fields
+                    .setFollowingCount(userDTO.getFollowingCount()) // Assuming SMUserDTO has these fields
                     .build();
+
             responseObserver.onNext(response);
             responseObserver.onCompleted();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             responseObserver.onError(e);
         }
     }
+
 
     @Override
     public void getAllSMUsers(GetAllUsersRequest request, StreamObserver<GetAllUsersResponse> responseObserver) {
