@@ -4,15 +4,15 @@ public class UpdatePostDTO
 {
     public int PostId { get; set; }
     public string Title { get; set; }
-    public string Content { get; set; }
+    public string Body { get; set; }
     public int AccountId { get; set; }
     public int CategoryId { get; set; }
     
-    public UpdatePostDTO(int postId, string title, string content, int accountId, int categoryId)
+    public UpdatePostDTO(int postId, string title, string body, int accountId, int categoryId)
     {
         PostId = postId;
         Title = title;
-        Content = content;
+        Body = body;
         AccountId = accountId;
         CategoryId = categoryId;
     }

@@ -24,7 +24,7 @@ public class PostLogic : IPostLogic
             await client.CreatePostAsync(new CreatePostRequest
             {
                 Title = dto.Title,
-                Content = dto.Content,
+                Body = dto.Body,
                 AccountId = dto.AccountId,
                 CategoryId = dto.CategoryId
             });
@@ -44,7 +44,7 @@ public class PostLogic : IPostLogic
             {
                 PostId = dto.PostId,
                 Title = dto.Title,
-                Content = dto.Content,
+                Body = dto.Body,
                 CategoryId = dto.CategoryId
             });
         }

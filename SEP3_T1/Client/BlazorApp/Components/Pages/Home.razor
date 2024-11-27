@@ -1,6 +1,10 @@
 ﻿@page "/"
+@using DTOs.Models
+@using DTOs.User.PostDTOs
+@using HttpClients.ClientInterfaces
 @inject NavigationManager NavMgr
 @inject AuthenticationStateProvider AuthProvider
+@inject IPostService PostService
 
 <PageTitle>Home</PageTitle>
 
@@ -10,6 +14,19 @@
     <Authorized>
         <p>Hello, @context.User.Identity.Name!</p>
         <p>You are logged in.</p>
+
+        <div>
+            <h2>Create a Post</h2>
+                <div>
+                    <label for="title">Title:</label>
+                    <InputText id="title" @bind-Value="title" />
+                </div>
+                <div>
+                    <label for="body">Body:</label>
+                    <InputTextArea id="body" @bind-Value="body" />
+                </div>
+                <button type="submit" @onclick="HandleValidSubmit" >Submit</button>
+        </div>
     </Authorized>
     <NotAuthorized>
         <p>You are not logged in.</p>
@@ -18,6 +35,35 @@
     </NotAuthorized>
 </AuthorizeView>
 
+@code {
+    private string title;
+    private string body;
+    private int categoryId = 1;
+    private int userId;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
 
-Welcome to your new app.
+        if (user.Identity.IsAuthenticated)
+        {
+            var userIdClaim = user.FindFirst(c => c.Type == "Id")?.Value;
+            if (int.TryParse(userIdClaim, out int id))
+            {
+                userId = id;
+            }
+        }
+    }
+    
+    private async Task HandleValidSubmit()
+    {
+        await PostService.CreatePost(
+            new CreatePostDTO(
+                title, 
+                body, 
+                categoryId, 
+                userId));
+        Console.WriteLine($"Title: {title}, Body: {body}, CategoryId: {categoryId}, UserId: {userId}");
+    }
+}

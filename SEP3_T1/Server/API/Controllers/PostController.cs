@@ -38,7 +38,7 @@ public class PostController : ControllerBase
     {
         try
         {
-            if(!string.IsNullOrEmpty(dto.Content) && !string.IsNullOrEmpty(dto.Title) && dto.CategoryId != 0 && dto.AccountId != 0)
+            if(!string.IsNullOrEmpty(dto.Body) && !string.IsNullOrEmpty(dto.Title) && dto.CategoryId != 0 && dto.AccountId != 0)
                 await _postLogic.UpdatePost(dto);
             return Ok();
         }

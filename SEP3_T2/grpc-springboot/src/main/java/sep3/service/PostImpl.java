@@ -25,7 +25,7 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
     public void createPost(CreatePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
         try
         {
-            CreatePostDTO dto = new CreatePostDTO(request.getTitle(), request.getContent(), request.getCategoryId(), request.getCategoryId());
+            CreatePostDTO dto = new CreatePostDTO(request.getTitle(), request.getBody(), request.getCategoryId(), request.getCategoryId());
             dao.createPost(dto);
 
             responseObserver.onNext(PostEmptyMessage.newBuilder().build());
@@ -41,7 +41,7 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
     public void updatePost(UpdatePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
         try
         {
-            UpdatePostDTO dto = new UpdatePostDTO(request.getTitle(), request.getContent(), request.getCategoryId(), request.getPostId());
+            UpdatePostDTO dto = new UpdatePostDTO(request.getTitle(), request.getBody(), request.getCategoryId(), request.getPostId());
             dao.updatePost(dto);
 
             responseObserver.onNext(PostEmptyMessage.newBuilder().build());

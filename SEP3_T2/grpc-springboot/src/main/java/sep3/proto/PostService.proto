@@ -4,14 +4,14 @@ package yapperPost;
 
 message CreatePostRequest {
   string title = 1;
-  string content = 2;
+  string body = 2;
   int32 categoryId = 3;
   int32 accountId = 4;
 }
 
 message UpdatePostRequest {
   string title = 1;
-  string content = 2;
+  string body = 2;
   int32 categoryId = 3;
   int32 postId = 4;
 }
