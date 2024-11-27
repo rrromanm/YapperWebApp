@@ -88,18 +88,17 @@ public class SMUserHttpClient : ISMUserService
 
     public async Task FollowUser(int followerId, int followedId)
     {
-        HttpResponseMessage response = await _client.PostAsync($"/Users/{followerId}/Follow/{followedId}", null);
-        if(!response.IsSuccessStatusCode)
+        HttpResponseMessage response = await _client.PostAsync($"/SMUser/{followerId}/Follow/{followedId}", null);
+        if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();
-            throw new Exception(e);
+            throw new Exception($"Failed to follow user. Status code: {response.StatusCode}, Error: {e}");
         }
-        
     }
 
     public async Task UnfollowUser(int followerId, int followedId)
     {
-        HttpResponseMessage response = await _client.PostAsync($"/Users/{followerId}/Unfollow/{followedId}", null);
+        HttpResponseMessage response = await _client.PostAsync($"/SMUser/{followerId}/Unfollow/{followedId}", null);
         if(!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();

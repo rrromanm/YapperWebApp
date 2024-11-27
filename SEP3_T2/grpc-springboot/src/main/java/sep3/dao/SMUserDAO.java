@@ -23,14 +23,24 @@ public class SMUserDAO implements SMUserDAOInterface {
     }
 
     @Override
-    public void createUser(CreateSMUserDTO dto) throws SQLException {
+    public int createUser(CreateSMUserDTO dto) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO yapper_database.social_media_user (username, password, nickname, email) VALUES (?,?,?,?)");
+            PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO yapper_database.social_media_user (username, password, nickname, email) VALUES (?,?,?,?)",
+                Statement.RETURN_GENERATED_KEYS
+            );
             statement.setString(1, dto.getUsername());
             statement.setString(2, rsaUtil.encrypt(dto.getPassword()));
             statement.setString(3, dto.getNickname());
             statement.setString(4, dto.getEmail());
             statement.executeUpdate();
+
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                return generatedKeys.getInt(5);
+            } else {
+                throw new SQLException("Failed to create user, no ID obtained.");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new SQLException("Failed to create user");

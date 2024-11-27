@@ -39,11 +39,14 @@ public class AuthController : ControllerBase
         try
         {
             var user = await _logic.CreateSMUser(dto);
+            var user1 = await _logic.GetByUsernameAsync(user.Username); // spaghetti ahh code
             var userDto = new UserDTO
             {
-                Id = user.Id,
-                Username = user.Username,
-                Email = user.Email
+                Id = user1.Id,
+                Username = user1.Username,
+                Nickname = user1.Nickname,
+                Password = user1.Password,
+                Email = user1.Email
             };
             return Results.Ok(userDto);
         }

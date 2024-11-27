@@ -7,6 +7,7 @@ import sep3.dto.smuser.CreateSMUserDTO;
 import sep3.dto.smuser.SMUserDTO;
 import socialMediaUser.*;
 import socialMediaUser.CreateSMUserRequest;
+import socialMediaUser.CreateSMUserResponse;
 import socialMediaUser.DeleteSMUserRequest;
 import socialMediaUser.FollowUserRequest;
 import socialMediaUser.GetAllUsersRequest;
@@ -33,12 +34,21 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
     }
 
     @Override
-    public void createUser(CreateSMUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
+    public void createUser(CreateSMUserRequest request, StreamObserver<CreateSMUserResponse> responseObserver) {
         try {
             System.out.println("User created with username: " + request.getUsername());
             CreateSMUserDTO dto = new CreateSMUserDTO(request.getUsername(), request.getNickname(), request.getPassword(), request.getEmail());
-            dao.createUser(dto);
-            SMUserEmptyResponse response = SMUserEmptyResponse.newBuilder().build();
+            int userId = dao.createUser(dto);
+            SMUserDTO user = dao.getUserById(userId);
+            CreateSMUserResponse response = CreateSMUserResponse.newBuilder()
+                .setId(user.getId())
+                .setEmail(user.getEmail())
+                .setUsername(user.getUsername())
+                .setNickname(user.getNickname())
+                .setPassword(user.getPassword())
+                .setFollowersCount(user.getFollowerCount())
+                .setFollowingCount(user.getFollowingCount())
+                .build();
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
