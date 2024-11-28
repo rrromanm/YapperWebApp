@@ -1,5 +1,6 @@
 package sep3.dao;
 
+import org.checkerframework.checker.units.qual.A;
 import sep3.dto.smuser.*;
 
 import java.sql.SQLException;
@@ -17,4 +18,6 @@ public interface SMUserDAOInterface
     SMUserDTO getUserById(int id) throws SQLException;
     void followUser(int followerId, int followingId) throws SQLException;
     void unfollowUser(int followerId, int followingId) throws SQLException;
+    ArrayList<FollowerDTO> getFollowers(int userId) throws SQLException;
+    ArrayList<FollowerDTO> getFollowing(int userId) throws SQLException;
 }

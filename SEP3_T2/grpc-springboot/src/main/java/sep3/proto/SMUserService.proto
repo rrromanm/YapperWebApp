@@ -26,6 +26,15 @@ message CreateSMUserResponse  {
   int32 followingCount = 7;
 }
 
+message GetFollowersResponse {
+  string list = 1; // JSON representation of followers
+}
+
+message Follower {
+  int32 id = 1;
+  string username = 2;
+  string nickname = 3;
+}
 //Requests
 
 message DeleteSMUserRequest {
@@ -70,6 +79,10 @@ message GetAllUsersResponse{
   string list = 1;
 }
 
+message GetFollowersRequest {
+  int32 id = 1;
+}
+
 message SMUserResponse {
   int32 id = 1;
   string email = 2;
@@ -95,4 +108,7 @@ service SMUserService {
   rpc GetByID (GetSMUserRequest) returns (SMUserResponse);
   rpc FollowUser (FollowUserRequest) returns (SMUserEmptyResponse);
   rpc UnfollowUser (UnfollowUserRequest) returns (SMUserEmptyResponse);
+  rpc GetFollowers (GetFollowersRequest) returns (GetFollowersResponse);
+  rpc GetFollowing (GetFollowersRequest) returns (GetFollowersResponse);
 }
+
