@@ -283,4 +283,56 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    @Override
+    public ArrayList<FollowerDTO> getFollowers(int userId) throws SQLException {
+        try (Connection connection = DatabaseConnectionManager.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM yapper_database.follows JOIN yapper_database.social_media_user ON follows.followerid = social_media_user.userid WHERE follows.followedid = ?"
+            );
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<FollowerDTO> followers = new ArrayList<>();
+
+            while (resultSet.next()) {
+                FollowerDTO follower = new FollowerDTO(
+                        resultSet.getInt("userid"),
+                        resultSet.getString("nickname"),
+                        resultSet.getString("username")
+                );
+                followers.add(follower);
+                System.out.println("Follower: " + follower.getUsername() + " (" + follower.getNickname() + ")");
+            }
+            return followers;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to get followers");
+        }
+    }
+
+    @Override
+    public ArrayList<FollowerDTO> getFollowing(int userId) throws SQLException {
+        try (Connection connection = DatabaseConnectionManager.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM yapper_database.follows JOIN yapper_database.social_media_user ON follows.followedid = social_media_user.userid WHERE follows.followerid = ?"
+            );
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<FollowerDTO> following = new ArrayList<>();
+
+            while (resultSet.next()) {
+                FollowerDTO follow = new FollowerDTO(
+                        resultSet.getInt("userid"),
+                        resultSet.getString("nickname"),
+                        resultSet.getString("username")
+                );
+                following.add(follow);
+                System.out.println("Following: " + follow.getUsername() + " (" + follow.getNickname() + ")");
+            }
+            return following;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to get following");
+        }
+    }
+
 }

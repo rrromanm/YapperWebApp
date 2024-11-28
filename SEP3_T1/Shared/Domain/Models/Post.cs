@@ -10,6 +10,7 @@ public class Post
     public int CategoryId { get; set; }
     public int PostId { get; set; }
     public int UserId { get; set; }
+    public bool UserLiked { get; set; }
 
     public Post(string title, string body, int likeCount, int commentCount, string date, int categoryId ,int postId ,int userId)
     {

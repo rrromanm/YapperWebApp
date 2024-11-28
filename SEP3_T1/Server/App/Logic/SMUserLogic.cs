@@ -2,10 +2,13 @@ using System.Text.Json;
 using App.LogicInterfaces;
 using DTOs.Models;
 using DTOs.User;
+using Grpc.Core;
 using Grpc.Net.Client;
 using GrpcClient;
 using Microsoft.AspNetCore.Mvc;
 using SocialMediaUser;
+
+
 
 namespace App.Logic;
 
@@ -30,7 +33,7 @@ public class SMUserLogic : ISMUserLogic
                 Email = dto.Email,
                 Nickname = dto.Nickname
             });
-            
+
             var user = new User
             {
                 Username = dto.Username,
@@ -139,12 +142,13 @@ public class SMUserLogic : ISMUserLogic
 
     public async Task<User> GetByUsernameAsync(string userName)
     {
-            var response = await client.GetByUserNameAsync(new GetSMUserRequest
-            {
-                Username = userName
-            });
-            User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id, response.FollowersCount, response.FollowingCount);
-            return user;
+        var response = await client.GetByUserNameAsync(new GetSMUserRequest
+        {
+            Username = userName
+        });
+        User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id,
+            response.FollowersCount, response.FollowingCount);
+        return user;
     }
 
     public async Task<User> GetByIdAsync(int userId)
@@ -155,7 +159,8 @@ public class SMUserLogic : ISMUserLogic
             {
                 Id = userId
             });
-            User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id, response.FollowersCount, response.FollowingCount);
+            User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id,
+                response.FollowersCount, response.FollowingCount);
             return user;
         }
         catch (Exception e)
@@ -198,4 +203,69 @@ public class SMUserLogic : ISMUserLogic
             throw new Exception("Error unfollowing user");
         }
     }
+
+    public async Task<List<FollowersDTO>> GetFollowers(int userId)
+    {
+        try
+        {
+            GetFollowersResponse response = await client.GetFollowersAsync(new GetFollowersRequest
+            {
+                Id = userId
+            });
+
+            // Ensure the list field is not null or empty
+            if (string.IsNullOrWhiteSpace(response.List))
+            {
+                return new List<FollowersDTO>(); // Return an empty list if no data
+            }
+
+            // Deserialize the JSON string into a list of FollowersDTO
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<FollowersDTO> followers = JsonSerializer.Deserialize<List<FollowersDTO>>(response.List, options);
+
+            return followers;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error fetching following list: {e.Message}");
+            throw;
+        }
+    }
+
+    public async Task<List<FollowersDTO>> GetFollowing(int userId)
+    {
+        try
+        {
+            GetFollowersResponse response = await client.GetFollowingAsync(new GetFollowersRequest
+            {
+                Id = userId
+            });
+
+            // Ensure the list field is not null or empty
+            if (string.IsNullOrWhiteSpace(response.List))
+            {
+                return new List<FollowersDTO>(); // Return an empty list if no data
+            }
+
+            // Deserialize the JSON string into a list of FollowersDTO
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<FollowersDTO> following = JsonSerializer.Deserialize<List<FollowersDTO>>(response.List, options);
+
+            return following;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error fetching following list: {e.Message}");
+            throw;
+        }
+    }
+
 }

@@ -141,5 +141,33 @@ public class SMUserController : ControllerBase
         }
     }
     
+    [HttpGet("{id:int}/Followers")]
+    public async Task<ActionResult> GetFollowers([FromRoute] int id)
+    {
+        try
+        {
+            var followers = await _smUserLogic.GetFollowers(id);
+            return Ok(followers);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [HttpGet("{id:int}/Following")]
+    public async Task<ActionResult> GetFollowing([FromRoute] int id)
+    {
+        try
+        {
+            var following = await _smUserLogic.GetFollowing(id);
+            return Ok(following);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
     
 }

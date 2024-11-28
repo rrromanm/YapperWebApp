@@ -25,9 +25,9 @@
         <!-- Actions Section -->
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div>
-                @* <button class="btn btn-sm @LikeButtonClass" @onclick="() => LikePost(Post.PostId)"> *@
-                @*     <i class="@LikeIconClass"></i> @LikeText (@Post.LikeCount) *@
-                @* </button> *@
+                <button class="btn btn-sm @LikeButtonClass" @onclick="() => LikePost(Post.PostId)">
+                    <i class="@LikeIconClass"></i> @LikeText (@Post.LikeCount)
+                </button>
                 <button class="btn btn-sm btn-outline-secondary" @onclick="() => ToggleComments(Post.PostId)">
                     <i class="bi bi-chat"></i> Comment (@Post.CommentCount)
                 </button>
@@ -93,9 +93,9 @@
         return CurrentUserId == userId;
     }
 
-    // private string LikeText => Post.UserLiked ? "Unlike" : "Like";
-    // private string LikeIconClass => Post.UserLiked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up";
-    // private string LikeButtonClass => Post.UserLiked ? "btn-primary" : "btn-outline-primary";
+    private string LikeText => Post.UserLiked ? "Unlike" : "Like";
+    private string LikeIconClass => Post.UserLiked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up";
+    private string LikeButtonClass => Post.UserLiked ? "btn-primary" : "btn-outline-primary";
 
     private async Task LikePost(int postId)
     {
