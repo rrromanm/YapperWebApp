@@ -2,9 +2,11 @@
 @using DTOs.Models
 @using DTOs.User.PostDTOs
 @using HttpClients.ClientInterfaces
+@using BlazorApp.Components.Components
 @inject NavigationManager NavMgr
 @inject AuthenticationStateProvider AuthProvider
 @inject IPostService PostService
+@inject ICategoryService CategoryService
 
 <PageTitle>Home</PageTitle>
 
@@ -17,29 +19,88 @@
 
         <div>
             <h2>Create a Post</h2>
-                <div>
-                    <label for="title">Title:</label>
-                    <InputText id="title" @bind-Value="title" />
+            <div>
+                <label for="title">Title:</label>
+                <InputText id="title" @bind-Value="title" />
+            </div>
+            <div>
+                <label for="body">Body:</label>
+                <InputTextArea id="body" @bind-Value="body" />
+            </div>
+            <div>
+                <label for="category">Category:</label>
+                <InputSelect id="category" @bind-Value="categoryId">
+                    <option value="0">Pick a category</option>
+                    @foreach (var category in categories)
+                    {
+                        <option value="@category.Id">@category.Name</option>
+                    }
+                </InputSelect>
+                
+            </div>
+            <button type="submit" @onclick="HandleValidSubmit">Submit</button>
+        </div>
+
+        <div class="profile-posts">
+            <div class="post-buttons">
+                <button @onclick="GetAllPosts" class="post-btn @(showAllPosts ? "active" : "grey")">For you</button>
+                <button @onclick="GetFollowingPosts" class="post-btn @(showFollowingPosts ? "active" : "grey")">Following</button>
+            </div>
+            
+            @if (showAllPosts)
+            {
+                showFollowingPosts = false;
+                <div class="posts">
+                    @if (allPosts != null && allPosts.Count > 0)
+                    {
+                        @foreach (var post in allPosts)
+                        {
+                            <PostComponent Post="post" />
+                        }
+                    }
+                    else
+                    {
+                        <p>No posts available.</p>
+                    }
                 </div>
-                <div>
-                    <label for="body">Body:</label>
-                    <InputTextArea id="body" @bind-Value="body" />
+            }
+            else if (showFollowingPosts)
+            {
+                showAllPosts = false;
+                <div class="posts">
+                    @if (followingPosts != null && followingPosts.Count > 0)
+                    {
+                        @foreach (var post in followingPosts)
+                        {
+                            <PostComponent Post="post" />
+                        }
+                    }
+                    else
+                    {
+                        <p>No posts available.</p>
+                    }
                 </div>
-                <button type="submit" @onclick="HandleValidSubmit" >Submit</button>
+            }
         </div>
     </Authorized>
     <NotAuthorized>
         <p>You are not logged in.</p>
-        <button @onclick='() => NavMgr.NavigateTo("login")'>go to login</button>
-        <button @onclick='() => NavMgr.NavigateTo("register")'>go to register</button>
+        <button @onclick='() => NavMgr.NavigateTo("login")'>Login</button>
+        <button @onclick='() => NavMgr.NavigateTo("register")'>Register</button>
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
     private string title;
     private string body;
-    private int categoryId = 1;
+    private int categoryId;
     private int userId;
+    private List<Category> categories = new List<Category>();
+    private List<Post> allPosts = new List<Post>();
+    private List<Post> followingPosts = new List<Post>();
+    
+    private bool showAllPosts = true;
+    private bool showFollowingPosts = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,16 +115,39 @@
                 userId = id;
             }
         }
+        
+        await GetCategories();
+        await GetAllPosts();
     }
-    
+
     private async Task HandleValidSubmit()
     {
         await PostService.CreatePost(
             new CreatePostDTO(
-                title, 
-                body, 
-                categoryId, 
+                title,
+                body,
+                categoryId,
                 userId));
-        Console.WriteLine($"Title: {title}, Body: {body}, CategoryId: {categoryId}, UserId: {userId}");
+        
+        title = string.Empty;
+        body = string.Empty;
+        categoryId = 0;
+
+        await GetAllPosts();
+    }
+
+    private async Task GetAllPosts()
+    {
+        allPosts = await PostService.GetAllPosts();
+    }
+    
+    private async Task GetFollowingPosts()
+    {
+        followingPosts = await PostService.GetFollowingPosts(userId);
+    }
+    
+    private async Task GetCategories()
+    {
+        categories = await CategoryService.GetAllCategories();
     }
 }

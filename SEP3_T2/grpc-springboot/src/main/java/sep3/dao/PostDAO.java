@@ -24,11 +24,24 @@ public class PostDAO implements PostDAOInterface {
     @Override
     public void createPost(CreatePostDTO createPostDTO) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO yapper_database.post (title, body, userid) VALUES (?, ?, ?)");
+            PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO yapper_database.post (title, body, userId) VALUES (?, ?, ?) RETURNING postId"
+            );
             statement.setString(1, createPostDTO.getTitle());
             statement.setString(2, createPostDTO.getContent());
             statement.setInt(3, createPostDTO.getAccountId());
-            statement.executeUpdate();
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int postId = resultSet.getInt("postId");
+
+                PreparedStatement categoryStatement = connection.prepareStatement(
+                        "INSERT INTO yapper_database.post_category (categoryId, postId) VALUES (?, ?)"
+                );
+                categoryStatement.setInt(1, createPostDTO.getCategoryId());
+                categoryStatement.setInt(2, postId);
+                categoryStatement.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException("Failed to create post");
