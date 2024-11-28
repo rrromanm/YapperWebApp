@@ -1,0 +1,91 @@
+@page "/browse-categories"
+@using DTOs.Models
+@using DTOs.User.PostDTOs
+@using HttpClients.ClientInterfaces
+@using BlazorApp.Components.Components
+@inject ICategoryService CategoryService
+@inject IPostService PostService
+@inject AuthenticationStateProvider AuthProvider
+@inject NavigationManager NavMgr
+
+<AuthorizeView>
+    <Authorized>
+
+        <h3>Browse Categories</h3>
+
+        <link href="BrowseCategoriesStylesheet.css" rel="stylesheet"/>
+
+        <div class="browse-categories-container">
+
+            <div class="categories-list">
+                <div class="categories-search">
+                    <input @bind="searchQuery" placeholder="Search categories..."/>
+                </div>
+                <ul>
+                    @foreach (var category in FilteredCategories)
+                    {
+                        <li @onclick="() => SelectCategory(category)">
+                            @category.Name
+                        </li>
+                    }
+                </ul>
+            </div>
+            
+            <div class="posts-list">
+                @if (selectedCategory != null)
+                {
+                    <h4>Posts in @selectedCategory.Name</h4>
+                    <div class="scrollable-posts">
+                        @foreach (var post in posts)
+                        {
+                            <div class="post-item">
+                                <PostComponent Post="post"/>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not logged in.</p>
+        <button @onclick='() => NavMgr.NavigateTo("login")'>Login</button>
+        <button @onclick='() => NavMgr.NavigateTo("register")'>Register</button>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
+@code {
+    private string searchQuery = string.Empty; 
+    private List<Category> categories = new List<Category>(); 
+    private List<Post> posts = new List<Post>();
+    private Category selectedCategory;
+    private IEnumerable<Category> FilteredCategories =>
+        string.IsNullOrWhiteSpace(searchQuery)
+            ? categories
+            : categories.Where(c => c.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategories();
+    }
+
+    private async Task LoadCategories()
+    {
+        categories = await CategoryService.GetAllCategories();
+    }
+
+    private async Task SelectCategory(Category category)
+    {
+        selectedCategory = category;
+        await LoadPostsByCategory(category.Id);
+    }
+
+    private async Task LoadPostsByCategory(int categoryId)
+    {
+        posts = await PostService.GetPostsByCategoryId(categoryId);
+    }
+    
+    
+}

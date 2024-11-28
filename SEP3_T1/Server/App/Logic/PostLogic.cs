@@ -28,6 +28,8 @@ public class PostLogic : IPostLogic
                 AccountId = dto.AccountId,
                 CategoryId = dto.CategoryId
             });
+            
+            Console.WriteLine("ACCOUNT ID:"+dto.AccountId);
         }
         catch (Grpc.Core.RpcException e)
         {

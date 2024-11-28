@@ -30,7 +30,7 @@ public class SMUserDAO implements SMUserDAOInterface {
                 Statement.RETURN_GENERATED_KEYS
             );
             statement.setString(1, dto.getUsername());
-            statement.setString(2, rsaUtil.encrypt(dto.getPassword()));
+            statement.setString(2, dto.getPassword());
             statement.setString(3, dto.getNickname());
             statement.setString(4, dto.getEmail());
             statement.executeUpdate();
@@ -75,7 +75,7 @@ public class SMUserDAO implements SMUserDAOInterface {
     public void updatePassword(int userId, String password) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("UPDATE yapper_database.social_media_user SET password = ? WHERE userid = ?");
-            statement.setString(1, rsaUtil.encrypt(password));
+            statement.setString(1, password);
             statement.setInt(2, userId);
             statement.executeUpdate();
         } catch (Exception e) {
@@ -138,7 +138,7 @@ public class SMUserDAO implements SMUserDAOInterface {
                         userId,
                         userResultSet.getString("username"),
                         userResultSet.getString("nickname"),
-                        rsaUtil.decrypt(userResultSet.getString("password")),
+                        userResultSet.getString("password"),
                         userResultSet.getString("email"),
                         followersCount,
                         followingCount
@@ -190,7 +190,7 @@ public class SMUserDAO implements SMUserDAOInterface {
                         userResultSet.getInt("userid"),
                         userResultSet.getString("username"),
                         userResultSet.getString("nickname"),
-                        rsaUtil.decrypt(userResultSet.getString("password")),
+                        userResultSet.getString("password"),
                         userResultSet.getString("email"),
                         followersCount,
                         followingCount
@@ -240,7 +240,7 @@ public class SMUserDAO implements SMUserDAOInterface {
                         userId,
                         userResultSet.getString("username"),
                         userResultSet.getString("nickname"),
-                        rsaUtil.decrypt(userResultSet.getString("password")),
+                        userResultSet.getString("password"),
                         userResultSet.getString("email"),
                         followersCount,
                         followingCount
