@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public interface SMUserDAOInterface
 {
-    void createUser(CreateSMUserDTO dto) throws SQLException;
+    int createUser(CreateSMUserDTO dto) throws SQLException;
     void updateEmail(int userId, String email) throws SQLException;
     void updateNickname(int userId, String nickname) throws SQLException;
     void updatePassword(int userId, String password) throws SQLException;

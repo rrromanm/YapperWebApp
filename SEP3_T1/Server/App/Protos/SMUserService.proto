@@ -16,6 +16,15 @@ message UpdateSMUserRequest {
   string email = 4;
   int32 id = 5;
 }
+message CreateSMUserResponse  {
+  int32 id = 1;
+  string email = 2;
+  string username = 3;
+  string nickname = 4;
+  string password = 5;
+  int32 followersCount = 6;
+  int32 followingCount = 7;
+}
 
 //Requests
 
@@ -76,7 +85,7 @@ message SMUserEmptyResponse {
 }
 
 service SMUserService {
-  rpc CreateUser (CreateSMUserRequest) returns (SMUserEmptyResponse);
+  rpc CreateUser (CreateSMUserRequest) returns (CreateSMUserResponse);
   rpc UpdateEmail (UpdateSMUserEmailRequest) returns (SMUserEmptyResponse);
   rpc UpdateNickname (UpdateSMUserNicknameRequest) returns (SMUserEmptyResponse);
   rpc UpdatePassword (UpdateSMUserPasswordRequest) returns (SMUserEmptyResponse);

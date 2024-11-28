@@ -35,6 +35,10 @@
         </div>
     </div>
     <button @onclick="SaveProfile" class="save-btn">Save</button>
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="error-message">@errorMessage</div>
+    }
 </div>
 
 @code {
@@ -42,14 +46,16 @@
     private string username;
     private string nickname;
     private string email;
-    
+
     private string newNickname;
     private string newEmail;
-    
+
     private string oldPassword;
     private string newPassword;
     private string repeatPassword;
     private string currentPassword;
+
+    private string errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,7 +88,7 @@
         }
         catch (Exception ex)
         {
-            // Handle error (e.g., log it, show a message to the user)
+            errorMessage = "Failed to load user profile.";
         }
     }
 
@@ -93,21 +99,53 @@
 
     private async Task SaveProfile()
     {
+        errorMessage = null; // Clear previous error messages
+
         // Validate the current password
         if (oldPassword != currentPassword)
         {
-            Console.WriteLine("Incorrect current password");
+            errorMessage = "Incorrect current password.";
             return;
         }
 
         // Validate new password and confirmation
-        if (!string.IsNullOrEmpty(newPassword) && newPassword != repeatPassword)
+        if (!string.IsNullOrEmpty(newPassword))
         {
-            Console.WriteLine("New passwords do not match");
+            if (newPassword != repeatPassword)
+            {
+                errorMessage = "New passwords do not match.";
+                return;
+            }
+
+            if (!IsStrongPassword(newPassword))
+            {
+                errorMessage = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.";
+                return;
+            }
+        }
+
+        // Validate nickname and email length
+        if (!string.IsNullOrEmpty(newNickname) && newNickname.Length > 100)
+        {
+            errorMessage = "Nickname cannot exceed 100 characters.";
             return;
         }
 
-        
+        if (!string.IsNullOrEmpty(newEmail))
+        {
+            if (newEmail.Length > 100)
+            {
+                errorMessage = "Email cannot exceed 100 characters.";
+                return;
+            }
+
+            if (!IsValidEmail(newEmail))
+            {
+                errorMessage = "Email format is invalid.";
+                return;
+            }
+        }
+
         // Prepare DTO for update
         var updateUserDto = new UpdateUserDTO
         {
@@ -117,17 +155,47 @@
             Nickname = nickname != newNickname && !string.IsNullOrWhiteSpace(newNickname) ? newNickname : ""
         };
 
-        Console.WriteLine($"Sending UpdateUserDTO: UserId = {updateUserDto.UserId}, Email = {updateUserDto.Email}, Nickname = {updateUserDto.Nickname}, Password = {updateUserDto.Password}");
+        try
+        {
+            // Call the user service to update the profile
+            await IsmUserService.UpdateSMUser(updateUserDto);
+            Console.WriteLine("Profile updated successfully");
 
-        // Call the user service to update the profile
-        await IsmUserService.UpdateSMUser(updateUserDto);
-
-        Console.WriteLine("Profile updated successfully");
-
-        await LoadUserProfile(userId);
-        NavMgr.NavigateTo($"/profiles/{username}");
+            await LoadUserProfile(userId);
+            NavMgr.NavigateTo($"/profiles/{username}");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to update profile. " + ex.Message;
+        }
     }
 
+    private bool IsStrongPassword(string password)
+    {
+        if (password.Length < 8)
+            return false;
+        if (!password.Any(char.IsUpper))
+            return false;
+        if (!password.Any(char.IsLower))
+            return false;
+        if (!password.Any(char.IsDigit))
+            return false;
+        if (!password.Any(ch => !char.IsLetterOrDigit(ch)))
+            return false;
 
+        return true;
+    }
 
+    private bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email && email.Contains(".");
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }
