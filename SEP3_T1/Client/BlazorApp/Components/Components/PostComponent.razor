@@ -11,7 +11,7 @@
         <div class="d-flex align-items-center mb-3">
             <i class="bi bi-person-circle fs-3 me-2 profile-icon"></i>
             <div>
-                <span class="fw-bold">@Post.UserId</span> <br />
+                <span class="fw-bold">@username</span> <br />
                 <small class="text-muted">@Post.PostDate</small>
             </div>
         </div>
@@ -66,6 +66,11 @@
 
     private Dictionary<int, bool> CommentsVisibility = new();
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadUsername();
+    }
+
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -77,6 +82,11 @@
             CurrentUserId = int.Parse(userId);
         }
 
+        await LoadUsername();
+    }
+
+    private async Task LoadUsername()
+    {
         try
         {
             username = await GetUsernameById(Post.UserId);
@@ -103,6 +113,7 @@
         {
             await PostService.LikePost(CurrentUserId, postId);
             Post = await PostService.GetPost(postId); // Fetch the updated post data
+            await LoadUsername(); // Reload the username
             StateHasChanged(); // Re-render the component to reflect the updated data
         }
         catch (Exception ex)
