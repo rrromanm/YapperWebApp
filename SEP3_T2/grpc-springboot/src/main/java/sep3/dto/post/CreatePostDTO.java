@@ -3,14 +3,14 @@ package sep3.dto.post;
 public class CreatePostDTO {
     private String title;
     private String content;
-    private int accountId;
+    private int userId;
     private int categoryId;
 
-    public CreatePostDTO(String title, String content, int categoryId, int accountId) {
+    public CreatePostDTO(String title, String content, int categoryId, int userId) {
         this.title = title;
         this.content = content;
         this.categoryId = categoryId;
-        this.accountId = accountId;
+        this.userId = userId;
     }
 
     public String getTitle() {
@@ -21,8 +21,8 @@ public class CreatePostDTO {
         return content;
     }
 
-    public int getAccountId() {
-        return accountId;
+    public int getUserId() {
+        return userId;
     }
 
     public int getCategoryId() {

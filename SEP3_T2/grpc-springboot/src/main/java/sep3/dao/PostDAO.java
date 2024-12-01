@@ -29,7 +29,7 @@ public class PostDAO implements PostDAOInterface {
             );
             statement.setString(1, createPostDTO.getTitle());
             statement.setString(2, createPostDTO.getContent());
-            statement.setInt(3, createPostDTO.getAccountId());
+            statement.setInt(3, createPostDTO.getUserId());
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {

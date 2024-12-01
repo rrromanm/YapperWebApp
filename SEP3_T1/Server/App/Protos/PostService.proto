@@ -7,7 +7,7 @@ message CreatePostRequest {
   string title = 1;
   string body = 2;
   int32 categoryId = 3;
-  int32 accountId = 4;
+  int32 userId = 4;
 }
 
 message UpdatePostRequest {

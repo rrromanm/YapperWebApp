@@ -25,7 +25,7 @@ public class PostLogic : IPostLogic
             {
                 Title = dto.Title,
                 Body = dto.Body,
-                AccountId = dto.AccountId,
+                UserId= dto.UserId,
                 CategoryId = dto.CategoryId
             });
         }
@@ -42,9 +42,9 @@ public class PostLogic : IPostLogic
         {
             await client.UpdatePostAsync(new UpdatePostRequest
             {
-                PostId = dto.PostId,
                 Title = dto.Title,
                 Body = dto.Body,
+                PostId = dto.PostId,
                 CategoryId = dto.CategoryId
             });
         }

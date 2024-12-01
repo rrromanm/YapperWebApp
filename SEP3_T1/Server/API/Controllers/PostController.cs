@@ -1,4 +1,5 @@
-﻿using App.Logic;
+﻿using System.Xml;
+using App.Logic;
 using App.LogicInterfaces;
 using DTOs.DTOs;
 using DTOs.User.PostDTOs;
@@ -25,6 +26,8 @@ public class PostController : ControllerBase
         try
         {
             await _postLogic.CreatePost(dto);
+            
+            Console.WriteLine($"Post created by user {dto.UserId}");
             return Ok();
         }
         catch (Exception e)
