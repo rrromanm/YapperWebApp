@@ -1,0 +1,126 @@
+/* Container for the entire login page */
+.login-page-container {
+    display: flex;
+    height: 100vh; /* Full viewport height */
+    font-family: Arial, sans-serif;
+}
+
+/* Left section: image container */
+.login-image {
+    width: 50%; /* Takes up half of the screen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #e8eaf6, #fff); /* Example of softer gradient */
+    border-right: 1px solid #ccc;
+}
+
+.login-image img {
+    max-width: 70%; /* Scaled image */
+    max-height: 70%; /* Keep within bounds */
+}
+
+/* Right section: login form and footer */
+.login-form-container {
+    width: 50%; /* Takes up the other half */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Login form styling */
+.login-form {
+    width: 60%; /* Adjust form width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Error messages styling */
+.login-exceptions {
+    margin-top: 20px;
+    color: red;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Footer links */
+.login-footer {
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.login-footer a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Container for the left image section */
+.login-image {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0); /* Gradient background */
+    position: relative;
+}
+
+/* Semi-transparent overlay to blend the image */
+.login-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6); /* Light overlay */
+    z-index: 1;
+}
+
+/* Logo image styling */
+.login-image img {
+    max-width: 70%; /* Resize to fit nicely */
+    max-height: 70%;
+    z-index: 2; /* Place image above overlay */
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2)); /* Add subtle shadow */
+    opacity: 0.9; /* Slightly transparent */
+    transition: transform 0.3s, opacity 0.3s; /* Smooth hover effects */
+}
+
+.login-image img:hover {
+    transform: scale(1.05); /* Slight zoom-in on hover */
+    opacity: 1; /* Full opacity */
+}
+

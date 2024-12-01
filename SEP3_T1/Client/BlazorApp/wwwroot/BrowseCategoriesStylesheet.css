@@ -1,0 +1,87 @@
+/* General container for the page layout */
+.browse-categories-container {
+    display: flex;
+    height: 100vh; /* Fill the viewport height */
+    font-family: Arial, sans-serif;
+}
+
+/* Categories list */
+.categories-list {
+    width: 30%;
+    border-right: 1px solid #ccc;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.categories-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.categories-list li {
+    cursor: pointer;
+    padding: 10px 5px;
+    border-bottom: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.categories-list li:hover {
+    background-color: #ddd;
+}
+
+/* Search bar */
+.categories-list input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Posts list */
+.posts-list {
+    width: 50%;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.posts-list h4 {
+    margin-bottom: 15px;
+}
+
+.scrollable-posts {
+    max-height: 80vh; /* Ensure it scrolls if content overflows */
+    overflow-y: auto;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}
+
+.post-item {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.post-item h5 {
+    margin: 0 0 5px;
+    font-size: 16px;
+}
+
+.post-item p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.categories-search {
+    margin-bottom: 10px;
+}
+
+.categories-search input {
+    width: 90%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
