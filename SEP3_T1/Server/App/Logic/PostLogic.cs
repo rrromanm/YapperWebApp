@@ -28,13 +28,11 @@ public class PostLogic : IPostLogic
                 UserId= dto.UserId,
                 CategoryId = dto.CategoryId
             });
-            
-            Console.WriteLine("ACCOUNT ID:"+dto.AccountId);
         }
-        catch (Grpc.Core.RpcException e)
+        catch (Exception e)
         {
-            Console.WriteLine($"gRPC Error: {e.Status.StatusCode}, Detail: {e.Status.Detail}");
-            throw new Exception("Error creating post", e);
+            Console.WriteLine(e);
+            throw;
         }
     }
 

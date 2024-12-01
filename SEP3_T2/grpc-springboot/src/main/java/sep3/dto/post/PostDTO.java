@@ -6,12 +6,12 @@ public class PostDTO
 {
     private String title;
     private String body;
-    private int postId;
-    private String postDate;
-    private int categoryId;
-    private int userId;
     private int likeCount;
     private int commentCount;
+    private String postDate;
+    private int categoryId;
+    private int postId;
+    private int userId;
 
     public PostDTO(String title, String body, int likeCount, int commentCount, String postDate ,int categoryId, int postId, int userId) {
         this.title = title;
