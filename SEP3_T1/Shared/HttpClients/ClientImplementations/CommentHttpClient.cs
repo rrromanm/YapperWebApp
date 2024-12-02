@@ -17,7 +17,7 @@ public class CommentHttpClient : ICommentService
    }
    public async Task CreateCommentAsync(CreateCommentDTO dto)
    {
-       HttpResponseMessage response = await _client.PostAsJsonAsync("/Comments", dto);
+       HttpResponseMessage response = await _client.PostAsJsonAsync("/Comment", dto);
        if (!response.IsSuccessStatusCode)
        {
            string e = await response.Content.ReadAsStringAsync();
@@ -27,7 +27,7 @@ public class CommentHttpClient : ICommentService
 
    public async Task UpdateCommentAsync(UpdateCommentDTO dto)
    {
-         HttpResponseMessage response = await _client.PutAsJsonAsync($"/Comments/{dto.commentId}", dto);
+         HttpResponseMessage response = await _client.PutAsJsonAsync($"/Comment/{dto.commentId}", dto);
          if (!response.IsSuccessStatusCode)
          {
               string e = await response.Content.ReadAsStringAsync();
@@ -37,7 +37,7 @@ public class CommentHttpClient : ICommentService
 
    public async Task DeleteCommentAsync(int id)
    {
-       HttpResponseMessage response = await _client.DeleteAsync($"/Comments/{id}");
+       HttpResponseMessage response = await _client.DeleteAsync($"/Comment/{id}");
        if (!response.IsSuccessStatusCode)
        {
            string e = await response.Content.ReadAsStringAsync();
@@ -47,7 +47,7 @@ public class CommentHttpClient : ICommentService
 
    public async Task<Comment> GetCommentAsync(int id)
    {
-       HttpResponseMessage response = await _client.GetAsync($"/Comments/{id}");
+       HttpResponseMessage response = await _client.GetAsync($"/Comment/{id}");
        if (!response.IsSuccessStatusCode)
        {
            string e = await response.Content.ReadAsStringAsync();
@@ -59,7 +59,7 @@ public class CommentHttpClient : ICommentService
 
    public async Task<List<Comment>> GetAllCommentsAsync()
    {
-       HttpResponseMessage response = await _client.GetAsync("/Comments");
+       HttpResponseMessage response = await _client.GetAsync("/Comment");
        if (!response.IsSuccessStatusCode)
        {
            string e = await response.Content.ReadAsStringAsync();
@@ -71,20 +71,27 @@ public class CommentHttpClient : ICommentService
 
    public async Task<List<Comment>> GetCommentsByPostIdAsync(int postId)
    {
-       HttpResponseMessage response = await _client.GetAsync($"/Comments/Post/{postId}");
-       if (!response.IsSuccessStatusCode)
+       try
        {
-              string e = await response.Content.ReadAsStringAsync();
-              throw new Exception(e);
+           HttpResponseMessage response = await _client.GetAsync($"/Comment/post/{postId}");
+           if (!response.IsSuccessStatusCode)
+           {
+               string errorContent = await response.Content.ReadAsStringAsync();
+               throw new Exception($"Failed to load comments: {response.ReasonPhrase}");
+           }
+           string content = await response.Content.ReadAsStringAsync();
+           return JsonSerializer.Deserialize<List<Comment>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
        }
-       string content = await response.Content.ReadAsStringAsync();
-         return JsonSerializer.Deserialize<List<Comment>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            
+       catch (Exception ex)
+       {
+           Console.WriteLine($"Error in GetCommentsByPostIdAsync: {ex.Message}");
+           throw;
+       }
    }
 
    public async Task<List<Comment>> GetCommentsByUserIdAsync(int userId)
    {
-         HttpResponseMessage response = await _client.GetAsync($"/Comments/User/{userId}");
+         HttpResponseMessage response = await _client.GetAsync($"/Comment/user/{userId}");
          if (!response.IsSuccessStatusCode)
          {
               string e = await response.Content.ReadAsStringAsync();
@@ -96,7 +103,7 @@ public class CommentHttpClient : ICommentService
 
    public async Task LikeCommentAsync(int commentId, int userId)
    {
-         HttpResponseMessage response = await _client.PostAsync($"/Comments/{commentId}/Like/{userId}", null);
+         HttpResponseMessage response = await _client.PostAsync($"/Comment/like/{commentId}/{userId}", null);
          if (!response.IsSuccessStatusCode)
          {
              string e = await response.Content.ReadAsStringAsync();
@@ -105,7 +112,7 @@ public class CommentHttpClient : ICommentService
    }
    public async Task UnlikeCommentAsync(int commentId, int userId)
    {
-         HttpResponseMessage response = await _client.PostAsync($"/Comments/{commentId}/Unlike/{userId}", null);
+         HttpResponseMessage response = await _client.PostAsync($"/Comments/unlike/{commentId}/{userId}", null);
          if (!response.IsSuccessStatusCode)
          {
              string e = await response.Content.ReadAsStringAsync();

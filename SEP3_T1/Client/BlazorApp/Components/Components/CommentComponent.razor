@@ -1,0 +1,94 @@
+﻿@using DTOs.Models
+@using HttpClients.ClientInterfaces
+@inject ICommentService CommentService
+@inject ISMUserService SMUserService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="comments-container">
+    @if (commentsWithUsers != null && commentsWithUsers.Count > 0)
+    {
+        @foreach (var commentWithUser in commentsWithUsers)
+        {
+            <div class="comment-item">
+                <p><strong>@commentWithUser.User.Username:</strong> @commentWithUser.Comment.body</p>
+                <small class="text-muted">@commentWithUser.Comment.commentDate</small>
+                <div class="like-section">
+                    <button class="btn btn-sm btn-outline-primary" @onclick="() => LikeComment(commentWithUser.Comment.commentId)">
+                        <i class="bi bi-hand-thumbs-up"></i> Like (@commentWithUser.Comment.likeCount)
+                    </button>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No comments available.</p>
+    }
+</div>
+
+@code {
+    [Parameter] public int PostId { get; set; }
+    private List<CommentWithUser> commentsWithUsers;
+    private int CurrentUserId { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadCommentsAndUsers();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userId = user.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+            CurrentUserId = int.Parse(userId);
+        }
+
+        await LoadCommentsAndUsers();
+    }
+
+    private async Task LoadCommentsAndUsers()
+    {
+        try
+        {
+
+            var comments = await CommentService.GetCommentsByPostIdAsync(PostId);
+
+
+            var tasks = comments.Select(async comment => new CommentWithUser
+            {
+                Comment = comment,
+                User = await SMUserService.GetByUserId(comment.userId)
+            });
+
+            commentsWithUsers = (await Task.WhenAll(tasks)).ToList();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading comments for PostId {PostId}: {ex.Message}");
+        }
+    }
+
+    private async Task LikeComment(int commentId)
+    {
+        try
+        {
+            await CommentService.LikeCommentAsync(commentId, CurrentUserId);
+            await LoadCommentsAndUsers();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error liking comment {commentId}: {ex.Message}");
+        }
+    }
+
+    private class CommentWithUser
+    {
+        public Comment Comment { get; set; }
+        public User User { get; set; }
+    }
+}

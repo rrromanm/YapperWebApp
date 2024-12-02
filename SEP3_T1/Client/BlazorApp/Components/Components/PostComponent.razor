@@ -54,7 +54,7 @@
     @if (CommentsVisibility.TryGetValue(Post.PostId, out var isVisible) && isVisible)
     {
         <div class="comments-section border-top mt-3 pt-3">
-            <PostComments PostId="Post.PostId" />
+            <CommentComponent PostId="Post.PostId" />
         </div>
     }
 </div>
