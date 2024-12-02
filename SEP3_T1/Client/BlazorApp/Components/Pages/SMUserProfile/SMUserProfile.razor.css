@@ -209,5 +209,13 @@ textarea {
     max-height: 300px; /* Adjust the height as needed */
     overflow-y: auto;
 }
+.username-link {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.username-link:hover {
+    color: white;
+}
 
 

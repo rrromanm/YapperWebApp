@@ -39,3 +39,11 @@
 .like-button .bi-hand-thumbs-up-fill {
   color: #563D39;
 }
+.username-link {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.username-link:hover {
+  color: white;
+}

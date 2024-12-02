@@ -3,6 +3,7 @@
 @inject ICommentService CommentService
 @inject ISMUserService SMUserService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 
 <div class="comments-container">
     @if (commentsWithUsers != null && commentsWithUsers.Count > 0)
@@ -10,7 +11,7 @@
         @foreach (var commentWithUser in commentsWithUsers)
         {
             <div class="comment-item">
-                <p><strong>@commentWithUser.User.Username:</strong> @commentWithUser.Comment.body</p>
+                <p><strong class="username-link" @onclick="() => NavigateToUserProfile(commentWithUser.User.Username)">@commentWithUser.User.Nickname:</strong> @commentWithUser.Comment.body</p>
                 <small class="text-muted">@commentWithUser.Comment.commentDate</small>
                 <div class="like-section">
                     <button class="btn btn-sm btn-outline-primary" @onclick="() => LikeComment(commentWithUser.Comment.commentId)">
@@ -91,4 +92,9 @@
         public Comment Comment { get; set; }
         public User User { get; set; }
     }
+    private void NavigateToUserProfile(string username)
+    {
+        NavigationManager.NavigateTo($"/Profiles/{username}");
+    }
+    
 }

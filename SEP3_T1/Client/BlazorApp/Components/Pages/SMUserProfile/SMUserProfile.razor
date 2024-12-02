@@ -107,7 +107,7 @@
                         <li>
                             <img src="https://via.placeholder.com/25" alt="Profile Picture" class="profile-picture" />
                             <div class="user-info">
-                                <span class="nickname">@follower.nickname</span>
+                                <span class="nickname username-link" @onclick="() => NavigateToUserProfile(follower.username)">@follower.nickname</span>
                                 <span class="username">@follower.username</span>
                             </div>
                             @if (currentUserId == follower.id)
@@ -144,7 +144,7 @@
                         <li>
                             <img src="https://via.placeholder.com/25" alt="Profile Picture" class="profile-picture" />
                             <div class="user-info">
-                                <span class="nickname">@following.nickname</span>
+                                <span class="nickname username-link" @onclick="() => NavigateToUserProfile(following.username)">@following.nickname</span>
                                 <span class="username">@following.username</span>
                             </div>
                             <FollowBtn userId="following.id" OnFollowStatusChanged="UpdateFollowerCount"/>
@@ -317,5 +317,11 @@
             errorMessage = "Failed to update follower count.";
             Console.WriteLine(ex);
         }
+    }
+    private void NavigateToUserProfile(string username)
+    {
+        CloseFollowersModal();
+        CloseFollowingModal();
+        NavMgr.NavigateTo($"/profiles/{username}");
     }
 }
