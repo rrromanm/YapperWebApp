@@ -127,3 +127,87 @@ textarea {
 .edit-btn, .follow-btn {
     margin-left: 10px;
 }
+
+/*Pop out window*/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    text-align: left;
+}
+
+.modal-content h3 {
+    margin-bottom: 20px;
+}
+
+.modal-content ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.modal-content li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.modal-content li img {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.modal-content li .user-info {
+    flex: 1;
+}
+
+.modal-content li .user-info .nickname {
+    font-weight: bold;
+}
+
+.modal-content li .user-info .username {
+    color: grey;
+}
+
+.modal-content li .follow-btn {
+    margin-left: 10px;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+}
+.link-button:hover {
+    color: darkblue;
+}
+
+.scrollable-list {
+    max-height: 300px; /* Adjust the height as needed */
+    overflow-y: auto;
+}
+
+
