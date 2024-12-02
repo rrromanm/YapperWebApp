@@ -21,7 +21,7 @@
 
         <!-- Error or alert messages -->
         <div class="login-exceptions">
-            <p>Exceptions/Alerts/Error</p>
+            <p class="error-message">@errorMessage</p>
         </div>
 
         <!-- Sign up or guest access link -->
@@ -34,6 +34,7 @@
 @code {
     private string username;
     private string password;
+    private string errorMessage;
 
     private async Task LoginImpl()
     {
@@ -44,7 +45,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            errorMessage = ex.Message;
         }
     }
 }

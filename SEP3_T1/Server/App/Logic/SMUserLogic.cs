@@ -279,12 +279,13 @@ public class SMUserLogic : ISMUserLogic
             });
             
             return response.IsFollowing;
-
+        
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
         }
+        
     }
 }

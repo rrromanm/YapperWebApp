@@ -47,12 +47,13 @@
     </div>
 </div>
 
-
 @code {
     private string message;
     private string selectedReceiverName;
     private List<MessageDTO> messages = new List<MessageDTO>();
     private List<User> users = new List<User>();
+    private List<FollowersDTO> followers = new List<FollowersDTO>();
+    private List<FollowersDTO> following = new List<FollowersDTO>();
     private int currentUserId;
     private int? selectedReceiverId;
 
@@ -70,24 +71,30 @@
 
     private async Task LoadUsers()
     {
+        followers = await UserService.GetFollowers(currentUserId);
+        following = await UserService.GetFollowing(currentUserId);
+
+        var mutualFollowers = followers
+            .Where(f => following.Any(f2 => f2.id == f.id))
+            .Select(f => f.id)
+            .ToList();
+
         users = await UserService.GetAllUsers();
-        // Exclude the logged-in user from the list
-        users = users.Where(u => u.Id != currentUserId).ToList();
+        users = users
+            .Where(u => mutualFollowers.Contains(u.Id) && u.Id != currentUserId)
+            .ToList();
     }
 
     private async Task LoadMessages()
     {
         if (selectedReceiverId.HasValue)
         {
-            // Retrieve messages for the current conversation
             var allMessages = await ChatService.GetMessages(currentUserId, selectedReceiverId.Value);
-
-            // Ensure messages are mapped correctly for the chat UI
             messages = allMessages
                 .Where(msg =>
-                    (msg.SenderId == currentUserId && msg.ReceiverId == selectedReceiverId.Value) || // Messages sent by the user
-                    (msg.SenderId == selectedReceiverId.Value && msg.ReceiverId == currentUserId))   // Messages received by the user
-                .OrderBy(msg => DateTime.Parse(msg.Timestamp)) // Order by timestamp
+                    (msg.SenderId == currentUserId && msg.ReceiverId == selectedReceiverId.Value) ||
+                    (msg.SenderId == selectedReceiverId.Value && msg.ReceiverId == currentUserId))
+                .OrderBy(msg => DateTime.Parse(msg.Timestamp))
                 .ToList();
         }
 
@@ -98,8 +105,6 @@
     {
         selectedReceiverId = userId;
         selectedReceiverName = users.FirstOrDefault(u => u.Id == userId)?.Username;
-
-        // Clear input and load previous messages
         message = string.Empty;
         await LoadMessages();
     }
@@ -109,14 +114,8 @@
         if (!string.IsNullOrEmpty(message) && selectedReceiverId.HasValue)
         {
             var newMessage = new SendMessageDTO(message, currentUserId, selectedReceiverId.Value);
-
-            // Send the message
             await ChatService.SendMessage(newMessage);
-
-            // Add the new message with correct sender and receiver
             messages.Add(new MessageDTO(0, message, currentUserId, selectedReceiverId.Value, DateTime.Now.ToString("o")));
-
-            // Clear the input field
             message = string.Empty;
             StateHasChanged();
         }
