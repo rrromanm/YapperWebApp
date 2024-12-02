@@ -99,7 +99,6 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
             ArrayList<PostDTO> posts = dao.getAllPosts();
 
             String string = gson.toJson(posts);
-            System.out.println(string);
             GetAllPostsResponse response = GetAllPostsResponse.newBuilder().setList(string).build();
 
             responseObserver.onNext(response);

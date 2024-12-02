@@ -12,13 +12,14 @@
 
 <h1>Home page</h1>
 
+<link href="HomeStylesheet.css" rel="stylesheet"/>
+
 <AuthorizeView>
     <Authorized>
         <p>Hello, @context.User.Identity.Name!</p>
         <p>You are logged in.</p>
 
-        <div>
-            <h2>Create a Post</h2>
+        <div class="post-div">
             <div>
                 <label for="title">Title:</label>
                 <InputText id="title" @bind-Value="title" />
@@ -27,18 +28,19 @@
                 <label for="body">Body:</label>
                 <InputTextArea id="body" @bind-Value="body" />
             </div>
-            <div>
-                <label for="category">Category:</label>
-                <InputSelect id="category" @bind-Value="categoryId">
-                    <option value="0">Pick a category</option>
-                    @foreach (var category in categories)
-                    {
-                        <option value="@category.Id">@category.Name</option>
-                    }
-                </InputSelect>
-                
+            <div class="category-submit">
+                <div>
+                    <label for="category">Category:</label>
+                    <InputSelect id="category" @bind-Value="categoryId">
+                        <option value="0">Pick a category</option>
+                        @foreach (var category in categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </InputSelect>
+                </div>
+                <button type="submit" @onclick="HandleValidSubmit" class="btn btn-sm btn-outline-secondary">Submit</button>
             </div>
-            <button type="submit" @onclick="HandleValidSubmit">Submit</button>
         </div>
 
         <div class="profile-posts">
