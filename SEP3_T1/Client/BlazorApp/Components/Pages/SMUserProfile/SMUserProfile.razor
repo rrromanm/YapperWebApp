@@ -73,7 +73,17 @@
                 else if (showLikedPosts)
                 {
                     <div class="liked-posts">
-                        <p>Liked posts will be displayed here.</p>
+                        @if (likedPosts != null && likedPosts.Count > 0)
+                        {
+                            @foreach (var post in likedPosts)
+                            {
+                                <PostComponent Post="post" />
+                            }
+                        }
+                        else
+                        {
+                            <p>No liked posts available.</p>
+                        }
                     </div>
                 }
             </div>
@@ -163,6 +173,7 @@
     private int currentUserId;
 
     private List<Post> posts = new List<Post>();
+    private List<Post> likedPosts = new List<Post>();
     private List<FollowersDTO> followersList = new List<FollowersDTO>();
     private List<FollowersDTO> followingList = new List<FollowersDTO>();
 
@@ -193,6 +204,7 @@
                 if (showPosts)
                 {
                     await loadPosts(user.Id);
+                    await LoadLikedPosts(user.Id);
                 }
             }
             else
@@ -211,10 +223,25 @@
         try
         {
             posts = await postService.GetPostsByUserId(userId);
+            StateHasChanged();
         }
         catch (Exception ex)
         {
             errorMessage = "Failed to load posts.";
+            Console.WriteLine(ex);
+        }
+    }
+    
+    private async Task LoadLikedPosts(int userId)
+    {
+        try
+        {
+            likedPosts = await postService.GetLikedPosts(userId);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to load liked posts.";
             Console.WriteLine(ex);
         }
     }
