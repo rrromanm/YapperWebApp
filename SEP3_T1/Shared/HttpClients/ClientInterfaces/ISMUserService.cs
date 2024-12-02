@@ -13,4 +13,7 @@ public interface ISMUserService
     Task<User> GetByUserId(int userId);
     Task FollowUser(int followerId, int followedId);
     Task UnfollowUser(int followerId, int followedId);
+    Task<List<FollowersDTO>> GetFollowers(int userId);
+    Task<List<FollowersDTO>> GetFollowing(int userId);
+    Task<List<User>> GetAllUsers();
 }

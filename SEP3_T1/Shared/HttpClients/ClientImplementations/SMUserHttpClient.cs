@@ -106,4 +106,37 @@ public class SMUserHttpClient : ISMUserService
         }
         
     }
+
+    public async Task<List<FollowersDTO>> GetFollowers(int userId)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/SMUser/{userId}/Followers");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+        return await response.Content.ReadFromJsonAsync<List<FollowersDTO>>();
+    }
+
+    public async Task<List<FollowersDTO>> GetFollowing(int userId)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/SMUser/{userId}/Following");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+        return await response.Content.ReadFromJsonAsync<List<FollowersDTO>>();
+    }
+
+    public async Task<List<User>> GetAllUsers()
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/SMUser");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+        return await response.Content.ReadFromJsonAsync<List<User>>();
+    }
 }

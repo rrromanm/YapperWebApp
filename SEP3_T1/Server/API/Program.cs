@@ -12,6 +12,7 @@ builder.Services.AddScoped<ISMUserLogic, SMUserLogic>();
 builder.Services.AddScoped<ICategoryLogic, CategoryLogic>();
 builder.Services.AddScoped<ICommentLogic, CommentLogic>();
 builder.Services.AddScoped<IPostLogic, PostLogic>();
+builder.Services.AddScoped<IChatLogic, ChatLogic>();
 
 var app = builder.Build();
 

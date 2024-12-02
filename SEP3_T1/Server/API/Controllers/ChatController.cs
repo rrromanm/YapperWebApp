@@ -21,6 +21,8 @@ namespace API.Controllers
             try
             {
                 await _chatLogic.SendMessageAsync(dto);
+                Console.WriteLine($"Sending message: SenderId={dto.SenderId}, ReceiverId={dto.ReceiverId}, Message={dto.Message}");
+
                 return Ok();
             }
             catch (Exception e)
@@ -46,6 +48,7 @@ namespace API.Controllers
         [HttpGet("{sender:int}/{receiver:int}")]
         public async Task<ActionResult> GetMessages([FromRoute] int sender, [FromRoute] int receiver)
         {
+            Console.WriteLine($"GetMessages called with Sender: {sender}, Receiver: {receiver}");
             try
             {
                 var result = await _chatLogic.GetMessagesAsync(sender, receiver);
@@ -56,5 +59,6 @@ namespace API.Controllers
                 return BadRequest(e.Message);
             }
         }
+
     }
 }
