@@ -139,4 +139,13 @@ public class SMUserHttpClient : ISMUserService
         }
         return await response.Content.ReadFromJsonAsync<List<User>>();
     }
+
+    public async Task<bool> IsFollowing(int followerId, int followedId)
+    {
+        var response = await _client.GetAsync($"/SMUser/{followerId}/isfollowing/{followedId}");
+        response.EnsureSuccessStatusCode();
+
+        var isFollowing = await response.Content.ReadFromJsonAsync<bool>();
+        return isFollowing;
+    }
 }

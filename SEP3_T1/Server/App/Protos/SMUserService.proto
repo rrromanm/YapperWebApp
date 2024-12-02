@@ -30,6 +30,10 @@ message GetFollowersResponse {
   string list = 1; // JSON representation of followers
 }
 
+message IsFollowingResponse {
+  bool isFollowing = 1;
+}
+
 
 message Follower {
   int32 id = 1;
@@ -74,6 +78,11 @@ message UnfollowUserRequest {
   int32 followedId = 2;
 }
 
+message IsFollowingRequest {
+  int32 followerId = 1;
+  int32 followedId = 2;
+}
+
 
 //Responses
 message GetAllUsersResponse{
@@ -111,4 +120,5 @@ service SMUserService {
   rpc UnfollowUser (UnfollowUserRequest) returns (SMUserEmptyResponse);
   rpc GetFollowers (GetFollowersRequest) returns (GetFollowersResponse);
   rpc GetFollowing (GetFollowersRequest) returns (GetFollowersResponse);
+  rpc IsFollowing (IsFollowingRequest) returns (IsFollowingResponse);
 }

@@ -29,7 +29,7 @@
                                     }
                                     else
                                     {
-                                        <button @onclick="@FollowUser" class="follow-btn">Follow</button>
+                                        <FollowBtn userId="userId" OnFollowStatusChanged="UpdateFollowerCount" />
                                     }
                                 </div>
                             </div>
@@ -84,10 +84,10 @@
     private string nickname;
     private int followersCount;
     private int followingCount;
-    
+
     private string? errorMessage;
     private bool isCurrentUser;
-    
+
     private List<Post> posts = new List<Post>();
 
     private bool showPosts = true;
@@ -155,28 +155,21 @@
         showPosts = false;
         showLikedPosts = true;
     }
-    
-    private async void FollowUser()
+
+    private async Task UpdateFollowerCount()
     {
         try
         {
-            var authState = await AuthProvider.GetAuthenticationStateAsync();
-            var currentUser = authState.User.Identity.Name;
-            var currentUserId = (await userService.GetByUsername(currentUser)).Id;
-
-            await userService.FollowUser(currentUserId, userId);
-
             var user = await userService.GetByUsername(username);
             if (user != null)
             {
                 followersCount = user.followersCount;
                 followingCount = user.followingCount;
             }
-            StateHasChanged();
         }
         catch (Exception ex)
         {
-            errorMessage = "Failed to follow user.";
+            errorMessage = "Failed to update follower count.";
             Console.WriteLine(ex);
         }
     }

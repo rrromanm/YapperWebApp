@@ -141,6 +141,20 @@ public class SMUserController : ControllerBase
         }
     }
     
+    [HttpGet("{followerId:int}/IsFollowing/{followedId:int}")]
+    public async Task<ActionResult<bool>> IsFollowing(int followerId, int followedId)
+    {
+        try
+        {
+            var isFollowing = await _smUserLogic.IsFollowing(followerId, followedId);
+            return Ok(isFollowing);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
     [HttpGet("{id:int}/Followers")]
     public async Task<ActionResult> GetFollowers([FromRoute] int id)
     {
