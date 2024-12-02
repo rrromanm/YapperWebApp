@@ -25,7 +25,7 @@
         <!-- Actions Section -->
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div>
-                <button class="btn btn-sm @LikeButtonClass" @onclick="() => LikePost(Post.PostId)">
+                <button class="btn btn-sm @LikeButtonClass" @onclick="() => ToggleLike(Post.PostId)">
                     <i class="@LikeIconClass"></i> @LikeText (@Post.LikeCount)
                 </button>
                 <button class="btn btn-sm btn-outline-secondary" @onclick="() => ToggleComments(Post.PostId)">
@@ -80,9 +80,26 @@
         {
             var userId = user.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
             CurrentUserId = int.Parse(userId);
+
+            await FetchLikedPosts();
         }
 
         await LoadUsername();
+    }
+
+    private async Task FetchLikedPosts()
+    {
+        try
+        {
+            var likedPosts = await PostService.GetLikedPosts(CurrentUserId);
+            
+            Post.UserLiked = likedPosts.Any(p => p.PostId == Post.PostId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     private async Task LoadUsername()
@@ -107,18 +124,45 @@
     private string LikeIconClass => Post.UserLiked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up";
     private string LikeButtonClass => Post.UserLiked ? "btn-primary" : "btn-outline-primary";
 
+    private async Task ToggleLike(int postId)
+    {
+        if (Post.UserLiked)
+        {
+            await UnlikePost(postId);
+        }
+        else
+        {
+            await LikePost(postId);
+        }
+    }
+
     private async Task LikePost(int postId)
     {
         try
         {
             await PostService.LikePost(CurrentUserId, postId);
-            Post = await PostService.GetPost(postId); // Fetch the updated post data
-            await LoadUsername(); // Reload the username
-            StateHasChanged(); // Re-render the component to reflect the updated data
+            Post.UserLiked = true;
+            Post.LikeCount++;
+            StateHasChanged();
         }
         catch (Exception ex)
         {
             throw new Exception($"Error liking post: {ex.Message}");
+        }
+    }
+
+    private async Task UnlikePost(int postId)
+    {
+        try
+        {
+            await PostService.UnlikePost(CurrentUserId, postId);
+            Post.UserLiked = false;
+            Post.LikeCount--;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error unliking post: {ex.Message}");
         }
     }
 
