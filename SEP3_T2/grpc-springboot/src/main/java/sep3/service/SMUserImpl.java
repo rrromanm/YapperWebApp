@@ -16,6 +16,8 @@ import socialMediaUser.GetAllUsersResponse;
 import socialMediaUser.GetFollowersRequest;
 import socialMediaUser.GetFollowersResponse;
 import socialMediaUser.GetSMUserRequest;
+import socialMediaUser.IsFollowingRequest;
+import socialMediaUser.IsFollowingResponse;
 import socialMediaUser.SMUserEmptyResponse;
 import socialMediaUser.SMUserResponse;
 import socialMediaUser.UnfollowUserRequest;
