@@ -1,0 +1,49 @@
+﻿.comments-container {
+  padding: 10px;
+  background-color: #BDB19A;
+  border-radius: 5px;
+}
+
+.comment-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #A79078;
+  border-radius: 5px;
+  color: #563D39;
+}
+
+.comment-item p {
+  margin: 0;
+}
+
+.comment-item .text-muted {
+  color: #74655E;
+}
+
+.like-section {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.like-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.like-button .bi-hand-thumbs-up {
+  color: #563D39;
+}
+
+.like-button .bi-hand-thumbs-up-fill {
+  color: #563D39;
+}
+.username-link {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.username-link:hover {
+  color: white;
+}

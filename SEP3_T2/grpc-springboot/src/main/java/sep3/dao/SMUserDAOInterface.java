@@ -20,4 +20,5 @@ public interface SMUserDAOInterface
     void unfollowUser(int followerId, int followingId) throws SQLException;
     ArrayList<FollowerDTO> getFollowers(int userId) throws SQLException;
     ArrayList<FollowerDTO> getFollowing(int userId) throws SQLException;
+    boolean isFollowing(int followerId, int followedId) throws SQLException;
 }

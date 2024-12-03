@@ -1,0 +1,89 @@
+﻿@using HttpClients.ClientInterfaces
+@inject AuthenticationStateProvider AuthProvider
+@inject ISMUserService userService
+
+<button @onclick="@ToggleFollow" class="follow-btn @(isFollowing ? "grey" : "")">@buttonText</button>
+
+@code {
+    [Parameter] public int userId { get; set; }
+    [Parameter] public EventCallback OnFollowStatusChanged { get; set; }
+    private string? errorMessage;
+    private bool isFollowing;
+    private string buttonText = "Follow";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await CheckFollowStatus();
+    }
+
+    private async Task CheckFollowStatus()
+    {
+        try
+        {
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var currentUser = authState.User.Identity.Name;
+            var currentUserId = (await userService.GetByUsername(currentUser)).Id;
+
+            isFollowing = await userService.IsFollowing(currentUserId, userId);
+            buttonText = isFollowing ? "Unfollow" : "Follow";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to check follow status.";
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async void ToggleFollow()
+    {
+        if (isFollowing)
+        {
+            await UnfollowUser();
+        }
+        else
+        {
+            await FollowUser();
+        }
+        await OnFollowStatusChanged.InvokeAsync();
+    }
+
+    private async Task FollowUser()
+    {
+        try
+        {
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var currentUser = authState.User.Identity.Name;
+            var currentUserId = (await userService.GetByUsername(currentUser)).Id;
+
+            await userService.FollowUser(currentUserId, userId);
+            isFollowing = true;
+            buttonText = "Unfollow";
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to follow user.";
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task UnfollowUser()
+    {
+        try
+        {
+            var authState = await AuthProvider.GetAuthenticationStateAsync();
+            var currentUser = authState.User.Identity.Name;
+            var currentUserId = (await userService.GetByUsername(currentUser)).Id;
+
+            await userService.UnfollowUser(currentUserId, userId);
+            isFollowing = false;
+            buttonText = "Follow";
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to unfollow user.";
+            Console.WriteLine(ex);
+        }
+    }
+}

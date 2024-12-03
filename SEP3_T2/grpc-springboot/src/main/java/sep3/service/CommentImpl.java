@@ -114,17 +114,14 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
   @Override
   public void getCommentsByPost(GetCommentsByPostRequest request, StreamObserver<GetCommentsByPostResponse> responseObserver)
   {
-    try{
+    try {
       ArrayList<CommentDTO> comments = dao.getCommentsByPostId(request.getPostId());
-
       String string = gson.toJson(comments);
+      System.out.println("Comments fetched for postId: " + request.getPostId() + " -> " + gson.toJson(comments));
       GetCommentsByPostResponse response = GetCommentsByPostResponse.newBuilder().setList(string).build();
-
       responseObserver.onNext(response);
       responseObserver.onCompleted();
-    }
-    catch (Exception e)
-    {
+    } catch (Exception e) {
       responseObserver.onError(e);
     }
   }

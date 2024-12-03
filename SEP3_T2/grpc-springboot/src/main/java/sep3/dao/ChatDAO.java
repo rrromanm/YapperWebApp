@@ -42,17 +42,22 @@ public class ChatDAO implements ChatDAOInterface {
     public List<MessageDTO> getMessages(int senderId, int receiverId) throws SQLException {
         List<MessageDTO> messages = new ArrayList<>();
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM message WHERE senderId = ? AND receiverId = ? ORDER BY date ASC");
+            // Updated query to include both directions
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM message WHERE (senderid = ? AND receiverid = ?) OR (senderid = ? AND receiverid = ?) ORDER BY date ASC"
+            );
             statement.setInt(1, senderId);
             statement.setInt(2, receiverId);
+            statement.setInt(3, receiverId);
+            statement.setInt(4, senderId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 messages.add(new MessageDTO(
                         resultSet.getString("body"),
-                        resultSet.getInt("senderId"),
-                        resultSet.getInt("receiverId"),
+                        resultSet.getInt("senderid"),
+                        resultSet.getInt("receiverid"),
                         resultSet.getString("date"),
-                        resultSet.getInt("messageId")
+                        resultSet.getInt("messageid")
                 ));
             }
         } catch (Exception e) {
@@ -61,6 +66,7 @@ public class ChatDAO implements ChatDAOInterface {
         }
         return messages;
     }
+
 
     @Override
     public List<MessageDTO> getAllMessages() throws SQLException {

@@ -128,7 +128,7 @@ public class PostHttpClient : IPostService
 
     public async Task UnlikePost(int userId, int postId)
     {
-        HttpResponseMessage response = await _client.GetAsync($"/Post/UnlikePost/{userId}/{postId}");
+        HttpResponseMessage response = await _client.PostAsync($"/Post/UnlikePost/{userId}/{postId}", null);
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();

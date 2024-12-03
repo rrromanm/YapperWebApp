@@ -268,4 +268,24 @@ public class SMUserLogic : ISMUserLogic
         }
     }
 
+    public async Task<bool> IsFollowing(int followerId, int followedId)
+    {
+        try
+        {
+            var response = await client.IsFollowingAsync(new IsFollowingRequest
+            {
+                FollowerId = followerId,
+                FollowedId = followedId
+            });
+            
+            return response.IsFollowing;
+        
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
+    }
 }

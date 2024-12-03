@@ -16,6 +16,8 @@ import socialMediaUser.GetAllUsersResponse;
 import socialMediaUser.GetFollowersRequest;
 import socialMediaUser.GetFollowersResponse;
 import socialMediaUser.GetSMUserRequest;
+import socialMediaUser.IsFollowingRequest;
+import socialMediaUser.IsFollowingResponse;
 import socialMediaUser.SMUserEmptyResponse;
 import socialMediaUser.SMUserResponse;
 import socialMediaUser.UnfollowUserRequest;
@@ -204,22 +206,17 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
     @Override
     public void getFollowers(GetFollowersRequest request, StreamObserver<GetFollowersResponse> responseObserver) {
         try {
-            // Get the list of followers from the DAO (data access object)
             ArrayList<FollowerDTO> followers = dao.getFollowers(request.getId());
 
-            // Serialize the list of followers into JSON
             String jsonFollowers = gson.toJson(followers);
 
-            // Build the response with the serialized JSON string
             GetFollowersResponse response = GetFollowersResponse.newBuilder()
-                    .setList(jsonFollowers)  // Set the JSON string to the 'list' field
+                    .setList(jsonFollowers)
                     .build();
 
-            // Send the response back to the client
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
-            // Handle exceptions and send error response
             responseObserver.onError(e);
         }
     }
@@ -228,24 +225,34 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
     @Override
     public void getFollowing(GetFollowersRequest request, StreamObserver<GetFollowersResponse> responseObserver) {
         try {
-            // Get the list of following users from the DAO
             ArrayList<FollowerDTO> following = dao.getFollowing(request.getId());
 
-            // Serialize the list of following users to JSON
             String jsonFollowing = gson.toJson(following);
 
-            // Build the response with the serialized JSON string
             GetFollowersResponse response = GetFollowersResponse.newBuilder()
-                    .setList(jsonFollowing)  // Set the JSON string to the 'list' field
+                    .setList(jsonFollowing)
                     .build();
 
-            // Send the response back to the client
             responseObserver.onNext(response);
             responseObserver.onCompleted();
         } catch (Exception e) {
-            // Handle exceptions and send error response
             responseObserver.onError(e);
         }
     }
 
+    @Override
+    public void isFollowing(IsFollowingRequest request, StreamObserver<IsFollowingResponse> responseObserver) {
+        try {
+            boolean isFollowing = dao.isFollowing(request.getFollowerId(), request.getFollowedId());
+
+            IsFollowingResponse response = IsFollowingResponse.newBuilder()
+                    .setIsFollowing(isFollowing)
+                    .build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(e);
+        }
+    }
 }

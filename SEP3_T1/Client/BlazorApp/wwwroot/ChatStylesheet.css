@@ -1,0 +1,127 @@
+/* General Chat Container Styles */
+.chat-container {
+    display: flex;
+    gap: 20px;
+    background-color: #74655E; /* Chat background */
+    color: #FFFFFF;
+    padding: 20px;
+    border-radius: 10px;
+    height: 100%;
+}
+
+/* Accounts List Styles */
+.accounts-list {
+    width: 25%;
+    background-color: #563D39; /* Accounts list background */
+    padding: 10px;
+    border-radius: 10px;
+    color: #FFFFFF;
+    height: 100%; /* Ensure it stretches to the full container height */
+    max-height: 500px; /* Optional: set max height to avoid expanding the page */
+    overflow-y: auto;
+}
+
+.accounts-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.accounts-list li {
+    cursor: pointer;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    background-color: #A79078;
+    text-align: center;
+    color: #FFFFFF;
+    transition: background-color 0.3s;
+}
+
+.accounts-list li:hover {
+    background-color: #BDB19A;
+}
+
+/* Chat Window Styles */
+.chat-window {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 70%;
+    height: 100%; /* Full height of the container */
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #563D39; /* Matches the accounts list */
+    color: #FFFFFF;
+}
+
+/* Messages Container */
+.messages {
+    flex-grow: 1;
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 400px; /* Fixed height to prevent expansion */
+    height: 100%; /* Fills available height of the chat window */
+}
+
+/* Individual Message Styles */
+.message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.sender {
+    background-color: #A79078; /* Sender color */
+    margin-left: auto;
+    text-align: right;
+}
+
+.receiver {
+    background-color: #BDB19A; /* Receiver color */
+    margin-right: auto;
+    text-align: left;
+}
+
+.nickname {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #74655E; /* Subtle color for timestamps */
+    text-align: right;
+}
+
+/* Message Input Styles */
+.message-input {
+    display: flex;
+    gap: 10px;
+}
+
+.message-input input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #74655E;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+.message-input button {
+    padding: 10px;
+    background-color: #A79078;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.message-input button:hover {
+    background-color: #BDB19A;
+}

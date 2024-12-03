@@ -18,4 +18,5 @@ public interface ISMUserLogic
     Task UnfollowUser(int followerId, int followedId);
     Task<List<FollowersDTO>> GetFollowers(int userId);
     Task<List<FollowersDTO>> GetFollowing(int userId);
+    Task<bool> IsFollowing(int followerId, int followedId);
 }

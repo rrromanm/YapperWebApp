@@ -335,4 +335,24 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    @Override
+    public boolean isFollowing(int followerId, int followedId) throws SQLException {
+        try (Connection connection = DatabaseConnectionManager.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT COUNT(*) FROM yapper_database.follows WHERE followerid = ? AND followedid = ?"
+            );
+            statement.setInt(1, followerId);
+            statement.setInt(2, followedId);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to check follow status");
+        }
+    }
+
 }

@@ -60,3 +60,11 @@
     padding: 15px;
     border-radius: 8px;
 }
+.username-link {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.username-link:hover {
+    color: white; 
+}

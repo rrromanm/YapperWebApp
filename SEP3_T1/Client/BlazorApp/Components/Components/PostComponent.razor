@@ -11,7 +11,7 @@
         <div class="d-flex align-items-center mb-3">
             <i class="bi bi-person-circle fs-3 me-2 profile-icon"></i>
             <div>
-                <span class="fw-bold">@username</span> <br />
+                <span class="fw-bold username-link" @onclick="() => NavigateToUserProfile(username)">@nickname</span> <br />
                 <small class="text-muted">@Post.PostDate</small>
             </div>
         </div>
@@ -25,7 +25,7 @@
         <!-- Actions Section -->
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div>
-                <button class="btn btn-sm @LikeButtonClass" @onclick="() => LikePost(Post.PostId)">
+                <button class="btn btn-sm @LikeButtonClass" @onclick="() => ToggleLike(Post.PostId)">
                     <i class="@LikeIconClass"></i> @LikeText (@Post.LikeCount)
                 </button>
                 <button class="btn btn-sm btn-outline-secondary" @onclick="() => ToggleComments(Post.PostId)">
@@ -54,7 +54,7 @@
     @if (CommentsVisibility.TryGetValue(Post.PostId, out var isVisible) && isVisible)
     {
         <div class="comments-section border-top mt-3 pt-3">
-            <PostComments PostId="Post.PostId" />
+            <CommentComponent PostId="Post.PostId" />
         </div>
     }
 </div>
@@ -62,12 +62,14 @@
 @code {
     [Parameter] public Post Post { get; set; }
     public int CurrentUserId { get; set; }
+    private string nickname;
     private string username;
 
     private Dictionary<int, bool> CommentsVisibility = new();
 
     protected override async Task OnParametersSetAsync()
     {
+        await LoadNickname();
         await LoadUsername();
     }
 
@@ -80,21 +82,41 @@
         {
             var userId = user.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
             CurrentUserId = int.Parse(userId);
+
+            await FetchLikedPosts();
         }
 
+        await LoadNickname();
         await LoadUsername();
     }
 
-    private async Task LoadUsername()
+
+    private async Task FetchLikedPosts()
     {
         try
         {
-            username = await GetUsernameById(Post.UserId);
+            var likedPosts = await PostService.GetLikedPosts(CurrentUserId);
+            
+            Post.UserLiked = likedPosts.Any(p => p.PostId == Post.PostId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    
+    private async Task LoadNickname()
+    {
+        try
+        {
+            nickname = await GetNicknameById(Post.UserId);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error getting username: {ex.Message}");
-            username = "Unknown User";
+            Console.WriteLine($"Error getting nickname: {ex.Message}");
+            nickname = "Unknown User";
         }
     }
 
@@ -107,18 +129,45 @@
     private string LikeIconClass => Post.UserLiked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up";
     private string LikeButtonClass => Post.UserLiked ? "btn-primary" : "btn-outline-primary";
 
+    private async Task ToggleLike(int postId)
+    {
+        if (Post.UserLiked)
+        {
+            await UnlikePost(postId);
+        }
+        else
+        {
+            await LikePost(postId);
+        }
+    }
+
     private async Task LikePost(int postId)
     {
         try
         {
             await PostService.LikePost(CurrentUserId, postId);
-            Post = await PostService.GetPost(postId); // Fetch the updated post data
-            await LoadUsername(); // Reload the username
-            StateHasChanged(); // Re-render the component to reflect the updated data
+            Post.UserLiked = true;
+            Post.LikeCount++;
+            StateHasChanged();
         }
         catch (Exception ex)
         {
             throw new Exception($"Error liking post: {ex.Message}");
+        }
+    }
+
+    private async Task UnlikePost(int postId)
+    {
+        try
+        {
+            await PostService.UnlikePost(CurrentUserId, postId);
+            Post.UserLiked = false;
+            Post.LikeCount--;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error unliking post: {ex.Message}");
         }
     }
 
@@ -145,7 +194,7 @@
         }
     }
 
-    private async Task<string> GetUsernameById(int userId)
+    private async Task<string> GetNicknameById(int userId)
     {
         try
         {
@@ -157,4 +206,22 @@
             throw new Exception("Error getting user by id", ex);
         }
     }
+    private void NavigateToUserProfile(string username)
+    {
+        NavigationManager.NavigateTo($"/Profiles/{username}");
+    }
+    private async Task LoadUsername()
+    {
+        try
+        {
+            var user = await userService.GetByUserId(Post.UserId);
+            username = user.Username;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting username: {ex.Message}");
+            username = "Unknown User";
+        }
+    }
+    
 }

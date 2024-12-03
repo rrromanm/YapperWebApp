@@ -1,0 +1,96 @@
+/* Container for the entire register page */
+.register-page-container {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+/* Left section: image container */
+.register-image {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #e8eaf6, #fff);
+    border-right: 1px solid #ccc;
+    position: relative;
+}
+
+.register-image img {
+    max-width: 70%;
+    max-height: 70%;
+    z-index: 2;
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2));
+    opacity: 0.9;
+    transition: transform 0.3s, opacity 0.3s;
+}
+
+.register-image img:hover {
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+/* Right section: register form */
+.register-form-container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.register-form {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-form input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.register-form button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.register-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Error messages styling */
+.register-exceptions {
+    margin-top: 20px;
+    color: red;
+    font-size: 12px;
+    text-align: center;
+}
+
+.register-footer {
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.register-footer a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.register-footer a:hover {
+    text-decoration: underline;
+}

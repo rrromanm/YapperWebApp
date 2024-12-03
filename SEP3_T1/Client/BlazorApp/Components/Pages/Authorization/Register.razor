@@ -4,16 +4,33 @@
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthProvider
 
-<h3>Register</h3>
+<div class="register-page-container">
+    <link href="RegisterStylesheet.css" rel="stylesheet" />
 
-<div class="register-container">
-    <div class="register-form">
-        <input @bind="username" placeholder="Username" />
-        <input @bind="nickname" placeholder="Nickname" />
-        <input @bind="email" type="email" placeholder="Email" />
-        <input @bind="password" type="password" placeholder="Password" />
-        <input @bind="repeatPassword" type="password" placeholder="Repeat Password" />
-        <button @onclick="RegisterImpl">Register</button>
+    <!-- Left section for image -->
+    <div class="register-image">
+        <img src="yapper.png" alt="Placeholder Image" />
+    </div>
+
+    <!-- Right section for register form -->
+    <div class="register-form-container">
+        <div class="register-form">
+            <input @bind="username" placeholder="Username" />
+            <input @bind="nickname" placeholder="Nickname" />
+            <input @bind="password" type="password" placeholder="Password" />
+            <input @bind="repeatPassword" type="password" placeholder="Repeat Password" />
+            <input @bind="email" type="email" placeholder="Email" />
+            <button @onclick="RegisterImpl">Register</button>
+        </div>
+
+        <!-- Error or alert messages -->
+        <div class="register-exceptions">
+            <p class="error-message">@errorMessage</p>
+        </div>
+
+        <div class="register-footer">
+            <p>Have an account already? <a href="/Login">Login</a></p>
+        </div>
     </div>
 </div>
 
@@ -23,12 +40,13 @@
     private string email;
     private string password;
     private string repeatPassword;
+    private string errorMessage;
 
     private async Task RegisterImpl()
     {
         if (password != repeatPassword)
         {
-            Console.WriteLine("Passwords do not match.");
+            errorMessage = "Passwords do not match.";
             return;
         }
 
@@ -47,7 +65,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            errorMessage = ex.Message;
         }
     }
 }

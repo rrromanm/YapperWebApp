@@ -10,6 +10,7 @@ public class DatabaseConnectionManager {
     private static final String USER = "postgres";
     private static final String PASSWORD = "via";
 
+
     static {
         try {
             DriverManager.registerDriver(new org.postgresql.Driver());

@@ -124,3 +124,9 @@
     opacity: 1; /* Full opacity */
 }
 
+.login-exceptions {
+    margin-top: 20px;
+    color: red;
+    font-size: 12px;
+    text-align: center;
+}

@@ -1,6 +1,7 @@
 ﻿@page "/profiles/{username}"
 @using BlazorApp.Components.Components
 @using DTOs.Models
+@using DTOs.User
 @using HttpClients.ClientInterfaces
 @inject ISMUserService userService
 @inject IPostService postService
@@ -18,7 +19,7 @@
             <div class="profile-page">
                 <div class="profile-container">
                     <div class="profile-header">
-                        <img src="https://via.placeholder.com/250" alt="Profile Picture" class="profile-picture" />
+                        <img src="https://via.placeholder.com/200" alt="Profile Picture" class="profile-picture" />
                         <div class="profile-details">
                             <div class="nickname-follow">
                                 <h2>@nickname</h2>
@@ -29,12 +30,19 @@
                                     }
                                     else
                                     {
-                                        <button @onclick="@FollowUser" class="follow-btn">Follow</button>
+                                        <FollowBtn userId="userId" OnFollowStatusChanged="UpdateFollowerCount" />
                                     }
                                 </div>
                             </div>
-                            <p>Followers: @followersCount</p>
-                            <p>Following: @followingCount</p>
+                            <p>
+                                Followers:
+                                <button @onclick="OpenFollowersModal" class="link-button">@followersCount</button>
+                            </p>
+
+                            <p>
+                                Following:
+                                <button @onclick="OpenFollowingModal" class="link-button">@followingCount</button>
+                            </p>
                         </div>
                     </div>
                     <p class="username">@username</p>
@@ -65,8 +73,17 @@
                 else if (showLikedPosts)
                 {
                     <div class="liked-posts">
-                        <!-- Render liked posts here -->
-                        <p>Liked posts will be displayed here.</p>
+                        @if (likedPosts != null && likedPosts.Count > 0)
+                        {
+                            @foreach (var post in likedPosts)
+                            {
+                                <PostComponent Post="post" />
+                            }
+                        }
+                        else
+                        {
+                            <p>No liked posts available.</p>
+                        }
                     </div>
                 }
             </div>
@@ -77,21 +94,93 @@
     </NotAuthorized>
 </AuthorizeView>
 
-@code
+@if (isFollowersModalOpen)
 {
+    <div class="modal-overlay" @onclick="CloseFollowersModal">
+        <div class="modal-content" @onclick:stopPropagation="true">
+            <h3>Followers</h3>
+            <ul class="scrollable-list">
+                @if (followersList != null && followersList.Count > 0)
+                {
+                    @foreach (var follower in followersList)
+                    {
+                        <li>
+                            <img src="https://via.placeholder.com/25" alt="Profile Picture" class="profile-picture" />
+                            <div class="user-info">
+                                <span class="nickname username-link" @onclick="() => NavigateToUserProfile(follower.username)">@follower.nickname</span>
+                                <span class="username">@follower.username</span>
+                            </div>
+                            @if (currentUserId == follower.id)
+                            {
+
+                            }
+                            else
+                            {
+                                <FollowBtn userId="follower.id" OnFollowStatusChanged="UpdateFollowerCount"/>
+                            }
+                        </li>
+                    }
+                }
+                else
+                {
+                    <p>No followers found.</p>
+                }
+            </ul>
+            <button @onclick="CloseFollowersModal">Close</button>
+        </div>
+    </div>
+}
+
+@if (isFollowingModalOpen)
+{
+    <div class="modal-overlay" @onclick="CloseFollowingModal">
+        <div class="modal-content" @onclick:stopPropagation="true">
+            <h3>Following</h3>
+            <ul class="scrollable-list">
+                @if (followingList != null && followingList.Count > 0)
+                {
+                    @foreach (var following in followingList)
+                    {
+                        <li>
+                            <img src="https://via.placeholder.com/25" alt="Profile Picture" class="profile-picture" />
+                            <div class="user-info">
+                                <span class="nickname username-link" @onclick="() => NavigateToUserProfile(following.username)">@following.nickname</span>
+                                <span class="username">@following.username</span>
+                            </div>
+                            <FollowBtn userId="following.id" OnFollowStatusChanged="UpdateFollowerCount"/>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <p>No following found.</p>
+                }
+            </ul>
+            <button @onclick="CloseFollowingModal">Close</button>
+        </div>
+    </div>
+}
+
+@code {
     [Parameter] public string username { get; set; }
     private int userId { get; set; }
     private string nickname;
     private int followersCount;
     private int followingCount;
-    
+
     private string? errorMessage;
     private bool isCurrentUser;
-    
+    private int currentUserId;
+
     private List<Post> posts = new List<Post>();
+    private List<Post> likedPosts = new List<Post>();
+    private List<FollowersDTO> followersList = new List<FollowersDTO>();
+    private List<FollowersDTO> followingList = new List<FollowersDTO>();
 
     private bool showPosts = true;
     private bool showLikedPosts = false;
+    private bool isFollowersModalOpen = false;
+    private bool isFollowingModalOpen = false;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -108,11 +197,14 @@
                 followingCount = user.followingCount;
                 var authState = await AuthProvider.GetAuthenticationStateAsync();
                 var currentUser = authState.User.Identity.Name;
+                var userIdClaim = authState.User.FindFirst(claim => claim.Type == "Id");
+                currentUserId = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
                 isCurrentUser = currentUser == username;
 
                 if (showPosts)
                 {
                     await loadPosts(user.Id);
+                    await LoadLikedPosts(user.Id);
                 }
             }
             else
@@ -131,12 +223,65 @@
         try
         {
             posts = await postService.GetPostsByUserId(userId);
+            StateHasChanged();
         }
         catch (Exception ex)
         {
             errorMessage = "Failed to load posts.";
             Console.WriteLine(ex);
         }
+    }
+    
+    private async Task LoadLikedPosts(int userId)
+    {
+        try
+        {
+            likedPosts = await postService.GetLikedPosts(userId);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to load liked posts.";
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task OpenFollowersModal()
+    {
+        try
+        {
+            isFollowersModalOpen = true;
+            followersList = await userService.GetFollowers(userId);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to load followers.";
+            Console.WriteLine(ex);
+        }
+    }
+
+    private void CloseFollowersModal()
+    {
+        isFollowersModalOpen = false;
+    }
+
+    private async Task OpenFollowingModal()
+    {
+        try
+        {
+            isFollowingModalOpen = true;
+            followingList = await userService.GetFollowing(userId);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to load following.";
+            Console.WriteLine(ex);
+        }
+    }
+
+    private void CloseFollowingModal()
+    {
+        isFollowingModalOpen = false;
     }
 
     private async void ShowPosts()
@@ -155,29 +300,28 @@
         showPosts = false;
         showLikedPosts = true;
     }
-    
-    private async void FollowUser()
+
+    private async Task UpdateFollowerCount()
     {
         try
         {
-            var authState = await AuthProvider.GetAuthenticationStateAsync();
-            var currentUser = authState.User.Identity.Name;
-            var currentUserId = (await userService.GetByUsername(currentUser)).Id;
-
-            await userService.FollowUser(currentUserId, userId);
-
             var user = await userService.GetByUsername(username);
             if (user != null)
             {
                 followersCount = user.followersCount;
                 followingCount = user.followingCount;
             }
-            StateHasChanged();
         }
         catch (Exception ex)
         {
-            errorMessage = "Failed to follow user.";
+            errorMessage = "Failed to update follower count.";
             Console.WriteLine(ex);
         }
+    }
+    private void NavigateToUserProfile(string username)
+    {
+        CloseFollowersModal();
+        CloseFollowingModal();
+        NavMgr.NavigateTo($"/profiles/{username}");
     }
 }

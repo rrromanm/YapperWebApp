@@ -1,0 +1,123 @@
+@page "/chat"
+@using DTOs.DTOs
+@using DTOs.Models
+@using DTOs.User
+@using HttpClients.ClientInterfaces
+@inject IChatService ChatService
+@inject AuthenticationStateProvider AuthProvider
+@inject ISMUserService UserService
+
+<h3>Chat</h3>
+<link href="ChatStylesheet.css" rel="stylesheet" />
+
+<div class="chat-container">
+    <!-- Accounts to Chat -->
+    <div class="accounts-list">
+        <h4>Accounts to Chat</h4>
+        <ul>
+            @foreach (var user in users)
+            {
+            <li @onclick="() => SelectUser(user.Id)">@user.Username</li>
+            }
+        </ul>
+    </div>
+
+    <!-- Chat Window -->
+    <div class="chat-window">
+        <!-- Selected User Header -->
+        <h4>@selectedReceiverName</h4>
+
+        <!-- Scrollable Messages -->
+        <div class="messages">
+            @foreach (var msg in messages)
+            {
+            <div class="message @(msg.SenderId == currentUserId ? "sender" : "receiver")">
+                <span class="nickname">@(msg.SenderId == currentUserId ? "You" : selectedReceiverName)</span>
+                <p>@msg.Message</p>
+                <span class="timestamp">@DateTime.Parse(msg.Timestamp).ToString("yyyy/MM/dd HH:mm")</span>
+            </div>
+            }
+        </div>
+
+        <!-- Message Input -->
+        <div class="message-input">
+            <input @bind="message" placeholder="Type a message..." />
+            <button @onclick="SendMessage" disabled="@(string.IsNullOrEmpty(message))">Send</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string message;
+    private string selectedReceiverName;
+    private List<MessageDTO> messages = new List<MessageDTO>();
+    private List<User> users = new List<User>();
+    private List<FollowersDTO> followers = new List<FollowersDTO>();
+    private List<FollowersDTO> following = new List<FollowersDTO>();
+    private int currentUserId;
+    private int? selectedReceiverId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            currentUserId = int.Parse(user.FindFirst("Id").Value);
+            await LoadUsers();
+        }
+    }
+
+    private async Task LoadUsers()
+    {
+        followers = await UserService.GetFollowers(currentUserId);
+        following = await UserService.GetFollowing(currentUserId);
+
+        var mutualFollowers = followers
+            .Where(f => following.Any(f2 => f2.id == f.id))
+            .Select(f => f.id)
+            .ToList();
+
+        users = await UserService.GetAllUsers();
+        users = users
+            .Where(u => mutualFollowers.Contains(u.Id) && u.Id != currentUserId)
+            .ToList();
+    }
+
+    private async Task LoadMessages()
+    {
+        if (selectedReceiverId.HasValue)
+        {
+            var allMessages = await ChatService.GetMessages(currentUserId, selectedReceiverId.Value);
+            messages = allMessages
+                .Where(msg =>
+                    (msg.SenderId == currentUserId && msg.ReceiverId == selectedReceiverId.Value) ||
+                    (msg.SenderId == selectedReceiverId.Value && msg.ReceiverId == currentUserId))
+                .OrderBy(msg => DateTime.Parse(msg.Timestamp))
+                .ToList();
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task SelectUser(int userId)
+    {
+        selectedReceiverId = userId;
+        selectedReceiverName = users.FirstOrDefault(u => u.Id == userId)?.Username;
+        message = string.Empty;
+        await LoadMessages();
+    }
+
+    private async Task SendMessage()
+    {
+        if (!string.IsNullOrEmpty(message) && selectedReceiverId.HasValue)
+        {
+            var newMessage = new SendMessageDTO(message, currentUserId, selectedReceiverId.Value);
+            await ChatService.SendMessage(newMessage);
+            messages.Add(new MessageDTO(0, message, currentUserId, selectedReceiverId.Value, DateTime.Now.ToString("o")));
+            message = string.Empty;
+            StateHasChanged();
+        }
+    }
+}

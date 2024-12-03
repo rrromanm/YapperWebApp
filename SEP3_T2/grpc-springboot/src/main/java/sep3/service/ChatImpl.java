@@ -25,7 +25,7 @@ public class ChatImpl extends ChatServiceGrpc.ChatServiceImplBase {
     public void sendMessage(SendMessageRequest request, StreamObserver<EmptyMessageResponse> responseObserver) {
         try {
             System.out.println("Message sent from: " + request.getSenderId() + " to: " + request.getReceiverId());
-            SendMessageDTO dto = new SendMessageDTO(request.getMessage(), request.getSenderId(), request.getReceiverId());
+            SendMessageDTO dto = new SendMessageDTO(request.getMessage(), request.getReceiverId(), request.getSenderId());
             dao.sendMessage(dto);
             responseObserver.onNext(EmptyMessageResponse.newBuilder().build());
             responseObserver.onCompleted();
@@ -51,6 +51,8 @@ public class ChatImpl extends ChatServiceGrpc.ChatServiceImplBase {
     public void getMessages(GetMessagesRequest request, StreamObserver<GetMessagesResponse> responseObserver) {
         try {
             List<MessageDTO> messages = dao.getMessages(request.getSenderId(), request.getReceiverId());
+            System.out.println("messages get from: " + request.getSenderId() + " to: " + request.getReceiverId());
+            System.out.println("messages: " + messages);
             GetMessagesResponse.Builder responseBuilder = GetMessagesResponse.newBuilder();
 
             for (MessageDTO message : messages) {
