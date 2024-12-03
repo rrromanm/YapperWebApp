@@ -14,9 +14,9 @@
     color: #563D39;
 }
 
-.post-div input[type="text"],
 .post-div textarea,
-.post-div select {
+.post-div select,
+.post-div input {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
@@ -31,38 +31,45 @@
     min-height: 100px;
 }
 
-.btn-primary {
-    background-color: #A79078;
-    border-color: #A79078;
-    color: #FFFFFF;
-}
-
-.btn-outline-primary {
-    border-color: #A79078;
-    color: #A79078;
-}
-
-.btn-outline-primary:hover {
-    background-color: #A79078;
-    color: #FFFFFF;
-}
-
-.btn-outline-secondary {
+.submit-button {
     border-color: #74655E;
     color: #74655E;
 }
 
-.btn-outline-secondary:hover {
+.submit-button:hover {
     background-color: #74655E;
     color: #FFFFFF;
 }
 
-.btn-outline-danger {
-    border-color: #563D39;
-    color: #563D39;
+.submit-error-container {
+    display: flex;
+    align-items: center;
 }
 
-.btn-outline-danger:hover {
-    background-color: #563D39;
+.error-message {
+    margin-left: 10px;
+}
+
+.post-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.post-btn {
+    margin: 0 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.post-btn.active {
+    background-color: #74655E;
     color: #FFFFFF;
+}
+
+.post-btn.grey {
+    background-color: #E0E0E0;
+    color: #000000;
 }

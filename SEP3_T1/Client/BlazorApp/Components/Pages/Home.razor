@@ -21,17 +21,17 @@
 
         <div class="post-div">
             <div>
-                <label for="title">Title:</label>
-                <InputText id="title" @bind-Value="title" />
+                <label>Title:</label>
+                <InputText @bind-Value="title" />
             </div>
             <div>
-                <label for="body">Body:</label>
-                <InputTextArea id="body" @bind-Value="body" />
+                <label>Body:</label>
+                <InputTextArea @bind-Value="body" />
             </div>
             <div class="category-submit">
                 <div>
-                    <label for="category">Category:</label>
-                    <InputSelect id="category" @bind-Value="categoryId">
+                    <label>Category:</label>
+                    <InputSelect @bind-Value="categoryId">
                         <option value="0">Pick a category</option>
                         @foreach (var category in categories)
                         {
@@ -39,19 +39,21 @@
                         }
                     </InputSelect>
                 </div>
-                <button type="submit" @onclick="HandleValidSubmit" class="btn btn-sm btn-outline-secondary">Submit</button>
+                <div class="submit-error-container">
+                    <button type="submit" @onclick="HandleValidSubmit" class="btn btn-sm submit-button">Submit</button>
+                    <div class="error-message">@errorMessage</div>
+                </div>
             </div>
         </div>
 
         <div class="profile-posts">
             <div class="post-buttons">
-                <button @onclick="GetAllPosts" class="post-btn @(showAllPosts ? "active" : "grey")">For you</button>
-                <button @onclick="GetFollowingPosts" class="post-btn @(showFollowingPosts ? "active" : "grey")">Following</button>
+                <button @onclick="ShowAllPosts" class="post-btn @(showAllPosts ? "active" : "grey")">For you</button>
+                <button @onclick="ShowFollowingPosts" class="post-btn @(showFollowingPosts ? "active" : "grey")">Following</button>
             </div>
-            
+
             @if (showAllPosts)
             {
-                showFollowingPosts = false;
                 <div class="posts">
                     @if (allPosts != null && allPosts.Count > 0)
                     {
@@ -68,7 +70,6 @@
             }
             else if (showFollowingPosts)
             {
-                showAllPosts = false;
                 <div class="posts">
                     @if (followingPosts != null && followingPosts.Count > 0)
                     {
@@ -97,6 +98,7 @@
     private string body;
     private int categoryId;
     private int userId;
+    
     private List<Category> categories = new List<Category>();
     private List<Post> allPosts = new List<Post>();
     private List<Post> followingPosts = new List<Post>();
@@ -104,6 +106,8 @@
     private bool showAllPosts = true;
     private bool showFollowingPosts = false;
 
+    private string errorMessage;
+    
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
@@ -120,23 +124,48 @@
         
         await GetCategories();
         await GetAllPosts();
+        await GetFollowingPosts();
     }
-
+    
     private async Task HandleValidSubmit()
     {
-        await PostService.CreatePost(
-            new CreatePostDTO(
-                title,
-                body,
-                categoryId,
-                userId));
-        
-        title = string.Empty;
-        body = string.Empty;
-        categoryId = 0;
+        errorMessage = null;
 
-        StateHasChanged();
-        await GetAllPosts();
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            errorMessage = "Title cannot be empty.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(body))
+        {
+            errorMessage = "Body cannot be empty.";
+            return;
+        }
+        
+        if (categoryId == 0)
+        {
+            errorMessage = "Category cannot be empty.";
+            return;
+        }
+        
+        var createPostDto = new CreatePostDTO(title, body, categoryId, userId);
+
+        try
+        {
+            await PostService.CreatePost(createPostDto);
+
+            title = string.Empty;
+            body = string.Empty;
+            categoryId = 0;
+
+            StateHasChanged();
+            await GetAllPosts();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to create post. " + ex.Message;
+        }
     }
 
     private async Task GetAllPosts()
@@ -152,5 +181,17 @@
     private async Task GetCategories()
     {
         categories = await CategoryService.GetAllCategories();
+    }
+    
+    private void ShowAllPosts()
+    {
+        showAllPosts = true;
+        showFollowingPosts = false;
+    }
+
+    private void ShowFollowingPosts()
+    {
+        showAllPosts = false;
+        showFollowingPosts = true;
     }
 }
