@@ -83,6 +83,9 @@ message IsFollowingRequest {
   int32 followedId = 2;
 }
 
+message GetThreeRandomUsersRequest {
+
+}
 
 //Responses
 message GetAllUsersResponse{
@@ -107,6 +110,10 @@ message SMUserEmptyResponse {
 
 }
 
+message GetThreeRandomUsersResponse {
+  string list = 1;
+}
+
 service SMUserService {
   rpc CreateUser (CreateSMUserRequest) returns (CreateSMUserResponse);
   rpc UpdateEmail (UpdateSMUserEmailRequest) returns (SMUserEmptyResponse);
@@ -121,4 +128,5 @@ service SMUserService {
   rpc GetFollowers (GetFollowersRequest) returns (GetFollowersResponse);
   rpc GetFollowing (GetFollowersRequest) returns (GetFollowersResponse);
   rpc IsFollowing (IsFollowingRequest) returns (IsFollowingResponse);
+  rpc GetThreeRandomUsers (GetThreeRandomUsersRequest) returns (GetThreeRandomUsersResponse);
 }

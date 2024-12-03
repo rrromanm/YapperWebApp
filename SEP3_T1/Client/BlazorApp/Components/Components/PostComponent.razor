@@ -69,8 +69,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await LoadNickname();
-        await LoadUsername();
+        await LoadNicknameAndUsername();
     }
 
     protected override async Task OnInitializedAsync()
@@ -86,17 +85,14 @@
             await FetchLikedPosts();
         }
 
-        await LoadNickname();
-        await LoadUsername();
+        await LoadNicknameAndUsername();
     }
-
 
     private async Task FetchLikedPosts()
     {
         try
         {
             var likedPosts = await PostService.GetLikedPosts(CurrentUserId);
-            
             Post.UserLiked = likedPosts.Any(p => p.PostId == Post.PostId);
         }
         catch (Exception e)
@@ -106,17 +102,19 @@
         }
     }
 
-    
-    private async Task LoadNickname()
+    private async Task LoadNicknameAndUsername()
     {
         try
         {
-            nickname = await GetNicknameById(Post.UserId);
+            var user = await userService.GetByUserId(Post.UserId);
+            nickname = user.Nickname;
+            username = user.Username;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error getting nickname: {ex.Message}");
+            Console.WriteLine($"Error getting user data: {ex.Message}");
             nickname = "Unknown User";
+            username = "Unknown User";
         }
     }
 
@@ -194,34 +192,8 @@
         }
     }
 
-    private async Task<string> GetNicknameById(int userId)
-    {
-        try
-        {
-            var user = await userService.GetByUserId(userId);
-            return user.Nickname;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Error getting user by id", ex);
-        }
-    }
     private void NavigateToUserProfile(string username)
     {
         NavigationManager.NavigateTo($"/Profiles/{username}");
     }
-    private async Task LoadUsername()
-    {
-        try
-        {
-            var user = await userService.GetByUserId(Post.UserId);
-            username = user.Username;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error getting username: {ex.Message}");
-            username = "Unknown User";
-        }
-    }
-    
 }

@@ -183,5 +183,17 @@ public class SMUserController : ControllerBase
         }
     }
     
-    
+    [HttpGet("Random")]
+    public async Task<ActionResult> GetThreeRandomUsers()
+    {
+        try
+        {
+            var users = await _smUserLogic.GetThreeRandomUsers();
+            return Ok(users);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

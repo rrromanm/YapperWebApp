@@ -3,9 +3,11 @@
 @using DTOs.User.PostDTOs
 @using HttpClients.ClientInterfaces
 @using BlazorApp.Components.Components
+@using DTOs.User
 @inject NavigationManager NavMgr
 @inject AuthenticationStateProvider AuthProvider
 @inject IPostService PostService
+@inject ISMUserService UserService
 @inject ICategoryService CategoryService
 
 <PageTitle>Home</PageTitle>
@@ -19,71 +21,90 @@
         <p>Hello, @context.User.Identity.Name!</p>
         <p>You are logged in.</p>
 
-        <div class="post-div">
-            <div>
-                <label>Title:</label>
-                <InputText @bind-Value="title" />
-            </div>
-            <div>
-                <label>Body:</label>
-                <InputTextArea @bind-Value="body" />
-            </div>
-            <div class="category-submit">
-                <div>
-                    <label>Category:</label>
-                    <InputSelect @bind-Value="categoryId">
-                        <option value="0">Pick a category</option>
-                        @foreach (var category in categories)
-                        {
-                            <option value="@category.Id">@category.Name</option>
-                        }
-                    </InputSelect>
+        <div class="home-container">
+            <div class="posts-container">
+                <div class="post-div">
+                    <div>
+                        <label>Title:</label>
+                        <InputText @bind-Value="title" />
+                    </div>
+                    <div>
+                        <label>Body:</label>
+                        <InputTextArea @bind-Value="body" />
+                    </div>
+                    <div class="category-submit">
+                        <div>
+                            <label>Category:</label>
+                            <InputSelect @bind-Value="categoryId">
+                                <option value="0">Pick a category</option>
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="submit-error-container">
+                            <button type="submit" @onclick="HandleValidSubmit" class="btn btn-sm submit-button">Submit</button>
+                            <div class="error-message">@errorMessage</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="submit-error-container">
-                    <button type="submit" @onclick="HandleValidSubmit" class="btn btn-sm submit-button">Submit</button>
-                    <div class="error-message">@errorMessage</div>
-                </div>
-            </div>
-        </div>
 
-        <div class="profile-posts">
-            <div class="post-buttons">
-                <button @onclick="ShowAllPosts" class="post-btn @(showAllPosts ? "active" : "grey")">For you</button>
-                <button @onclick="ShowFollowingPosts" class="post-btn @(showFollowingPosts ? "active" : "grey")">Following</button>
+                <div class="profile-posts">
+                    <div class="post-buttons">
+                        <button @onclick="ShowAllPosts" class="post-btn @(showAllPosts ? "active" : "grey")">For you</button>
+                        <button @onclick="ShowFollowingPosts" class="post-btn @(showFollowingPosts ? "active" : "grey")">Following</button>
+                    </div>
+
+                    @if (showAllPosts)
+                    {
+                        <div class="posts">
+                            @if (allPosts != null && allPosts.Count > 0)
+                            {
+                                @foreach (var post in allPosts)
+                                {
+                                    <PostComponent Post="post" />
+                                }
+                            }
+                            else
+                            {
+                                <p>No posts available.</p>
+                            }
+                        </div>
+                    }
+                    else if (showFollowingPosts)
+                    {
+                        <div class="posts">
+                            @if (followingPosts != null && followingPosts.Count > 0)
+                            {
+                                @foreach (var post in followingPosts)
+                                {
+                                    <PostComponent Post="post" />
+                                }
+                            }
+                            else
+                            {
+                                <p>No posts available.</p>
+                            }
+                        </div>
+                    }
+                </div>
             </div>
 
-            @if (showAllPosts)
-            {
-                <div class="posts">
-                    @if (allPosts != null && allPosts.Count > 0)
+            <div class="accounts-container">
+                <div class="account-box">
+                    <h4>Recommended accounts</h4>
+                    @foreach (var user in threeRandomUsers)
                     {
-                        @foreach (var post in allPosts)
-                        {
-                            <PostComponent Post="post" />
-                        }
-                    }
-                    else
-                    {
-                        <p>No posts available.</p>
+                        <div class="account">
+                            <div class="account-info">
+                                <div class="account-nickname">@user.nickname</div>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary">Follow</button>
+                        </div>
                     }
                 </div>
-            }
-            else if (showFollowingPosts)
-            {
-                <div class="posts">
-                    @if (followingPosts != null && followingPosts.Count > 0)
-                    {
-                        @foreach (var post in followingPosts)
-                        {
-                            <PostComponent Post="post" />
-                        }
-                    }
-                    else
-                    {
-                        <p>No posts available.</p>
-                    }
-                </div>
-            }
+            </div>
         </div>
     </Authorized>
     <NotAuthorized>
@@ -98,16 +119,17 @@
     private string body;
     private int categoryId;
     private int userId;
-    
+
     private List<Category> categories = new List<Category>();
     private List<Post> allPosts = new List<Post>();
     private List<Post> followingPosts = new List<Post>();
-    
+    private List<FollowersDTO> threeRandomUsers = new List<FollowersDTO>();
+
     private bool showAllPosts = true;
     private bool showFollowingPosts = false;
 
     private string errorMessage;
-    
+
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
@@ -121,12 +143,13 @@
                 userId = id;
             }
         }
-        
+
         await GetCategories();
         await GetAllPosts();
         await GetFollowingPosts();
+        await GetThreeRandomUsers();
     }
-    
+
     private async Task HandleValidSubmit()
     {
         errorMessage = null;
@@ -142,13 +165,13 @@
             errorMessage = "Body cannot be empty.";
             return;
         }
-        
+
         if (categoryId == 0)
         {
             errorMessage = "Category cannot be empty.";
             return;
         }
-        
+
         var createPostDto = new CreatePostDTO(title, body, categoryId, userId);
 
         try
@@ -172,17 +195,17 @@
     {
         allPosts = await PostService.GetAllPosts();
     }
-    
+
     private async Task GetFollowingPosts()
     {
         followingPosts = await PostService.GetFollowingPosts(userId);
     }
-    
+
     private async Task GetCategories()
     {
         categories = await CategoryService.GetAllCategories();
     }
-    
+
     private void ShowAllPosts()
     {
         showAllPosts = true;
@@ -193,5 +216,10 @@
     {
         showAllPosts = false;
         showFollowingPosts = true;
+    }
+    
+    private async Task GetThreeRandomUsers()
+    {
+        threeRandomUsers = await UserService.GetThreeRandomUsers();
     }
 }

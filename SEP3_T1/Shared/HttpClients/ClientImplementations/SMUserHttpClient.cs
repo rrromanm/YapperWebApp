@@ -148,4 +148,15 @@ public class SMUserHttpClient : ISMUserService
         var isFollowing = await response.Content.ReadFromJsonAsync<bool>();
         return isFollowing;
     }
+    
+    public async Task<List<FollowersDTO>> GetThreeRandomUsers()
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/SMUser/Random");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+        return await response.Content.ReadFromJsonAsync<List<FollowersDTO>>();
+    }
 }

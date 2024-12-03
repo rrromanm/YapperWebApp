@@ -16,6 +16,8 @@ import socialMediaUser.GetAllUsersResponse;
 import socialMediaUser.GetFollowersRequest;
 import socialMediaUser.GetFollowersResponse;
 import socialMediaUser.GetSMUserRequest;
+import socialMediaUser.GetThreeRandomUsersRequest;
+import socialMediaUser.GetThreeRandomUsersResponse;
 import socialMediaUser.IsFollowingRequest;
 import socialMediaUser.IsFollowingResponse;
 import socialMediaUser.SMUserEmptyResponse;
@@ -247,6 +249,24 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
 
             IsFollowingResponse response = IsFollowingResponse.newBuilder()
                     .setIsFollowing(isFollowing)
+                    .build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void getThreeRandomUsers(GetThreeRandomUsersRequest request, StreamObserver<GetThreeRandomUsersResponse> responseObserver) {
+        try {
+            ArrayList<FollowerDTO> randomUsers = dao.getThreeRandomUsers();
+
+            String jsonFollowers = gson.toJson(randomUsers);
+
+            GetThreeRandomUsersResponse response = GetThreeRandomUsersResponse.newBuilder()
+                    .setList(jsonFollowers)
                     .build();
 
             responseObserver.onNext(response);

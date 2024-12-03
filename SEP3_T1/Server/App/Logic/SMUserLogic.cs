@@ -288,4 +288,28 @@ public class SMUserLogic : ISMUserLogic
         }
         
     }
+
+    public async Task<List<FollowersDTO>> GetThreeRandomUsers()
+    {
+        try
+        {
+            GetThreeRandomUsersResponse response = await client.GetThreeRandomUsersAsync(new GetThreeRandomUsersRequest());
+            string json = response.List;
+            
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            
+            List<FollowersDTO> users = JsonSerializer.Deserialize<List<FollowersDTO>>(json, options);
+            
+            return users;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }
