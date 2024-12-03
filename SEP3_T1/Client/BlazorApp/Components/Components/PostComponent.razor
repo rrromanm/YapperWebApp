@@ -1,9 +1,11 @@
-﻿@using DTOs.Models
+﻿@using DTOs.DTOs.Comment
+@using DTOs.Models
 @using HttpClients.ClientInterfaces
 @inject NavigationManager NavigationManager
 @inject IPostService PostService
 @inject ISMUserService userService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ICommentService CommentService
 
 <div class="post-item card my-3 custom-card">
     <div class="card-body">
@@ -54,7 +56,13 @@
     @if (CommentsVisibility.TryGetValue(Post.PostId, out var isVisible) && isVisible)
     {
         <div class="comments-section border-top mt-3 pt-3">
-            <CommentComponent PostId="Post.PostId" />
+            <CommentComponent @ref="commentComponentRef" PostId="Post.PostId" />
+            <div class="input-group mt-3">
+                <textarea class="form-control custom-textarea" placeholder="Write a comment..." @bind="commentBody"></textarea>
+                <button class="send-btn" @onclick="SubmitComment">
+                    <i class="bi bi-send"></i> 
+                </button>
+            </div>
         </div>
     }
 </div>
@@ -64,6 +72,8 @@
     public int CurrentUserId { get; set; }
     private string nickname;
     private string username;
+    private string commentBody;
+    private CommentComponent commentComponentRef;
 
     private Dictionary<int, bool> CommentsVisibility = new();
 
@@ -195,5 +205,14 @@
     private void NavigateToUserProfile(string username)
     {
         NavigationManager.NavigateTo($"/Profiles/{username}");
+    }
+    private async Task SubmitComment()
+    {
+        CreateCommentDTO createCommentDTO = new CreateCommentDTO(commentBody, CurrentUserId, Post.PostId);
+        await CommentService.CreateCommentAsync(createCommentDTO);
+        commentBody = string.Empty;
+        Post.CommentCount++;
+        await commentComponentRef.ReloadCommentsAsync();
+        StateHasChanged();
     }
 }

@@ -202,4 +202,31 @@ public class CommentDAO implements CommentDAOInterface {
 
     }
 
+    @Override public ArrayList<CommentDTO> getLikedCommentsByUserId(int userId) throws SQLException
+    {
+        try{
+            Connection connection = DatabaseConnectionManager.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM comment WHERE commentId IN (SELECT commentId FROM liked_comment WHERE userId = ?)");
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<CommentDTO> comments = new ArrayList<>();
+            while (resultSet.next()) {
+                String formattedDateTime = formatTimestamp(resultSet.getTimestamp("commentdate"));
+
+                comments.add(new CommentDTO(
+                    resultSet.getString("body"),
+                    formattedDateTime,
+                    resultSet.getInt("likecount"),
+                    resultSet.getInt("commentid"),
+                    resultSet.getInt("userid"),
+                    resultSet.getInt("postid")
+                ));
+            }
+            return comments;
+        } catch (SQLException e)
+        {
+            throw new SQLException("Failed to retrieve comments by user id", e);
+        }
+    }
+
 }

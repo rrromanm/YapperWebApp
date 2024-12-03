@@ -47,3 +47,21 @@
 .username-link:hover {
   color: white;
 }
+.like-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #74655E;
+}
+
+.like-button:hover {
+  color: #563D39;
+}
+
+.like-button .bi-hand-thumbs-up {
+  color: #563D39;
+}
+
+.like-button .bi-hand-thumbs-up-fill {
+  color: #563D39;
+}

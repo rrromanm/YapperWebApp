@@ -131,4 +131,17 @@ public class CommentController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    [HttpGet ("liked/{userId:int}")]
+    public async Task<ActionResult> GetAllLikedComments(int userId)
+    {
+        try
+        {
+            var comments = await _commentLogic.GetAllLikedCommentsAsync(userId);
+            return Ok(comments);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

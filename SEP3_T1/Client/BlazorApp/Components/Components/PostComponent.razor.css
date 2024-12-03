@@ -68,3 +68,30 @@
 .username-link:hover {
     color: white; 
 }
+.send-btn {
+    background-color: #A79078;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.send-btn:hover {
+    background-color: #563D39;
+}
+
+.send-btn i {
+    margin-right: 5px;
+}
+.custom-textarea {
+    border: 1px solid #BDB19A !important; 
+    border-radius: 5px;
+    padding: 10px;
+    outline: none; 
+    box-shadow: none; 
+    background-color: #F7F3EF; 
+}
