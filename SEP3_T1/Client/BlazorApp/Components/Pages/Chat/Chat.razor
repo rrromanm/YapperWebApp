@@ -14,45 +14,55 @@
 <h3>Chat</h3>
 <link href="ChatStylesheet.css" rel="stylesheet" />
 
-<div class="chat-container">
-    <!-- Accounts to Chat -->
-    <div class="accounts-list">
-        <h4>Accounts to Chat</h4>
-        <ul>
-            @foreach (var user in users)
-            {
-                <li @onclick="() => SelectUser(user.Id)">@user.Username</li>
-            }
-        </ul>
-    </div>
+<AuthorizeView>
+    <Authorized>
+        <div class="chat-container">
+            <!-- Accounts to Chat -->
+            <div class="accounts-list">
+                <h4>Accounts to Chat</h4>
+                <ul>
+                    @foreach (var user in users)
+                    {
+                    <li @onclick="() => SelectUser(user.Id)">@user.Username</li>
+                    }
+                </ul>
+            </div>
 
-    <!-- Chat Window -->
-    <div class="chat-window">
-        <!-- Selected User Header -->
-        <h4>@selectedReceiverName</h4>
+            <!-- Chat Window -->
+            <div class="chat-window">
+                <!-- Selected User Header -->
+                <h4>@selectedReceiverName</h4>
 
-        <!-- Scrollable Messages -->
-        <div class="messages">
-            @foreach (var msg in messages)
-            {
-                <div class="message @(msg.SenderId == currentUserId ? "sender" : "receiver")">
-                    <span class="nickname">@(msg.SenderId == currentUserId ? "You" : selectedReceiverName)</span>
-                    <p>@msg.Message</p>
-                    <span class="timestamp">@DateTime.Parse(msg.Timestamp).ToString("yyyy/MM/dd HH:mm")</span>
+                <!-- Scrollable Messages -->
+                <div class="messages">
+                    @foreach (var msg in messages)
+                    {
+                    <div class="message @(msg.SenderId == currentUserId ? "sender" : "receiver")">
+                        <span class="nickname">@(msg.SenderId == currentUserId ? "You" : selectedReceiverName)</span>
+                        <p>@msg.Message</p>
+                        <span class="timestamp">@DateTime.Parse(msg.Timestamp).ToString("yyyy/MM/dd HH:mm")</span>
+                    </div>
+                    }
                 </div>
-            }
+
+                <!-- Message Input -->
+                <div class="message-input">
+                    <input value="@message" @oninput="e => message = e.Value.ToString()"
+                           @onkeydown="HandleKeyPress" placeholder="Type a message..." />
+                    <button @onclick="SendMessage" disabled="@(string.IsNullOrEmpty(message))">Send</button>
+                </div>
+            </div>
         </div>
-
-        <!-- Message Input -->
-        <div class="message-input">
-            <input value="@message" @oninput="e => message = e.Value.ToString()"
-                   @onkeydown="HandleKeyPress" placeholder="Type a message..." />
-            <button @onclick="SendMessage" disabled="@(string.IsNullOrEmpty(message))">Send</button>
+    </Authorized>
+    <NotAuthorized>
+        <div class="unauthorized-view">
+            <h3>You are not authorized to view this page.</h3>
+            <p>Please <a href="/login">log in</a> to access the chat.</p>
+            <p>Or <a href="/register">register</a>, an account if not a member yet</p>
         </div>
+    </NotAuthorized>
+</AuthorizeView>
 
-
-    </div>
-</div>
 
 @code {
     private string message;
