@@ -65,3 +65,22 @@
 .like-button .bi-hand-thumbs-up-fill {
   color: #563D39;
 }
+.delete-button {
+  margin-left: auto;
+  background-color: #A79078;
+  border: 1px solid #BDB19A; 
+  color: #BDB19A;
+  padding: 5px 10px;
+  border-radius: 5px; 
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; 
+}
+
+.delete-button:hover {
+  background-color: #563D39;
+  color: #FFFFFF;
+  border-color: #FFFFFF; 
+}

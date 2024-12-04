@@ -115,7 +115,7 @@
     @if (CommentsVisibility.TryGetValue(Post.PostId, out var isVisible) && isVisible)
     {
         <div class="comments-section border-top mt-3 pt-3">
-            <CommentComponent @ref="commentComponentRef" PostId="Post.PostId" />
+            <CommentComponent @ref="commentComponentRef" PostId="Post.PostId" OnCommentDeleted="HandleCommentDeleted"/>
             <div class="input-group mt-3">
                 <textarea class="form-control custom-textarea" placeholder="Write a comment..." @bind="commentBody"></textarea>
                 <button class="send-btn" @onclick="SubmitComment">
@@ -284,6 +284,11 @@
 
     private async Task SubmitComment()
     {
+        if(string.IsNullOrWhiteSpace(commentBody))
+        {
+            //TODO add something to show that comment cannot be empty
+            return;
+        }
         CreateCommentDTO createCommentDTO = new CreateCommentDTO(commentBody, CurrentUserId, Post.PostId);
         await CommentService.CreateCommentAsync(createCommentDTO);
         commentBody = string.Empty;
@@ -336,10 +341,20 @@
         {
             await PostService.DeletePost(Post.PostId);
             StateHasChanged();
+            //TODO reload posts so its not needed to refresh page after deletion
         }
         catch (Exception ex)
         {
             throw new Exception($"Error deleting post: {ex.Message}");
         }
+    }
+    private void HandleCommentDeleted() // Method to handle the eventCallback from the CommentComponent, triggered when comment deleted and descreses the comment count
+    {
+        if (Post.CommentCount > 0)
+        {
+            Post.CommentCount--; 
+        }
+
+        StateHasChanged();
     }
 }
