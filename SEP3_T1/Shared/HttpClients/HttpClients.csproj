@@ -9,6 +9,8 @@
     <ItemGroup>
       <PackageReference Include="Grpc.Net.Client" Version="2.66.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+      <PackageReference Include="RabbitMQ" Version="3.6.2" />
+      <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
