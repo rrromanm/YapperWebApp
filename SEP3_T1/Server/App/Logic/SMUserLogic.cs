@@ -295,7 +295,6 @@ public class SMUserLogic : ISMUserLogic
         {
             GetThreeRandomUsersResponse response = await client.GetThreeRandomUsersAsync(new GetThreeRandomUsersRequest());
             string json = response.List;
-            
             JsonSerializerOptions options = new JsonSerializerOptions
             {
                 WriteIndented = true,

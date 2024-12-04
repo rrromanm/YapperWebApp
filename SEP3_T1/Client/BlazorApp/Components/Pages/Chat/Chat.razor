@@ -1,8 +1,12 @@
 @page "/chat"
+@using System.Text
+@using System.Text.Json
 @using DTOs.DTOs
 @using DTOs.Models
 @using DTOs.User
 @using HttpClients.ClientInterfaces
+@using RabbitMQ.Client
+@using RabbitMQ.Client.Events
 @inject IChatService ChatService
 @inject AuthenticationStateProvider AuthProvider
 @inject ISMUserService UserService
@@ -17,7 +21,7 @@
         <ul>
             @foreach (var user in users)
             {
-            <li @onclick="() => SelectUser(user.Id)">@user.Username</li>
+                <li @onclick="() => SelectUser(user.Id)">@user.Username</li>
             }
         </ul>
     </div>
@@ -31,11 +35,11 @@
         <div class="messages">
             @foreach (var msg in messages)
             {
-            <div class="message @(msg.SenderId == currentUserId ? "sender" : "receiver")">
-                <span class="nickname">@(msg.SenderId == currentUserId ? "You" : selectedReceiverName)</span>
-                <p>@msg.Message</p>
-                <span class="timestamp">@DateTime.Parse(msg.Timestamp).ToString("yyyy/MM/dd HH:mm")</span>
-            </div>
+                <div class="message @(msg.SenderId == currentUserId ? "sender" : "receiver")">
+                    <span class="nickname">@(msg.SenderId == currentUserId ? "You" : selectedReceiverName)</span>
+                    <p>@msg.Message</p>
+                    <span class="timestamp">@DateTime.Parse(msg.Timestamp).ToString("yyyy/MM/dd HH:mm")</span>
+                </div>
             }
         </div>
 
@@ -52,10 +56,11 @@
     private string selectedReceiverName;
     private List<MessageDTO> messages = new List<MessageDTO>();
     private List<User> users = new List<User>();
-    private List<FollowersDTO> followers = new List<FollowersDTO>();
-    private List<FollowersDTO> following = new List<FollowersDTO>();
     private int currentUserId;
     private int? selectedReceiverId;
+    private IConnection connection;
+    private IChannel channel;
+    private bool isConsumerInitialized = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,13 +71,61 @@
         {
             currentUserId = int.Parse(user.FindFirst("Id").Value);
             await LoadUsers();
+            
+            await InitializeRabbitMQConsumer();
+        }
+    }
+
+    private async Task InitializeRabbitMQConsumer()
+    {
+        
+        if (isConsumerInitialized) return; // Preventing duplicate initializations
+        isConsumerInitialized = true;
+        
+        var factory = new ConnectionFactory() { HostName = "localhost" };
+        
+        connection = await factory.CreateConnectionAsync();
+        channel = await connection.CreateChannelAsync();
+        
+        await channel.ExchangeDeclareAsync("chat.exchange", "topic");
+        string queueName = await channel.QueueDeclareAsync();
+        await channel.QueueBindAsync(queue: queueName, exchange: "chat.exchange", routingKey: $"chat.{currentUserId}");
+        
+        var consumer = new AsyncEventingBasicConsumer(channel);
+        consumer.ReceivedAsync += async (model, ea) =>
+        {
+            var body = ea.Body.ToArray();
+            var receivedMessage = JsonSerializer.Deserialize<SendMessageDTO>(Encoding.UTF8.GetString(body));
+
+            if (receivedMessage.ReceiverId == currentUserId && receivedMessage.SenderId != currentUserId)
+            {
+                messages.Add(new MessageDTO(0, receivedMessage.Message, receivedMessage.SenderId, receivedMessage.ReceiverId, DateTime.Now.ToString("o")));
+                await InvokeAsync(StateHasChanged);
+            }
+        };
+
+        await channel.BasicConsumeAsync(queue: queueName, autoAck: true, consumer: consumer);
+    }
+
+    public void Dispose()
+    {
+        if (channel != null)
+        {
+            channel.CloseAsync();
+            channel.Dispose();
+        }
+
+        if (connection != null)
+        {
+            connection.CloseAsync();
+            connection.Dispose();
         }
     }
 
     private async Task LoadUsers()
     {
-        followers = await UserService.GetFollowers(currentUserId);
-        following = await UserService.GetFollowing(currentUserId);
+        var followers = await UserService.GetFollowers(currentUserId);
+        var following = await UserService.GetFollowing(currentUserId);
 
         var mutualFollowers = followers
             .Where(f => following.Any(f2 => f2.id == f.id))
@@ -97,8 +150,6 @@
                 .OrderBy(msg => DateTime.Parse(msg.Timestamp))
                 .ToList();
         }
-
-        StateHasChanged();
     }
 
     private async Task SelectUser(int userId)
@@ -115,9 +166,12 @@
         {
             var newMessage = new SendMessageDTO(message, currentUserId, selectedReceiverId.Value);
             await ChatService.SendMessage(newMessage);
+            
             messages.Add(new MessageDTO(0, message, currentUserId, selectedReceiverId.Value, DateTime.Now.ToString("o")));
             message = string.Empty;
-            StateHasChanged();
+
+            await InvokeAsync(StateHasChanged);
         }
     }
+
 }
