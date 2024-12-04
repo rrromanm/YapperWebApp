@@ -45,9 +45,12 @@
 
         <!-- Message Input -->
         <div class="message-input">
-            <input @bind="message" placeholder="Type a message..." />
+            <input value="@message" @oninput="e => message = e.Value.ToString()"
+                   @onkeydown="HandleKeyPress" placeholder="Type a message..." />
             <button @onclick="SendMessage" disabled="@(string.IsNullOrEmpty(message))">Send</button>
         </div>
+
+
     </div>
 </div>
 
@@ -173,5 +176,14 @@
             await InvokeAsync(StateHasChanged);
         }
     }
+    
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !string.IsNullOrEmpty(message))
+        {
+            await SendMessage();
+        }
+    }
+
 
 }
