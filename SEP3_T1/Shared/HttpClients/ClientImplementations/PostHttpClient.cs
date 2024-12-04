@@ -26,7 +26,7 @@ public class PostHttpClient : IPostService
 
     public async Task UpdatePost(UpdatePostDTO dto)
     {
-        HttpResponseMessage response = await _client.PutAsJsonAsync($"/Post/{dto.PostId}", dto);
+        HttpResponseMessage response = await _client.PatchAsJsonAsync($"/Post/", dto);
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();

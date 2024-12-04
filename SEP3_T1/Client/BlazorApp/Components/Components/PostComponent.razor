@@ -1,9 +1,12 @@
 ﻿@using DTOs.DTOs.Comment
 @using DTOs.Models
+@using DTOs.User
+@using DTOs.User.PostDTOs
 @using HttpClients.ClientInterfaces
 @inject NavigationManager NavigationManager
 @inject IPostService PostService
 @inject ISMUserService userService
+@inject ICategoryService categoryService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ICommentService CommentService
 
@@ -19,10 +22,51 @@
         </div>
 
         <!-- Title -->
-        <h5 class="card-title">@Post.Title</h5>
+        @if (isEditMode)
+        {
+            <h6 class="card-title">Title</h6>
+            <input type="text" class="form-control" placeholder="@Post.Title" @bind="editedTitle" />
+            @if (string.IsNullOrWhiteSpace(editedTitle))
+            {
+                <small class="text-danger">Title cannot be empty.</small>
+            }
+        }
+        else
+        {
+            <h5 class="card-title">@Post.Title</h5>
+        }
 
         <!-- Body -->
-        <p class="card-text">@Post.Body</p>
+        @if (isEditMode)
+        {
+            <h6 class="card-title">Body</h6>
+            <textarea class="form-control" placeholder="@Post.Body" @bind="editedBody"></textarea>
+            @if (string.IsNullOrWhiteSpace(editedBody))
+            {
+                <small class="text-danger">Body cannot be empty.</small>
+            }
+        }
+        else
+        {
+            <p class="card-text">@Post.Body</p>
+        }
+
+        <!-- Category -->
+        @if (isEditMode)
+        {
+            <h6 class="card-title">Category</h6>
+            <InputSelect @bind-Value="categoryId">
+                <option value="@Post.CategoryId">@categoryName</option>
+                @foreach (var category in categories.Where(c => c.Id != Post.CategoryId))
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+            @if (categoryId == 0)
+            {
+                <small class="text-danger">Please select a valid category.</small>
+            }
+        }
 
         <!-- Actions Section -->
         <div class="d-flex justify-content-between align-items-center mt-3">
@@ -38,9 +82,24 @@
             <div>
                 @if (IsCurrentUser(Post.UserId))
                 {
-                    <button class="btn btn-sm btn-outline-primary" @onclick="() => EditPost(Post.PostId)">
-                        <i class="bi bi-pencil-square"></i> Edit
-                    </button>
+                    @if (isEditMode)
+                    {
+                        <button class="btn btn-sm btn-outline-primary" @onclick="SavePost">
+                            <i class="bi bi-save"></i> Save
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" @onclick="CancelEdit">
+                            <i class="bi bi-x"></i> Cancel
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-outline-primary" @onclick="EditPost">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary" @onclick="DeletePost">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    }
                 }
                 else
                 {
@@ -60,7 +119,7 @@
             <div class="input-group mt-3">
                 <textarea class="form-control custom-textarea" placeholder="Write a comment..." @bind="commentBody"></textarea>
                 <button class="send-btn" @onclick="SubmitComment">
-                    <i class="bi bi-send"></i> 
+                    <i class="bi bi-send"></i>
                 </button>
             </div>
         </div>
@@ -73,9 +132,19 @@
     private string nickname;
     private string username;
     private string commentBody;
-    private CommentComponent commentComponentRef;
+    private int categoryId;
 
+    private List<Category> categories = new List<Category>();
+    private string categoryName;
+    
+    private CommentComponent commentComponentRef;
+    private PostComponent postComponentRef;
     private Dictionary<int, bool> CommentsVisibility = new();
+
+    private bool isEditMode = false;
+    private string editedTitle;
+    private string editedBody;
+    private string editedCategoryId;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -96,6 +165,7 @@
         }
 
         await LoadNicknameAndUsername();
+        await GetCategories();
     }
 
     private async Task FetchLikedPosts()
@@ -137,6 +207,11 @@
     private string LikeIconClass => Post.UserLiked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up";
     private string LikeButtonClass => Post.UserLiked ? "btn-primary" : "btn-outline-primary";
 
+    private async Task GetCategories()
+    {
+        categories = await categoryService.GetAllCategories();
+    }
+    
     private async Task ToggleLike(int postId)
     {
         if (Post.UserLiked)
@@ -179,9 +254,9 @@
         }
     }
 
-    private void EditPost(int postId)
+    private void CancelEdit()
     {
-        NavigationManager.NavigateTo($"/edit-post/{postId}");
+        isEditMode = false;
     }
 
     private void ReportPost(int postId)
@@ -206,6 +281,7 @@
     {
         NavigationManager.NavigateTo($"/Profiles/{username}");
     }
+
     private async Task SubmitComment()
     {
         CreateCommentDTO createCommentDTO = new CreateCommentDTO(commentBody, CurrentUserId, Post.PostId);
@@ -214,5 +290,56 @@
         Post.CommentCount++;
         await commentComponentRef.ReloadCommentsAsync();
         StateHasChanged();
+    }
+    
+    private void EditPost()
+    {
+        isEditMode = true;
+        editedTitle = Post.Title;
+        editedBody = Post.Body;
+        
+        categoryName = categories.FirstOrDefault(c => c.Id == Post.CategoryId)?.Name;
+    }
+
+    private async Task SavePost()
+    {
+        if (categoryId == 0)
+        {
+            categoryId = Post.CategoryId;
+        }
+
+        try
+        {
+            Post.Title = editedTitle;
+            Post.Body = editedBody;
+            Post.CategoryId = categoryId;
+
+            await PostService.UpdatePost(new UpdatePostDTO(
+                Post.PostId,
+                Post.Title,
+                Post.Body,
+                Post.CategoryId,
+                Post.UserId
+            ));
+            isEditMode = false;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error saving post: {ex.Message}");
+        }
+    }
+
+    
+    private async Task DeletePost()
+    {
+        try
+        {
+            await PostService.DeletePost(Post.PostId);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error deleting post: {ex.Message}");
+        }
     }
 }
