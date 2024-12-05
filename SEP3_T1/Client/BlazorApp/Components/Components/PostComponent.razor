@@ -57,8 +57,7 @@
             <h6 class="card-title">Category</h6>
             <InputSelect @bind-Value="categoryId">
                 <option value="@Post.CategoryId">@categoryName</option>
-                <option value="0">None</option>
-                @foreach (var category in categories.Where(c => c.Id != Post.CategoryId))
+                @foreach (var category in categories.Where(c => c.Id != categoryId))
                 {
                     <option value="@category.Id">@category.Name</option>
                 }
@@ -93,7 +92,7 @@
                         <button class="btn btn-sm btn-outline-primary" @onclick="EditPost">
                             <i class="bi bi-pencil-square"></i> Edit
                         </button>
-                        <button class="btn btn-sm btn-outline-primary" @onclick="DeletePost">
+                        <button class="btn btn-sm btn-outline-primary" @onclick="() => OpenDeleteModal(Post.PostId)">
                             <i class="bi bi-trash"></i> Delete
                         </button>
                     }
@@ -123,8 +122,33 @@
     }
 </div>
 
+<!-- Delete Modal -->
+@if (isDeleteModalOpen)
+{
+    <div class="modal fade show" style="display: block;" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" @onclick="CloseDeleteModal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this post? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseDeleteModal">Cancel</button>
+                    <button type="button" class="btn btn-danger" @onclick="ConfirmDeletePost">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop fade show" @onclick="CloseDeleteModal"></div>
+}
+
 @code {
     [Parameter] public Post Post { get; set; }
+    [Parameter] public EventCallback OnStateChange { get; set; }
     public int CurrentUserId { get; set; }
     private string nickname;
     private string username;
@@ -133,7 +157,7 @@
 
     private List<Category> categories = new List<Category>();
     private string categoryName;
-    
+
     private CommentComponent commentComponentRef;
     private PostComponent postComponentRef;
     private Dictionary<int, bool> CommentsVisibility = new();
@@ -142,6 +166,14 @@
     private string editedTitle;
     private string editedBody;
     private string editedCategoryId;
+
+    private bool isDeleteModalOpen = false;
+    private bool isPostDeleted = false;
+    private int postIdToDelete;
+
+    private string LikeText => Post.UserLiked ? "Unlike" : "Like";
+    private string LikeIconClass => Post.UserLiked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up";
+    private string LikeButtonClass => Post.UserLiked ? "btn-primary" : "btn-outline-primary";
 
     protected override async Task OnParametersSetAsync()
     {
@@ -165,18 +197,11 @@
         await GetCategories();
     }
 
-    private async Task FetchLikedPosts()
+    //TODO: USER METHODS
+
+    private bool IsCurrentUser(int userId)
     {
-        try
-        {
-            var likedPosts = await PostService.GetLikedPosts(CurrentUserId);
-            Post.UserLiked = likedPosts.Any(p => p.PostId == Post.PostId);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        return CurrentUserId == userId;
     }
 
     private async Task LoadNicknameAndUsername()
@@ -195,31 +220,7 @@
         }
     }
 
-    private bool IsCurrentUser(int userId)
-    {
-        return CurrentUserId == userId;
-    }
-
-    private string LikeText => Post.UserLiked ? "Unlike" : "Like";
-    private string LikeIconClass => Post.UserLiked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up";
-    private string LikeButtonClass => Post.UserLiked ? "btn-primary" : "btn-outline-primary";
-
-    private async Task GetCategories()
-    {
-        categories = await categoryService.GetAllCategories();
-    }
-    
-    private async Task ToggleLike(int postId)
-    {
-        if (Post.UserLiked)
-        {
-            await UnlikePost(postId);
-        }
-        else
-        {
-            await LikePost(postId);
-        }
-    }
+    //TODO: POST METHODS
 
     private async Task LikePost(int postId)
     {
@@ -251,9 +252,30 @@
         }
     }
 
-    private void CancelEdit()
+    private async Task ToggleLike(int postId)
     {
-        isEditMode = false;
+        if (Post.UserLiked)
+        {
+            await UnlikePost(postId);
+        }
+        else
+        {
+            await LikePost(postId);
+        }
+    }
+
+    private async Task FetchLikedPosts()
+    {
+        try
+        {
+            var likedPosts = await PostService.GetLikedPosts(CurrentUserId);
+            Post.UserLiked = likedPosts.Any(p => p.PostId == Post.PostId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     private void ReportPost(int postId)
@@ -262,45 +284,18 @@
         Console.WriteLine($"Post {postId} reported by user {CurrentUserId}");
     }
 
-    private void ToggleComments(int postId)
-    {
-        if (CommentsVisibility.ContainsKey(postId))
-        {
-            CommentsVisibility[postId] = !CommentsVisibility[postId];
-        }
-        else
-        {
-            CommentsVisibility[postId] = true;
-        }
-    }
-
-    private void NavigateToUserProfile(string username)
-    {
-        NavigationManager.NavigateTo($"/Profiles/{username}");
-    }
-
-    private async Task SubmitComment()
-    {
-        if(string.IsNullOrWhiteSpace(commentBody))
-        {
-            //TODO add something to show that comment cannot be empty
-            return;
-        }
-        CreateCommentDTO createCommentDTO = new CreateCommentDTO(commentBody, CurrentUserId, Post.PostId);
-        await CommentService.CreateCommentAsync(createCommentDTO);
-        commentBody = string.Empty;
-        Post.CommentCount++;
-        await commentComponentRef.ReloadCommentsAsync();
-        StateHasChanged();
-    }
-    
     private void EditPost()
     {
         isEditMode = true;
         editedTitle = Post.Title;
         editedBody = Post.Body;
-        
+
         categoryName = categories.FirstOrDefault(c => c.Id == Post.CategoryId)?.Name;
+    }
+
+    private void CancelEdit()
+    {
+        isEditMode = false;
     }
 
     private async Task SavePost()
@@ -332,8 +327,8 @@
                 Post.PostId,
                 Post.Title,
                 Post.Body,
-                Post.CategoryId,
-                Post.UserId
+                Post.UserId,
+                Post.CategoryId
             ));
             isEditMode = false;
         }
@@ -343,27 +338,90 @@
         }
     }
 
-    
-    private async Task DeletePost()
+    private async Task ConfirmDeletePost()
     {
         try
         {
-            await PostService.DeletePost(Post.PostId);
-            StateHasChanged();
-            //TODO reload posts so its not needed to refresh page after deletion
+            await PostService.DeletePost(postIdToDelete);
+            isPostDeleted = true;
+            await OnStateChange.InvokeAsync();
         }
         catch (Exception ex)
         {
-            throw new Exception($"Error deleting post: {ex.Message}");
+            Console.WriteLine($"Failed to delete post: {ex.Message}");
+        }
+        finally
+        {
+            CloseDeleteModal();
         }
     }
+
+    private void CloseNotification()
+    {
+        isPostDeleted = false;
+    }
+
+    private void OpenDeleteModal(int postId)
+    {
+        postIdToDelete = postId;
+        isDeleteModalOpen = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        isDeleteModalOpen = false;
+        postIdToDelete = 0;
+    }
+
+    //TODO: COMMENT METHODS
+
+    private async Task SubmitComment()
+    {
+        if (string.IsNullOrWhiteSpace(commentBody))
+        {
+            //TODO add something to show that comment cannot be empty
+            return;
+        }
+
+        CreateCommentDTO createCommentDTO = new CreateCommentDTO(commentBody, CurrentUserId, Post.PostId);
+        await CommentService.CreateCommentAsync(createCommentDTO);
+        commentBody = string.Empty;
+        Post.CommentCount++;
+        await commentComponentRef.ReloadCommentsAsync();
+        StateHasChanged();
+    }
+
     private void HandleCommentDeleted() // Method to handle the eventCallback from the CommentComponent, triggered when comment deleted and descreses the comment count
     {
         if (Post.CommentCount > 0)
         {
-            Post.CommentCount--; 
+            Post.CommentCount--;
         }
 
         StateHasChanged();
+    }
+
+    private void ToggleComments(int postId)
+    {
+        if (CommentsVisibility.ContainsKey(postId))
+        {
+            CommentsVisibility[postId] = !CommentsVisibility[postId];
+        }
+        else
+        {
+            CommentsVisibility[postId] = true;
+        }
+    }
+
+    //TODO: CATEGORY METHODS
+
+    private async Task GetCategories()
+    {
+        categories = await categoryService.GetAllCategories();
+    }
+
+    private void NavigateToUserProfile(string username)
+    {
+        NavigationManager.NavigateTo($"/Profiles/{username}");
     }
 }

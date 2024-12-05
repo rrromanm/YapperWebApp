@@ -36,9 +36,8 @@
                         <div>
                             <label>Category:</label>
                             <InputSelect @bind-Value="categoryId">
-                                <option value="0">Pick a category</option>
-                                <option value = ""> None</option>
-                                @foreach (var category in categories)
+                                <option value="0">None</option> <!-- This option will always be first -->
+                                @foreach (var category in categories.Where(c => c.Id != categoryId))
                                 {
                                     <option value="@category.Id">@category.Name</option>
                                 }
@@ -64,7 +63,7 @@
                             {
                                 @foreach (var post in allPosts)
                                 {
-                                    <PostComponent Post="post" />
+                                    <PostComponent Post="post" OnStateChange="GetAllPosts"/>
                                 }
                             }
                             else
@@ -80,7 +79,7 @@
                             {
                                 @foreach (var post in followingPosts)
                                 {
-                                    <PostComponent Post="post" />
+                                    <PostComponent Post="post" OnStateChange="GetFollowingPosts"/>
                                 }
                             }
                             else
