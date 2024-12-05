@@ -137,8 +137,8 @@ input {
 .confirmation-popup {
     position: fixed;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    left: 57%;
+    transform: translate(-50%, -57%);
     background: white;
     padding: 20px;
     border-radius: 10px;
