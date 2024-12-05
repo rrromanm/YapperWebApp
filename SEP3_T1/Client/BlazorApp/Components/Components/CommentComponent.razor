@@ -17,6 +17,12 @@
                     <button class="like-button" @onclick="() => ToggleLikeComment(commentWithUser.Comment.commentId, commentWithUser.Comment.userLiked)">
                         <i class="@LikeIconClass(commentWithUser.Comment.userLiked)"></i> @LikeText(commentWithUser.Comment.userLiked) (@commentWithUser.Comment.likeCount)
                     </button>
+                    @if (commentWithUser.Comment.userId == CurrentUserId)
+                    {
+                    <button class="delete-button" @onclick="() => DeleteComment(commentWithUser.Comment.commentId)">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                    }
                 </div>
             </div>
         }
@@ -29,6 +35,7 @@
 
 @code {
     [Parameter] public int PostId { get; set; }
+    [Parameter] public EventCallback OnCommentDeleted { get; set; }
     private List<CommentWithUser> commentsWithUsers;
     private int CurrentUserId { get; set; }
     
@@ -161,6 +168,19 @@
         await FetchLikedComments();
         StateHasChanged();
     }
-    
-    
+
+    private async Task DeleteComment(int commentId)
+    {
+        try
+        {
+            await CommentService.DeleteCommentAsync(commentId);
+            await ReloadCommentsAsync();
+            
+            await OnCommentDeleted.InvokeAsync(); // EventCallback to notify PostComponent that comment is deleted
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error deleting comment {commentId}: {ex.Message}");
+        }
+    }
 }
