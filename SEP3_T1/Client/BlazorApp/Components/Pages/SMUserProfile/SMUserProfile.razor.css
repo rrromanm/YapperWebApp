@@ -81,17 +81,13 @@ textarea {
 }
 
 .post-btn {
-    background-color: #007bff;
+    background-color: #74655E;
     color: white;
     padding: 10px 20px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
     margin: 0 10px; /* Add margin to space out the buttons */
-}
-
-.post-btn:hover {
-    background-color: #0056b3;
 }
 
 .posts, .liked-posts {
@@ -108,9 +104,8 @@ textarea {
 }
 
 .post-btn.active {
-    background-color: #0056b3;
-    color: white;
-    border: 2px solid #003f7f;
+    background-color: #74655E;
+    color: #FFFFFF;
 }
 
 .nickname-follow {

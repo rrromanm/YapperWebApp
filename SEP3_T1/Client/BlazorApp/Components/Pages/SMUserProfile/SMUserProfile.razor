@@ -34,6 +34,8 @@
                                     }
                                 </div>
                             </div>
+
+                            <p>@($"@{username}")</p>
                             <p>
                                 Followers:
                                 <button @onclick="OpenFollowersModal" class="link-button">@followersCount</button>
@@ -45,7 +47,6 @@
                             </p>
                         </div>
                     </div>
-                    <p class="username">@username</p>
                 </div>
             </div>
 
