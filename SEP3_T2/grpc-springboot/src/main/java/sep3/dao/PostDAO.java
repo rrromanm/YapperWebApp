@@ -51,35 +51,16 @@ public class PostDAO implements PostDAOInterface {
     @Override
     public void updatePost(UpdatePostDTO updatePostDTO) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE yapper_database.post SET title = ?, body = ? WHERE postId = ? RETURNING postId"
-            );
+            PreparedStatement statement = connection.prepareStatement("UPDATE yapper_database.post SET title = ?, body = ? WHERE postid = ?");
             statement.setString(1, updatePostDTO.getTitle());
             statement.setString(2, updatePostDTO.getContent());
             statement.setInt(3, updatePostDTO.getPostId());
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                int postId = resultSet.getInt("postId");
-
-                PreparedStatement categoryStatement = connection.prepareStatement(
-                        "UPDATE yapper_database.post_category SET categoryId = ? WHERE postId = ?"
-                );
-
-                if (updatePostDTO.getCategoryId() == 0) {
-                    categoryStatement.setNull(1, java.sql.Types.INTEGER);
-                } else {
-                    categoryStatement.setInt(1, updatePostDTO.getCategoryId());
-                }
-                categoryStatement.setInt(2, postId);
-                categoryStatement.executeUpdate();
-            }
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException("Failed to update post");
         }
     }
-
 
     @Override
     public void deletePost(int id) throws SQLException {
