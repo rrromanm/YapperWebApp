@@ -53,7 +53,7 @@ public class SMUserHttpClient : ISMUserService
         {
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                return null; // Return null if the user is not found
+                throw new HttpRequestException("User does not exist.", null, System.Net.HttpStatusCode.NotFound);
             }
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);

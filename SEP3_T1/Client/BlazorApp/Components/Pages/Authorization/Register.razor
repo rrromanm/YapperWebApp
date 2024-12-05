@@ -7,12 +7,10 @@
 <div class="register-page-container">
     <link href="RegisterStylesheet.css" rel="stylesheet" />
 
-    <!-- Left section for image -->
     <div class="register-image">
         <img src="yapper.png" alt="Placeholder Image" />
     </div>
 
-    <!-- Right section for register form -->
     <div class="register-form-container">
         <div class="register-form">
             <input @bind="username" placeholder="Username" />
@@ -23,7 +21,6 @@
             <button @onclick="RegisterImpl">Register</button>
         </div>
 
-        <!-- Error or alert messages -->
         <div class="register-exceptions">
             <p class="error-message">@errorMessage</p>
         </div>
@@ -44,9 +41,59 @@
 
     private async Task RegisterImpl()
     {
+        errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(username) || username.All(char.IsDigit))
+        {
+            errorMessage = "Username cannot be empty or a digit.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(nickname) || nickname.Length > 100)
+        {
+            errorMessage = "Nickname cannot be empty or exceed 100 characters.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            errorMessage = "Email cannot be empty.";
+            return;
+        }
+
+        if (!IsValidEmail(email))
+        {
+            errorMessage = "Invalid email format.";
+            return;
+        }
+
+        if (email.Length > 100)
+        {
+            errorMessage = "Email cannot exceed 100 characters.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            errorMessage = "Password cannot be empty.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(repeatPassword))
+        {
+            errorMessage = "Repeat Password cannot be empty.";
+            return;
+        }
+
         if (password != repeatPassword)
         {
             errorMessage = "Passwords do not match.";
+            return;
+        }
+
+        if (!IsStrongPassword(password))
+        {
+            errorMessage = "Password is not strong enough. Must contain at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character.";
             return;
         }
 
@@ -65,7 +112,26 @@
         }
         catch (Exception ex)
         {
-            errorMessage = ex.Message;
+            errorMessage = "Failed to register. " + ex.Message;
+        }
+    }
+
+    private bool IsStrongPassword(string password) => password.Length >= 8
+        && password.Any(char.IsUpper)
+        && password.Any(char.IsLower)
+        && password.Any(char.IsDigit)
+        && password.Any(ch => !char.IsLetterOrDigit(ch));
+
+    private bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch (FormatException)
+        {
+            return false;
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿@page "/Login"
 @using BlazorApp.Auth
+@using DTOs.Models
+@using HttpClients.ClientInterfaces
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthProvider
+@inject ISMUserService UserService
 
 <div class="login-page-container">
     <link href="LoginStylesheet.css" rel="stylesheet" />
@@ -40,12 +43,20 @@
     {
         try
         {
+            var user = await UserService.GetByUsername(username);
+            Console.WriteLine(user);
+
             await ((SimpleAuthProvider)AuthProvider).Login(username, password);
             Navigation.NavigateTo("/");
         }
         catch (Exception ex)
         {
-            errorMessage = ex.Message;
+            if (username == null || password == null)
+            {
+                errorMessage = "Username and password are required!";
+                return;
+            }
+            errorMessage = "Credentials do not match, try again!";
         }
     }
 }
