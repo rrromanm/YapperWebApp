@@ -84,7 +84,7 @@ message IsFollowingRequest {
 }
 
 message GetThreeRandomUsersRequest {
-
+  int32 userId = 1;
 }
 
 //Responses

@@ -356,11 +356,19 @@ public class SMUserDAO implements SMUserDAOInterface {
     }
 
     @Override
-    public ArrayList<FollowerDTO> getThreeRandomUsers() throws SQLException {
+    public ArrayList<FollowerDTO> getThreeRandomUsers(int userId) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "SELECT social_media_user.username, social_media_user.nickname, social_media_user.userid from yapper_database.social_media_user ORDER BY random() LIMIT 3;"
+                    "SELECT social_media_user.username, \n" +
+                            "       social_media_user.nickname, \n" +
+                            "       social_media_user.userid \n" +
+                            "FROM yapper_database.social_media_user \n" +
+                            "WHERE social_media_user.userid != ? \n" +
+                            "ORDER BY random() \n" +
+                            "LIMIT 3;\n;"
             );
+            statement.setInt(1, userId);
+
             ResultSet resultSet = statement.executeQuery();
             ArrayList<FollowerDTO> followers = new ArrayList<>();
             while (resultSet.next()) {

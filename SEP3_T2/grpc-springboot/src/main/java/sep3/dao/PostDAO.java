@@ -39,11 +39,7 @@ public class PostDAO implements PostDAOInterface {
                         "INSERT INTO yapper_database.post_category (categoryId, postId) VALUES (?, ?)"
                 );
 
-                if (createPostDTO.getCategoryId() == 0) {
-                    categoryStatement.setNull(1, java.sql.Types.INTEGER);
-                } else {
-                    categoryStatement.setInt(1, createPostDTO.getCategoryId());
-                }
+                categoryStatement.setInt(1, createPostDTO.getCategoryId());
                 categoryStatement.setInt(2, postId);
                 categoryStatement.executeUpdate();
             }
@@ -56,11 +52,23 @@ public class PostDAO implements PostDAOInterface {
     @Override
     public void updatePost(UpdatePostDTO updatePostDTO) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("UPDATE yapper_database.post SET title = ?, body = ? WHERE postid = ?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE yapper_database.post SET title = ?, body = ? WHERE postid = ? RETURNING postId");
             statement.setString(1, updatePostDTO.getTitle());
             statement.setString(2, updatePostDTO.getContent());
             statement.setInt(3, updatePostDTO.getPostId());
-            statement.executeUpdate();
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int postId = resultSet.getInt("postId");
+
+                PreparedStatement categoryStatement = connection.prepareStatement(
+                        "UPDATE yapper_database.post_category SET categoryId = ? WHERE postId = ?"
+                );
+
+                categoryStatement.setInt(1, updatePostDTO.getCategoryId());
+                categoryStatement.setInt(2, postId);
+                categoryStatement.executeUpdate();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException("Failed to update post");

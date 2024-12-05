@@ -261,7 +261,7 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
     @Override
     public void getThreeRandomUsers(GetThreeRandomUsersRequest request, StreamObserver<GetThreeRandomUsersResponse> responseObserver) {
         try {
-            ArrayList<FollowerDTO> randomUsers = dao.getThreeRandomUsers();
+            ArrayList<FollowerDTO> randomUsers = dao.getThreeRandomUsers(request.getUserId());
 
             String jsonFollowers = gson.toJson(randomUsers);
 
