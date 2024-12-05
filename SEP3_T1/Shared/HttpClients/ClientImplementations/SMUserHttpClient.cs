@@ -139,9 +139,9 @@ public class SMUserHttpClient : ISMUserService
         return isFollowing;
     }
     
-    public async Task<List<FollowersDTO>> GetThreeRandomUsers()
+    public async Task<List<FollowersDTO>> GetThreeRandomUsers(int id)
     {
-        HttpResponseMessage response = await _client.GetAsync($"/SMUser/Random");
+        HttpResponseMessage response = await _client.GetAsync($"/SMUser/{id}/Random");
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();

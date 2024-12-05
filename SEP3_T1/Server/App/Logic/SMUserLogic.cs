@@ -289,11 +289,14 @@ public class SMUserLogic : ISMUserLogic
         
     }
 
-    public async Task<List<FollowersDTO>> GetThreeRandomUsers()
+    public async Task<List<FollowersDTO>> GetThreeRandomUsers(int id)
     {
         try
         {
-            GetThreeRandomUsersResponse response = await client.GetThreeRandomUsersAsync(new GetThreeRandomUsersRequest());
+            GetThreeRandomUsersResponse response = await client.GetThreeRandomUsersAsync(new GetThreeRandomUsersRequest
+            {
+                UserId = id
+            });
             string json = response.List;
             JsonSerializerOptions options = new JsonSerializerOptions
             {

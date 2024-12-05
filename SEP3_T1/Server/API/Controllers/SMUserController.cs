@@ -183,12 +183,12 @@ public class SMUserController : ControllerBase
         }
     }
     
-    [HttpGet("Random")]
-    public async Task<ActionResult> GetThreeRandomUsers()
+    [HttpGet("{id:int}/Random")]
+    public async Task<ActionResult> GetThreeRandomUsers([FromRoute] int id)
     {
         try
         {
-            var users = await _smUserLogic.GetThreeRandomUsers();
+            var users = await _smUserLogic.GetThreeRandomUsers(id);
             return Ok(users);
         }
         catch (Exception e)

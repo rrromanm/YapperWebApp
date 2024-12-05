@@ -221,7 +221,7 @@
 
     private async Task GetThreeRandomUsers()
     {
-        threeRandomUsers = await UserService.GetThreeRandomUsers();
+        threeRandomUsers = await UserService.GetThreeRandomUsers(userId);
 
         foreach (var user in threeRandomUsers)
         {
