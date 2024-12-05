@@ -1,4 +1,5 @@
 ﻿@page "/EditProfile"
+@using BlazorApp.Auth
 @using DTOs.User
 @using HttpClients.ClientInterfaces
 @inject NavigationManager NavMgr
@@ -15,29 +16,39 @@
             <label for="nickname">Nickname:</label>
             <input type="text" id="nickname" placeholder="@nickname" @bind="newNickname" />
             <label for="email">Email:</label>
-            <input type="email" id="email" placeholder="@email" @bind="newEmail" />
+            <input type="email" id="email" placeholder="@nickname" @bind="newEmail" />
         </div>
         <div class="right-column">
             <label for="oldPassword">Current Password:</label>
-            <div class="password-container">
-                <input type="password" id="oldPassword" @bind="oldPassword" class="password-input"/>
-            </div>
+            <input type="password" id="oldPassword" @bind="oldPassword" class="password-input" />
 
             <label for="newPassword">New Password:</label>
-            <div class="password-container">
-                <input type="password" id="newPassword" @bind="newPassword" class="password-input"/>
-            </div>
+            <input type="password" id="newPassword" @bind="newPassword" class="password-input" />
 
             <label for="repeatPassword">Repeat Password:</label>
-            <div class="password-container">
-                <input type="password" id="repeatPassword" @bind="repeatPassword" class="password-input"/>
-            </div>
+            <input type="password" id="repeatPassword" @bind="repeatPassword" class="password-input" />
         </div>
     </div>
     <button @onclick="SaveProfile" class="save-btn">Save</button>
+    <button @onclick="ConfirmDeleteAccount" class="delete-account-btn">Delete Account</button>
     @if (!string.IsNullOrEmpty(errorMessage))
     {
         <div class="error-message">@errorMessage</div>
+    }
+
+    @if (showDeleteConfirmation)
+    {
+        <div class="overlay"></div>
+        <div class="confirmation-popup">
+            <h3>Are you sure you want to delete your account?</h3>
+            <p>All information will be permanently deleted and cannot be recovered.</p>
+            <label for="deletePassword">Enter Current Password:</label>
+            <input type="password" id="deletePassword" @bind="deletePassword" class="password-input" />
+            <div class="confirmation-buttons">
+                <button @onclick="DeleteAccount" class="confirm-delete-btn">Yes, Delete</button>
+                <button @onclick="CancelDelete" class="cancel-delete-btn">Cancel</button>
+            </div>
+        </div>
     }
 </div>
 
@@ -46,19 +57,20 @@
     private string username;
     private string nickname;
     private string email;
-
     private string newNickname;
     private string newEmail;
-
     private string oldPassword;
     private string newPassword;
     private string repeatPassword;
     private string currentPassword;
-
     private string errorMessage;
+    private bool showDeleteConfirmation = false;
+    private string deletePassword;
 
     protected override async Task OnInitializedAsync()
     {
+        errorMessage = null;
+
         var authState = await AuthProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
@@ -99,54 +111,32 @@
 
     private async Task SaveProfile()
     {
-        errorMessage = null; // Clear previous error messages
+        errorMessage = null;
 
-        // Validate the current password
         if (oldPassword != currentPassword)
         {
             errorMessage = "Incorrect current password.";
             return;
         }
 
-        // Validate new password and confirmation
-        if (!string.IsNullOrEmpty(newPassword))
+        if (!string.IsNullOrEmpty(newPassword) && (newPassword != repeatPassword || !IsStrongPassword(newPassword)))
         {
-            if (newPassword != repeatPassword)
-            {
-                errorMessage = "New passwords do not match.";
-                return;
-            }
-
-            if (!IsStrongPassword(newPassword))
-            {
-                errorMessage = "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.";
-                return;
-            }
+            errorMessage = "New passwords do not match or are not strong enough.";
+            return;
         }
 
-        // Validate nickname and email length
         if (!string.IsNullOrEmpty(newNickname) && newNickname.Length > 100)
         {
             errorMessage = "Nickname cannot exceed 100 characters.";
             return;
         }
 
-        if (!string.IsNullOrEmpty(newEmail))
+        if (!string.IsNullOrEmpty(newEmail) && (!IsValidEmail(newEmail) || newEmail.Length > 100))
         {
-            if (newEmail.Length > 100)
-            {
-                errorMessage = "Email cannot exceed 100 characters.";
-                return;
-            }
-
-            if (!IsValidEmail(newEmail))
-            {
-                errorMessage = "Email format is invalid.";
-                return;
-            }
+            errorMessage = "Invalid email format or length.";
+            return;
         }
 
-        // Prepare DTO for update
         var updateUserDto = new UpdateUserDTO
         {
             UserId = userId,
@@ -157,10 +147,7 @@
 
         try
         {
-            // Call the user service to update the profile
             await IsmUserService.UpdateSMUser(updateUserDto);
-            Console.WriteLine("Profile updated successfully");
-
             await LoadUserProfile(userId);
             NavMgr.NavigateTo($"/profiles/{username}");
         }
@@ -170,32 +157,44 @@
         }
     }
 
-    private bool IsStrongPassword(string password)
+    private void ConfirmDeleteAccount()
     {
-        if (password.Length < 8)
-            return false;
-        if (!password.Any(char.IsUpper))
-            return false;
-        if (!password.Any(char.IsLower))
-            return false;
-        if (!password.Any(char.IsDigit))
-            return false;
-        if (!password.Any(ch => !char.IsLetterOrDigit(ch)))
-            return false;
-
-        return true;
+        showDeleteConfirmation = true;
+        errorMessage = null;
     }
 
-    private bool IsValidEmail(string email)
+    private void CancelDelete()
     {
+        showDeleteConfirmation = false;
+        deletePassword = string.Empty;
+        errorMessage = null;
+    }
+
+    private async Task DeleteAccount()
+    {
+        if (deletePassword != currentPassword)
+        {
+            errorMessage = "Incorrect password. Account deletion aborted.";
+            return;
+        }
+
         try
         {
-            var addr = new System.Net.Mail.MailAddress(email);
-            return addr.Address == email && email.Contains(".");
+            await IsmUserService.DeleteSMUser(userId);
+            await ((SimpleAuthProvider)AuthProvider).Logout();
+            NavMgr.NavigateTo("/");
         }
-        catch
+        catch (Exception ex)
         {
-            return false;
+            errorMessage = "Failed to delete account. " + ex.Message;
         }
     }
+
+    private bool IsStrongPassword(string password) => password.Length >= 8
+        && password.Any(char.IsUpper)
+        && password.Any(char.IsLower)
+        && password.Any(char.IsDigit)
+        && password.Any(ch => !char.IsLetterOrDigit(ch));
+
+    private bool IsValidEmail(string email) => new System.Net.Mail.MailAddress(email) is { } addr && addr.Address == email;
 }

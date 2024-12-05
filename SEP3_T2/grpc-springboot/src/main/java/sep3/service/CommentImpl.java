@@ -173,4 +173,22 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
       responseObserver.onError(e);
     }
   }
+
+  @Override public void getAllLikedComments(GetAllLikedCommentsRequest request, StreamObserver<GetAllLikedCommentsResponse> responseObserver)
+  {
+    try
+    {
+      ArrayList<CommentDTO> comments = dao.getLikedCommentsByUserId(request.getUserId());
+
+      String string = gson.toJson(comments);
+      GetAllLikedCommentsResponse response = GetAllLikedCommentsResponse.newBuilder().setList(string).build();
+
+      responseObserver.onNext(response);
+      responseObserver.onCompleted();
+    }
+    catch (Exception e)
+    {
+      responseObserver.onError(e);
+    }
+  }
 }

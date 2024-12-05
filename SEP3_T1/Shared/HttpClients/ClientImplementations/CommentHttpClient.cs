@@ -112,11 +112,22 @@ public class CommentHttpClient : ICommentService
    }
    public async Task UnlikeCommentAsync(int commentId, int userId)
    {
-         HttpResponseMessage response = await _client.PostAsync($"/Comments/unlike/{commentId}/{userId}", null);
+         HttpResponseMessage response = await _client.PostAsync($"/Comment/unlike/{commentId}/{userId}", null);
          if (!response.IsSuccessStatusCode)
          {
              string e = await response.Content.ReadAsStringAsync();
              throw new Exception(e);
          }
+   }
+   public async Task<List<Comment>> GetAllLikedCommentsAsync(int userId)
+   {
+         HttpResponseMessage response = await _client.GetAsync($"/Comment/liked/{userId}");
+         if (!response.IsSuccessStatusCode)
+         {
+             string e = await response.Content.ReadAsStringAsync();
+             throw new Exception(e);
+         }
+         string content = await response.Content.ReadAsStringAsync();
+         return JsonSerializer.Deserialize<List<Comment>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
    }
 }

@@ -19,4 +19,6 @@ public interface CommentDAOInterface
     void likeComment(int commentId, int userId) throws SQLException;
     void unlikeComment(int commentId, int userId) throws SQLException;
 
+    ArrayList<CommentDTO> getLikedCommentsByUserId(int userId) throws SQLException;
+
 }

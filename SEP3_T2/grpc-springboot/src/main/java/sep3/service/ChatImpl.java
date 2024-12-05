@@ -9,12 +9,16 @@ import sep3.dto.SendMessageDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.Channel;
 
 public class ChatImpl extends ChatServiceGrpc.ChatServiceImplBase {
 
     private ChatDAOInterface dao;
 
     private Gson gson;
+
+    private static final String EXCHANGE_NAME = "chat.exchange";
 
     public ChatImpl(ChatDAOInterface dao) {
         this.dao = dao;
@@ -24,9 +28,21 @@ public class ChatImpl extends ChatServiceGrpc.ChatServiceImplBase {
     @Override
     public void sendMessage(SendMessageRequest request, StreamObserver<EmptyMessageResponse> responseObserver) {
         try {
-            System.out.println("Message sent from: " + request.getSenderId() + " to: " + request.getReceiverId());
             SendMessageDTO dto = new SendMessageDTO(request.getMessage(), request.getReceiverId(), request.getSenderId());
             dao.sendMessage(dto);
+
+            // Publishing message to RabbitMQ
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setHost("localhost");
+            try (var connection = factory.newConnection(); var channel = connection.createChannel()) {
+                channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+                String routingKey = "chat." + request.getReceiverId();
+                String message = gson.toJson(dto);
+
+                channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes());
+                System.out.println("Message published to RabbitMQ: " + message);
+            }
+
             responseObserver.onNext(EmptyMessageResponse.newBuilder().build());
             responseObserver.onCompleted();
         } catch (Exception e) {

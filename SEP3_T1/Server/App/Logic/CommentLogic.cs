@@ -186,4 +186,30 @@ public class CommentLogic : ICommentLogic
             throw new Exception("Error unliking comment");
         }
     }
+
+    public async Task<List<DTOs.Models.Comment>> GetAllLikedCommentsAsync(int userId)
+    {
+        try
+        {
+            GetAllLikedCommentsResponse response =
+                await client.GetAllLikedCommentsAsync(
+                    new GetAllLikedCommentsRequest
+                    {
+                        UserId = userId
+                    });
+            string json = response.List;
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<DTOs.Models.Comment> comments = JsonSerializer.Deserialize<List<DTOs.Models.Comment>>(json, options);
+            return comments;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw new Exception("Error getting all liked comments");
+        }
+    }
 }

@@ -19,7 +19,7 @@
             <div class="profile-page">
                 <div class="profile-container">
                     <div class="profile-header">
-                        <img src="https://via.placeholder.com/200" alt="Profile Picture" class="profile-picture" />
+                        <img src="yapper-profile-pic.jpg" class="profile-pic" alt="Placeholder Image"/>
                         <div class="profile-details">
                             <div class="nickname-follow">
                                 <h2>@nickname</h2>
@@ -34,6 +34,8 @@
                                     }
                                 </div>
                             </div>
+
+                            <p>@($"@{username}")</p>
                             <p>
                                 Followers:
                                 <button @onclick="OpenFollowersModal" class="link-button">@followersCount</button>
@@ -45,7 +47,6 @@
                             </p>
                         </div>
                     </div>
-                    <p class="username">@username</p>
                 </div>
             </div>
 

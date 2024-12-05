@@ -26,21 +26,11 @@ public class SMUserHttpClient : ISMUserService
 
     public async Task UpdateSMUser(UpdateUserDTO dto)
     {
-        // Create a PATCH request
-        var request = new HttpRequestMessage(HttpMethod.Patch, "/SMUser")
-        {
-            Content = JsonContent.Create(dto) // Use JsonContent to serialize the DTO into JSON
-        };
-
-        // Send the PATCH request
-        HttpResponseMessage response = await _client.SendAsync(request);
-
-        // Check if the response indicates success
+        HttpResponseMessage response = await _client.PatchAsJsonAsync("/SMUser", dto);
         if (!response.IsSuccessStatusCode)
         {
             string responseContent = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"API Error: {responseContent}");
-            throw new Exception($"API call failed with status code {response.StatusCode}. Details: {responseContent}");
+            throw new Exception(responseContent);
         }
     }
 
@@ -63,7 +53,7 @@ public class SMUserHttpClient : ISMUserService
         {
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                return null; // Return null if the user is not found
+                throw new HttpRequestException("User does not exist.", null, System.Net.HttpStatusCode.NotFound);
             }
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);

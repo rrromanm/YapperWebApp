@@ -107,3 +107,12 @@
     border-radius: 4px;
     text-align: center;
 }
+
+.account-nickname {
+    cursor: pointer;
+    transition: color 0.3s ease;
+} 
+
+.account-nickname:hover {
+    color: white;
+}

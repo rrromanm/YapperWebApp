@@ -37,6 +37,7 @@
                             <label>Category:</label>
                             <InputSelect @bind-Value="categoryId">
                                 <option value="0">Pick a category</option>
+                                <option value = ""> None</option>
                                 @foreach (var category in categories)
                                 {
                                     <option value="@category.Id">@category.Name</option>
@@ -97,10 +98,12 @@
                     @foreach (var user in threeRandomUsers)
                     {
                         <div class="account">
-                            <div class="account-info">
-                                <div class="account-nickname">@user.nickname</div>
+                            <div>
+                                <div class="account-nickname" @onclick="() => NavigateToUserProfile(user.username)">@user.username</div>
                             </div>
-                            <button class="btn btn-sm btn-outline-primary">Follow</button>
+                            <div>
+                                <FollowBtn userId="@user.id" OnFollowStatusChanged="GetFollowingPosts"/>
+                            </div>
                         </div>
                     }
                 </div>
@@ -166,12 +169,6 @@
             return;
         }
 
-        if (categoryId == 0)
-        {
-            errorMessage = "Category cannot be empty.";
-            return;
-        }
-
         var createPostDto = new CreatePostDTO(title, body, categoryId, userId);
 
         try
@@ -217,9 +214,41 @@
         showAllPosts = false;
         showFollowingPosts = true;
     }
-    
+
+    private void NavigateToUserProfile(string username)
+    {
+        NavMgr.NavigateTo($"/Profiles/{username}");
+    }
+
     private async Task GetThreeRandomUsers()
     {
         threeRandomUsers = await UserService.GetThreeRandomUsers();
+
+        foreach (var user in threeRandomUsers)
+        {
+            user.IsFollowedByCurrentUser = await UserService.IsFollowing(userId, user.id);
+        }
+    }
+
+    private async Task ToggleFollow(int followedUserId)
+    {
+        var user = threeRandomUsers.FirstOrDefault(u => u.id == followedUserId);
+        if (user != null)
+        {
+            if (user.IsFollowedByCurrentUser)
+            {
+                await UserService.UnfollowUser(userId, followedUserId);
+                user.IsFollowedByCurrentUser = false;
+
+                await GetFollowingPosts();
+            }
+            else
+            {
+                await UserService.FollowUser(userId, followedUserId);
+                user.IsFollowedByCurrentUser = true;
+
+                await GetFollowingPosts();
+            }
+        }
     }
 }

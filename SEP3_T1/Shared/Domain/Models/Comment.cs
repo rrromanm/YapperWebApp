@@ -9,6 +9,8 @@ public class Comment
     public int userId { get; set; }
     public int postId { get; set; }
     
+    public bool userLiked { get; set; }
+    
     public Comment(string body, string commentDate, int likeCount, int commentId, int userId, int postId)
     {
         this.body = body;
