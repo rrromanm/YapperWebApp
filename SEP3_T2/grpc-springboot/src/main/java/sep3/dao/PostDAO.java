@@ -38,7 +38,12 @@ public class PostDAO implements PostDAOInterface {
                 PreparedStatement categoryStatement = connection.prepareStatement(
                         "INSERT INTO yapper_database.post_category (categoryId, postId) VALUES (?, ?)"
                 );
-                categoryStatement.setInt(1, createPostDTO.getCategoryId());
+
+                if (createPostDTO.getCategoryId() == 0) {
+                    categoryStatement.setNull(1, java.sql.Types.INTEGER);
+                } else {
+                    categoryStatement.setInt(1, createPostDTO.getCategoryId());
+                }
                 categoryStatement.setInt(2, postId);
                 categoryStatement.executeUpdate();
             }

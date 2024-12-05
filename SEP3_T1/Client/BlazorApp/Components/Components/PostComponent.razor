@@ -57,15 +57,12 @@
             <h6 class="card-title">Category</h6>
             <InputSelect @bind-Value="categoryId">
                 <option value="@Post.CategoryId">@categoryName</option>
+                <option value="0">None</option>
                 @foreach (var category in categories.Where(c => c.Id != Post.CategoryId))
                 {
                     <option value="@category.Id">@category.Name</option>
                 }
             </InputSelect>
-            @if (categoryId == 0)
-            {
-                <small class="text-danger">Please select a valid category.</small>
-            }
         }
 
         <!-- Actions Section -->
@@ -308,6 +305,18 @@
 
     private async Task SavePost()
     {
+        if (string.IsNullOrWhiteSpace(editedTitle))
+        {
+            Console.WriteLine("Title cannot be empty.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(editedBody))
+        {
+            Console.WriteLine("Body cannot be empty.");
+            return;
+        }
+
         if (categoryId == 0)
         {
             categoryId = Post.CategoryId;
