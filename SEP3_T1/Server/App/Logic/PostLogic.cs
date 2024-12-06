@@ -253,4 +253,30 @@ public class PostLogic : IPostLogic
             throw;
         }
     }
+
+    public async Task<List<Post>> GetPostsBySearch(string searchText)
+    {
+        try
+        {
+            PostSearchResponse response = await client.GetPostsBySearchAsync(new PostSearchRequest
+            {
+                SearchText = searchText
+            });
+            string json = response.List;
+            
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            List<Post> posts = JsonSerializer.Deserialize<List<Post>>(json, options);
+            
+            return posts;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

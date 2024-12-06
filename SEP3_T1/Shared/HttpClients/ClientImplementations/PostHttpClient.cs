@@ -136,5 +136,15 @@ public class PostHttpClient : IPostService
         }
     }
 
+    public async Task<List<Post>> GetPostsBySearch(string searchText)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/Post/GetPostsBySearch/{searchText}");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = await response.Content.ReadAsStringAsync();
+            throw new Exception(e);
+        }
+        return await response.Content.ReadFromJsonAsync<List<Post>>();
+    }
 }
     

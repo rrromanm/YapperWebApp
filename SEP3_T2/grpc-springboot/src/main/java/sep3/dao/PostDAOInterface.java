@@ -20,4 +20,5 @@ public interface PostDAOInterface {
     ArrayList<PostDTO> getAllLikedPosts(int userId) throws SQLException;
     void likePost(int userId, int postId) throws SQLException;
     void unlikePost(int userId, int postId) throws SQLException;
+    ArrayList<PostDTO> getPostsBySearch(String search) throws SQLException;
 }
