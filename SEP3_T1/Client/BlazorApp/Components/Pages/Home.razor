@@ -36,8 +36,8 @@
                         <div>
                             <label>Category:</label>
                             <InputSelect @bind-Value="categoryId">
-                                <option value="0">None</option> <!-- This option will always be first -->
-                                @foreach (var category in categories.Where(c => c.Id != categoryId))
+                                <option value="0">General</option>
+                                @foreach (var category in categories.Where(c => c.Name != "General"))
                                 {
                                     <option value="@category.Id">@category.Name</option>
                                 }

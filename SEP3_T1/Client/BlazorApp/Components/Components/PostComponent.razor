@@ -56,15 +56,17 @@
         {
             <h6 class="card-title">Category</h6>
             <InputSelect @bind-Value="categoryId">
-                <option value="@Post.CategoryId">@categoryName</option>
-                @foreach (var category in categories.Where(c => c.Id != categoryId))
+                <option value="@categoryId">@categoryName</option>
+                @foreach (var category in categories.Where(c => c.Name != categoryName))
                 {
                     <option value="@category.Id">@category.Name</option>
                 }
             </InputSelect>
         }
-
-        <span class="fw-bold username-link" @onclick="() => NavigateToCategoryPage()">@categoryName</span> <br/>
+        else
+        {
+            <span class="fw-bold username-link" @onclick="() => NavigateToCategoryPage()">@categoryName</span> <br/> 
+        }
 
         <!-- Actions Section -->
         <div class="d-flex justify-content-between align-items-center mt-3">
@@ -345,6 +347,8 @@
         {
             throw new Exception($"Error saving post: {ex.Message}");
         }
+        
+        await OnStateChange.InvokeAsync();
     }
 
     private async Task ConfirmDeletePost()
