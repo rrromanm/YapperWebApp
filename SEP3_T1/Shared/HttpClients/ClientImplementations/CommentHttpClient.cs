@@ -27,7 +27,7 @@ public class CommentHttpClient : ICommentService
 
    public async Task UpdateCommentAsync(UpdateCommentDTO dto)
    {
-         HttpResponseMessage response = await _client.PutAsJsonAsync($"/Comment/{dto.commentId}", dto);
+         HttpResponseMessage response = await _client.PatchAsJsonAsync($"/Comment/update",dto);
          if (!response.IsSuccessStatusCode)
          {
               string e = await response.Content.ReadAsStringAsync();

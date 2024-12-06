@@ -27,7 +27,7 @@ public class CommentController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-    [HttpPatch]
+    [HttpPatch ("update")]
     public async Task<ActionResult> UpdateComment(UpdateCommentDTO dto)
     {
         try

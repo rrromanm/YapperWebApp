@@ -1,4 +1,5 @@
-﻿@using DTOs.Models
+﻿@using DTOs.DTOs.Comment
+@using DTOs.Models
 @using HttpClients.ClientInterfaces
 @inject ICommentService CommentService
 @inject ISMUserService SMUserService
@@ -11,18 +12,48 @@
         @foreach (var commentWithUser in commentsWithUsers)
         {
             <div class="comment-item">
-                <p><strong class="username-link" @onclick="() => NavigateToUserProfile(commentWithUser.User.Username)">@commentWithUser.User.Nickname:</strong> @commentWithUser.Comment.body</p>
+                <p>
+                    <strong class="username-link" @onclick="() => NavigateToUserProfile(commentWithUser.User.Username)">
+                        @commentWithUser.User.Nickname:
+                    </strong>
+                    @if (commentWithUser.isEditMode)
+                    {
+                    <textarea class="form-control" @bind="commentWithUser.editedCommentBody"></textarea>
+                    }
+                    else
+                    {
+                    @commentWithUser.Comment.body
+                    }
+                </p>
                 <small class="text-muted">@commentWithUser.Comment.commentDate</small>
                 <div class="like-section">
                     <button class="like-button" @onclick="() => ToggleLikeComment(commentWithUser.Comment.commentId, commentWithUser.Comment.userLiked)">
                         <i class="@LikeIconClass(commentWithUser.Comment.userLiked)"></i> @LikeText(commentWithUser.Comment.userLiked) (@commentWithUser.Comment.likeCount)
                     </button>
-                    @if (commentWithUser.Comment.userId == CurrentUserId)
-                    {
-                    <button class="delete-button" @onclick="() => DeleteComment(commentWithUser.Comment.commentId)">
-                        <i class="bi bi-trash"></i> Delete
-                    </button>
-                    }
+                    <div class="button-container">
+                        @if (commentWithUser.Comment.userId == CurrentUserId)
+                        {
+                        
+                            @if (commentWithUser.isEditMode)
+                            {
+                                <button class="save-button" @onclick="() => SaveEdit(commentWithUser)">
+                                    <i class="bi bi-save"></i> Save
+                                </button>
+                                <button class="cancel-button" @onclick="() => CancelEdit(commentWithUser)">
+                                    <i class="bi bi-x"></i> Cancel
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="edit-button" @onclick="() => EditComment(commentWithUser)">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button class="delete-button" @onclick="() => DeleteComment(commentWithUser.Comment.commentId)">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            }
+                        }
+                    </div>
                 </div>
             </div>
         }
@@ -157,6 +188,8 @@
     {
         public Comment Comment { get; set; }
         public User User { get; set; }
+        public bool isEditMode { get; set; }
+        public string editedCommentBody { get; set; }
     }
     private void NavigateToUserProfile(string username)
     {
@@ -181,6 +214,35 @@
         catch (Exception ex)
         {
             Console.WriteLine($"Error deleting comment {commentId}: {ex.Message}");
+        }
+    }
+    private void EditComment(CommentWithUser commentWithUser)
+    {
+        commentWithUser.isEditMode = true;
+        commentWithUser.editedCommentBody = commentWithUser.Comment.body;
+    }
+    private void CancelEdit(CommentWithUser commentWithUser)
+    {
+        commentWithUser.isEditMode = false;
+        commentWithUser.editedCommentBody = null;
+    }
+    private async Task SaveEdit(CommentWithUser commentWithUser)
+    {
+        if (string.IsNullOrWhiteSpace(commentWithUser.editedCommentBody))
+        {
+            return;
+        }
+        try
+        {
+            commentWithUser.Comment.body = commentWithUser.editedCommentBody;
+            UpdateCommentDTO dto = new UpdateCommentDTO(commentWithUser.Comment.commentId, commentWithUser.editedCommentBody);
+            await CommentService.UpdateCommentAsync(dto);
+            commentWithUser.isEditMode = false;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving comment {commentWithUser.Comment.commentId}: {ex.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}"); 
         }
     }
 }
