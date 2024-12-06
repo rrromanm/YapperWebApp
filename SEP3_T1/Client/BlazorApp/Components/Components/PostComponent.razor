@@ -16,7 +16,7 @@
         <div class="d-flex align-items-center mb-3">
             <i class="bi bi-person-circle fs-3 me-2 profile-icon"></i>
             <div>
-                <span class="fw-bold username-link" @onclick="() => NavigateToUserProfile(username)">@nickname</span> <br />
+                <span class="fw-bold username-link" @onclick="() => NavigateToUserProfile(username)">@nickname</span> <br/>
                 <small class="text-muted">@Post.PostDate</small>
             </div>
         </div>
@@ -63,6 +63,8 @@
                 }
             </InputSelect>
         }
+
+        <span class="fw-bold username-link" @onclick="() => NavigateToCategoryPage()">@categoryName</span> <br/>
 
         <!-- Actions Section -->
         <div class="d-flex justify-content-between align-items-center mt-3">
@@ -211,6 +213,8 @@
             var user = await userService.GetByUserId(Post.UserId);
             nickname = user.Nickname;
             username = user.Username;
+            
+            categoryName = categories.FirstOrDefault(c => c.Id == Post.CategoryId)?.Name;
         }
         catch (Exception ex)
         {
@@ -218,6 +222,11 @@
             nickname = "Unknown User";
             username = "Unknown User";
         }
+    }
+    
+    private void NavigateToUserProfile(string username)
+    {
+        NavigationManager.NavigateTo($"/Profiles/{username}");
     }
 
     //TODO: POST METHODS
@@ -419,9 +428,9 @@
     {
         categories = await categoryService.GetAllCategories();
     }
-
-    private void NavigateToUserProfile(string username)
+    
+    private void NavigateToCategoryPage()
     {
-        NavigationManager.NavigateTo($"/Profiles/{username}");
+        NavigationManager.NavigateTo($"/browse-categories");
     }
 }

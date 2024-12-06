@@ -212,14 +212,12 @@ public class SMUserLogic : ISMUserLogic
             {
                 Id = userId
             });
-
-            // Ensure the list field is not null or empty
+            
             if (string.IsNullOrWhiteSpace(response.List))
             {
-                return new List<FollowersDTO>(); // Return an empty list if no data
+                return new List<FollowersDTO>();
             }
-
-            // Deserialize the JSON string into a list of FollowersDTO
+            
             JsonSerializerOptions options = new JsonSerializerOptions
             {
                 WriteIndented = true,
@@ -244,14 +242,12 @@ public class SMUserLogic : ISMUserLogic
             {
                 Id = userId
             });
-
-            // Ensure the list field is not null or empty
+            
             if (string.IsNullOrWhiteSpace(response.List))
             {
-                return new List<FollowersDTO>(); // Return an empty list if no data
+                return new List<FollowersDTO>();
             }
-
-            // Deserialize the JSON string into a list of FollowersDTO
+            
             JsonSerializerOptions options = new JsonSerializerOptions
             {
                 WriteIndented = true,

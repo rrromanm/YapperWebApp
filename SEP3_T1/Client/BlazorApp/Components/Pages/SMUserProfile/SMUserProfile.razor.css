@@ -1,17 +1,15 @@
 ﻿.profile-page {
     display: flex;
-    flex-direction: column; /* Allow the container to stack elements vertically */
+    flex-direction: column;
 }
 
-/* Profile Content */
 .profile-container {
     flex: 1;
     background-color: white;
     padding: 20px;
-    
-    border: 1px solid #ccc; /* Add a border */
-    padding: 10px; /* Add some padding */
-    border-radius: 5px; /* Optional: Add rounded corners */
+    border: 1px solid #ccc;
+    padding: 10px; 
+    border-radius: 5px; 
 }
 
 .profile-header {
@@ -51,7 +49,6 @@
     background-color: #e2e6ea;
 }
 
-/* Post area */
 .profile-posts h3 {
     margin-top: 0;
     font-size: 24px;
@@ -87,7 +84,7 @@ textarea {
     border: none;
     cursor: pointer;
     border-radius: 5px;
-    margin: 0 10px; /* Add margin to space out the buttons */
+    margin: 0 10px;
 }
 
 .posts, .liked-posts {
@@ -123,7 +120,6 @@ textarea {
     margin-left: 10px;
 }
 
-/*Pop out window*/
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -201,7 +197,7 @@ textarea {
 }
 
 .scrollable-list {
-    max-height: 300px; /* Adjust the height as needed */
+    max-height: 300px;
     overflow-y: auto;
 }
 .username-link {
