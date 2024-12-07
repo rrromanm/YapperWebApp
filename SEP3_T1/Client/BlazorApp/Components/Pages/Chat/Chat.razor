@@ -92,7 +92,7 @@
     private async Task InitializeRabbitMQConsumer()
     {
         
-        if (isConsumerInitialized) return; // Preventing duplicate initializations
+        if (isConsumerInitialized) return;
         isConsumerInitialized = true;
         
         var factory = new ConnectionFactory() { HostName = "localhost" };

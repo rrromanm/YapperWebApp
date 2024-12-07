@@ -117,7 +117,6 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
     try {
       ArrayList<CommentDTO> comments = dao.getCommentsByPostId(request.getPostId());
       String string = gson.toJson(comments);
-      System.out.println("Comments fetched for postId: " + request.getPostId() + " -> " + gson.toJson(comments));
       GetCommentsByPostResponse response = GetCommentsByPostResponse.newBuilder().setList(string).build();
       responseObserver.onNext(response);
       responseObserver.onCompleted();

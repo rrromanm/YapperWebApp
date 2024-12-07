@@ -3,38 +3,80 @@
 @using System.Text.Json
 @using DTOs.DTOs.Notification
 @using HttpClients.ClientInterfaces
+@using RabbitMQ.Client
+@using RabbitMQ.Client.Events
 @inject AuthenticationStateProvider AuthProvider
 @inject INotificationService NotificationService
 
 <link href="NotificationsStylesheet.css" rel="stylesheet"/>
-<div class="notifications-page">
-    <div class="header">
-        <h3>Notifications</h3>
-    </div>
 
-    <div class="notification-list">
-        @if (notifications.Any())
-        {
-            @foreach (var notification in notifications)
-            {
-                <div class="notification-item">
-                    <span class="notification-message">@notification.NotificationMessage</span>
-                    <span class="notification-timestamp">
-                        @DateTime.Parse(notification.Timestamp).ToString("dd MMM yyyy, HH:mm")
-                    </span>
+<AuthorizeView>
+    <Authorized>
+        <div class="notifications-page">
+            <div class="header">
+                <h3>Notifications</h3>
+            </div>
+
+            <div class="notification-section">
+                <h4>Notifications Today</h4>
+                <div class="notification-list">
+                    @if (notificationsToday.Any())
+                    {
+                        @foreach (var notification in notificationsToday)
+                        {
+                            <div class="notification-item">
+                                <span class="notification-message">@notification.NotificationMessage</span>
+                                <span class="notification-timestamp">
+                                    @DateTime.Parse(notification.Timestamp).ToString("dd MMM yyyy, HH:mm")
+                                </span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No notifications received today.</p>
+                    }
                 </div>
-            }
-        }
-        else
-        {
-            <p class="no-notifications">No notifications to display.</p>
-        }
-    </div>
-</div>
+            </div>
+
+            <div class="notification-section">
+                <h4>Older Notifications</h4>
+                <div class="notification-list">
+                    @if (notificationsOlder.Any())
+                    {
+                        @foreach (var notification in notificationsOlder)
+                        {
+                            <div class="notification-item">
+                                <span class="notification-message">@notification.NotificationMessage</span>
+                                <span class="notification-timestamp">
+                                    @DateTime.Parse(notification.Timestamp).ToString("dd MMM yyyy, HH:mm")
+                                </span>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>No older notifications to display.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="unauthorized-view">
+            <h3>You are not authorized to view this page.</h3>
+            <p>Please <a href="/login">log in</a> to access the notifications.</p>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
-    private List<NotificationDTO> notifications = new List<NotificationDTO>();
+    private List<NotificationDTO> notificationsToday = new();
+    private List<NotificationDTO> notificationsOlder = new();
     private int currentUserId;
+    private IConnection connection;
+    private IChannel channel;
+    private bool isConsumerInitialized = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,14 +86,80 @@
         if (user.Identity.IsAuthenticated)
         {
             currentUserId = int.Parse(user.FindFirst("Id").Value);
-        }
 
-        await loadNotificationsAsync();
+            var allNotifications = await NotificationService.GetNotificationsAsync(currentUserId);
+            DivideNotifications(allNotifications);
+
+            await InitializeRabbitMQConsumer();
+        }
     }
 
-    public async Task loadNotificationsAsync()
+    private void DivideNotifications(List<NotificationDTO> allNotifications)
     {
-        notifications = await NotificationService.GetNotificationsAsync(currentUserId);
-        notifications = notifications.OrderByDescending(n => DateTime.Parse(n.Timestamp)).ToList();
+        var today = DateTime.Today;
+        notificationsToday = allNotifications
+            .Where(n => DateTime.Parse(n.Timestamp) >= today)
+            .OrderByDescending(n => n.Timestamp)
+            .ToList();
+
+        notificationsOlder = allNotifications
+            .Where(n => DateTime.Parse(n.Timestamp) < today)
+            .OrderByDescending(n => n.Timestamp)
+            .ToList();
+    }
+
+    private async Task InitializeRabbitMQConsumer()
+    {
+        if (isConsumerInitialized) return;
+        isConsumerInitialized = true;
+
+        var factory = new ConnectionFactory { HostName = "localhost" };
+
+        connection = await factory.CreateConnectionAsync();
+        channel = await connection.CreateChannelAsync();
+
+        await channel.ExchangeDeclareAsync("notifications.exchange", "topic");
+        string queueName = await channel.QueueDeclareAsync();
+        await channel.QueueBindAsync(queue: queueName, exchange: "notifications.exchange", routingKey: $"notifications.{currentUserId}");
+
+        var consumer = new AsyncEventingBasicConsumer(channel);
+        consumer.ReceivedAsync += async (model, ea) =>
+        {
+            var body = ea.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            var notification = JsonSerializer.Deserialize<NotificationDTO>(message);
+
+            if (notification != null)
+            {
+                var notificationDate = DateTime.Parse(notification.Timestamp);
+                if (notificationDate >= DateTime.Today)
+                {
+                    notificationsToday.Add(notification);
+                    notificationsToday = notificationsToday.OrderByDescending(n => n.Timestamp).ToList();
+                }
+                else
+                {
+                    notificationsOlder.Add(notification);
+                    notificationsOlder = notificationsOlder.OrderByDescending(n => n.Timestamp).ToList();
+                }
+
+                await InvokeAsync(StateHasChanged);
+            }
+        };
+
+        await channel.BasicConsumeAsync(queue: queueName, autoAck: true, consumer: consumer);
+    }
+
+    public void Dispose()
+    {
+        try
+        {
+            channel?.CloseAsync();
+            connection?.CloseAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error disposing RabbitMQ resources: {ex.Message}");
+        }
     }
 }

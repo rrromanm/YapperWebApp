@@ -29,7 +29,6 @@ public class ChatImpl extends ChatServiceGrpc.ChatServiceImplBase {
             SendMessageDTO dto = new SendMessageDTO(request.getMessage(), request.getReceiverId(), request.getSenderId());
             dao.sendMessage(dto);
 
-            // Publishing message to RabbitMQ
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost("localhost");
             try (var connection = factory.newConnection(); var channel = connection.createChannel()) {
