@@ -30,7 +30,7 @@
 
             <!-- Chat Window -->
             <div class="chat-window">
-                <!-- Selected User Header -->
+                <!-- Selected SMUser Header -->
                 <h4>@selectedReceiverName</h4>
 
                 <!-- Scrollable Messages -->
@@ -68,7 +68,7 @@
     private string message;
     private string selectedReceiverName;
     private List<MessageDTO> messages = new List<MessageDTO>();
-    private List<User> users = new List<User>();
+    private List<SMUser> users = new List<SMUser>();
     private int currentUserId;
     private int? selectedReceiverId;
     private IConnection connection;

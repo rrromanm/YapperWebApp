@@ -112,7 +112,6 @@ public class SMUserDAO implements SMUserDAOInterface {
             if (userResultSet.next()) {
                 int userId = userResultSet.getInt("userid");
 
-                // Query to count followers
                 PreparedStatement followersStatement = connection.prepareStatement(
                         "SELECT COUNT(*) AS followersCount FROM yapper_database.follows WHERE followedid = ?"
                 );
@@ -123,7 +122,6 @@ public class SMUserDAO implements SMUserDAOInterface {
                     followersCount = followersResultSet.getInt("followersCount");
                 }
 
-                // Query to count followings
                 PreparedStatement followingsStatement = connection.prepareStatement(
                         "SELECT COUNT(*) AS followingCount FROM yapper_database.follows WHERE followerid = ?"
                 );

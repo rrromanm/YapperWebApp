@@ -9,37 +9,49 @@ namespace API.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly ISMUserLogic _logic;
+    private readonly ISMUserLogic smUserLogic;
+    private readonly IModeratorLogic moderatorLogic;
     
-    public AuthController(ISMUserLogic logic)
+    public AuthController(ISMUserLogic logic, IModeratorLogic moderatorLogic)
     {
-        _logic = logic;
+        smUserLogic = logic;
+        this.moderatorLogic = moderatorLogic;
     }
     
     [HttpPost("/login")]
     public async Task<IResult> LoginAsync([FromBody] LoginRequestDTO requestDto)
     {
-        var user = await _logic.GetByUsernameAsync(requestDto.Username);
-        if (user == null)
+        try
         {
-            return Results.NotFound($"User with username '{requestDto.Username}' not found.");
+            var moderator = await moderatorLogic.GetModeratorByUsernameAsync(requestDto.Username);
+            if (moderator != null && moderator.Password == requestDto.Password)
+            {
+                return Results.Ok(new { user = moderator, role = "Admin" });
+            }
+            
+            
+            var smUser = await smUserLogic.GetByUsernameAsync(requestDto.Username);
+            if (smUser != null && smUser.Password == requestDto.Password)
+            {
+                return Results.Ok(new { user = smUser, role = "User" });
+            }
+
+            return Results.NotFound($"User or Admin with username '{requestDto.Username}' not found.");
         }
-    
-        if (user.Password != requestDto.Password)
+        catch (Exception ex)
         {
-            return Results.Unauthorized();
+            return Results.Problem("An error occurred while processing the request.", statusCode: 500);
         }
-    
-        return Results.Ok(user);
     }
+
     
     [HttpPost("/register")]
     public async Task<IResult> RegisterAsync(CreateUserDTO dto)
     {
         try
         {
-            var user = await _logic.CreateSMUser(dto);
-            var user1 = await _logic.GetByUsernameAsync(user.Username); // spaghetti ahh code
+            var user = await smUserLogic.CreateSMUser(dto);
+            var user1 = await smUserLogic.GetByUsernameAsync(user.Username); // spaghetti ahh code
             var userDto = new UserDTO
             {
                 Id = user1.Id,

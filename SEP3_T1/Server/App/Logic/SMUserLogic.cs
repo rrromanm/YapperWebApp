@@ -6,7 +6,6 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using GrpcClient;
 using Microsoft.AspNetCore.Mvc;
-using SocialMediaUser;
 
 
 
@@ -22,7 +21,7 @@ public class SMUserLogic : ISMUserLogic
         client = new SMUserService.SMUserServiceClient(channel);
     }
 
-    public async Task<User> CreateSMUser(CreateUserDTO dto)
+    public async Task<SMUser> CreateSMUser(CreateUserDTO dto)
     {
         try
         {
@@ -34,7 +33,7 @@ public class SMUserLogic : ISMUserLogic
                 Nickname = dto.Nickname
             });
 
-            var user = new User
+            var user = new SMUser
             {
                 Username = dto.Username,
                 Email = dto.Email,
@@ -119,7 +118,7 @@ public class SMUserLogic : ISMUserLogic
         }
     }
 
-    public async Task<List<User>> GetAllUsers()
+    public async Task<List<SMUser>> GetAllUsers()
     {
         try
         {
@@ -130,7 +129,7 @@ public class SMUserLogic : ISMUserLogic
                 WriteIndented = true,
                 PropertyNameCaseInsensitive = true
             };
-            List<User> users = JsonSerializer.Deserialize<List<User>>(json, options);
+            List<SMUser> users = JsonSerializer.Deserialize<List<SMUser>>(json, options);
             return users;
         }
         catch (Exception e)
@@ -140,18 +139,18 @@ public class SMUserLogic : ISMUserLogic
         }
     }
 
-    public async Task<User> GetByUsernameAsync(string userName)
+    public async Task<SMUser> GetByUsernameAsync(string userName)
     {
         var response = await client.GetByUserNameAsync(new GetSMUserRequest
         {
             Username = userName
         });
-        User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id,
+        SMUser smUser = new SMUser(response.Username, response.Password, response.Email, response.Nickname, response.Id,
             response.FollowersCount, response.FollowingCount);
-        return user;
+        return smUser;
     }
 
-    public async Task<User> GetByIdAsync(int userId)
+    public async Task<SMUser> GetByIdAsync(int userId)
     {
         try
         {
@@ -159,9 +158,9 @@ public class SMUserLogic : ISMUserLogic
             {
                 Id = userId
             });
-            User user = new User(response.Username, response.Password, response.Email, response.Nickname, response.Id,
+            SMUser smUser = new SMUser(response.Username, response.Password, response.Email, response.Nickname, response.Id,
                 response.FollowersCount, response.FollowingCount);
-            return user;
+            return smUser;
         }
         catch (Exception e)
         {

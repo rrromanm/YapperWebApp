@@ -7,25 +7,6 @@ import sep3.dto.smuser.CreateSMUserDTO;
 import sep3.dto.smuser.FollowerDTO;
 import sep3.dto.smuser.SMUserDTO;
 import socialMediaUser.*;
-import socialMediaUser.CreateSMUserRequest;
-import socialMediaUser.CreateSMUserResponse;
-import socialMediaUser.DeleteSMUserRequest;
-import socialMediaUser.FollowUserRequest;
-import socialMediaUser.GetAllUsersRequest;
-import socialMediaUser.GetAllUsersResponse;
-import socialMediaUser.GetFollowersRequest;
-import socialMediaUser.GetFollowersResponse;
-import socialMediaUser.GetSMUserRequest;
-import socialMediaUser.GetThreeRandomUsersRequest;
-import socialMediaUser.GetThreeRandomUsersResponse;
-import socialMediaUser.IsFollowingRequest;
-import socialMediaUser.IsFollowingResponse;
-import socialMediaUser.SMUserEmptyResponse;
-import socialMediaUser.SMUserResponse;
-import socialMediaUser.UnfollowUserRequest;
-import socialMediaUser.UpdateSMUserEmailRequest;
-import socialMediaUser.UpdateSMUserNicknameRequest;
-import socialMediaUser.UpdateSMUserPasswordRequest;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -125,8 +106,8 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
                     .setUsername(user.getUsername())
                     .setNickname(user.getNickname())
                     .setPassword(user.getPassword())
-                    .setFollowersCount(user.getFollowerCount()) // Assuming SMUserDTO has these fields
-                    .setFollowingCount(user.getFollowingCount()) // Assuming SMUserDTO has these fields
+                    .setFollowersCount(user.getFollowerCount())
+                    .setFollowingCount(user.getFollowingCount())
                     .build();
 
             responseObserver.onNext(response);

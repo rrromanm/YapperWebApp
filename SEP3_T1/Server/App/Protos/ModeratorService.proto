@@ -1,0 +1,22 @@
+﻿syntax = "proto3";
+option csharp_namespace = "GrpcClient";
+package moderator;
+
+message GetModeratorRequest {
+  int32 id = 1;
+  string username = 2;
+}
+
+message ModeratorResponse {
+  int32 id = 1;
+  string username = 2;
+  string password = 3;
+}
+
+message ModeratorEmptyResponse {
+
+}
+
+service ModeratorService {
+  rpc GetModeratorByUserName (GetModeratorRequest) returns (ModeratorResponse);
+}

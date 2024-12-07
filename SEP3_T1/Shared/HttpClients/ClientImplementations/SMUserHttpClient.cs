@@ -46,22 +46,22 @@ public class SMUserHttpClient : ISMUserService
         }
     }
 
-    public async Task<User> GetByUsername(string username)
+    public async Task<SMUser> GetByUsername(string username)
     {
         HttpResponseMessage response = await _client.GetAsync($"/SMUser/{username}");
         if (!response.IsSuccessStatusCode)
         {
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                throw new HttpRequestException("User does not exist.", null, System.Net.HttpStatusCode.NotFound);
+                throw new HttpRequestException("SMUser does not exist.", null, System.Net.HttpStatusCode.NotFound);
             }
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
-        return await response.Content.ReadFromJsonAsync<User>();
+        return await response.Content.ReadFromJsonAsync<SMUser>();
     }
 
-    public async Task<User> GetByUserId(int userId)
+    public async Task<SMUser> GetByUserId(int userId)
     {
         HttpResponseMessage response = await _client.GetAsync($"/SMUser/{userId}");
         if (!response.IsSuccessStatusCode)
@@ -73,7 +73,7 @@ public class SMUserHttpClient : ISMUserService
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
-        return await response.Content.ReadFromJsonAsync<User>();
+        return await response.Content.ReadFromJsonAsync<SMUser>();
     }
 
     public async Task FollowUser(int followerId, int followedId)
@@ -119,7 +119,7 @@ public class SMUserHttpClient : ISMUserService
         return await response.Content.ReadFromJsonAsync<List<FollowersDTO>>();
     }
 
-    public async Task<List<User>> GetAllUsers()
+    public async Task<List<SMUser>> GetAllUsers()
     {
         HttpResponseMessage response = await _client.GetAsync($"/SMUser");
         if (!response.IsSuccessStatusCode)
@@ -127,7 +127,7 @@ public class SMUserHttpClient : ISMUserService
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
         }
-        return await response.Content.ReadFromJsonAsync<List<User>>();
+        return await response.Content.ReadFromJsonAsync<List<SMUser>>();
     }
 
     public async Task<bool> IsFollowing(int followerId, int followedId)

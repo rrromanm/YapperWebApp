@@ -1,6 +1,6 @@
 namespace DTOs.Models;
 
-public class User
+public class SMUser
 {
     public string Username { get; set; }
     public string Password { get; set; }
@@ -11,12 +11,12 @@ public class User
     public int followingCount { get; set; }
     
     
-    public User()
+    public SMUser()
     {
         
     }
     
-    public User(string username, string password, string email, string nickname, int id, int followersCount, int followingCount)
+    public SMUser(string username, string password, string email, string nickname, int id, int followersCount, int followingCount)
     {
         Username = username;
         Password = password;
