@@ -13,6 +13,7 @@ builder.Services.AddScoped<ICategoryLogic, CategoryLogic>();
 builder.Services.AddScoped<ICommentLogic, CommentLogic>();
 builder.Services.AddScoped<IPostLogic, PostLogic>();
 builder.Services.AddScoped<IChatLogic, ChatLogic>();
+builder.Services.AddScoped<INotificationLogic, NotificationLogic>();
 
 var app = builder.Build();
 

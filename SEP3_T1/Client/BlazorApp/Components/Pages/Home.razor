@@ -3,12 +3,14 @@
 @using DTOs.User.PostDTOs
 @using HttpClients.ClientInterfaces
 @using BlazorApp.Components.Components
+@using DTOs.DTOs.Notification
 @using DTOs.User
 @inject NavigationManager NavMgr
 @inject AuthenticationStateProvider AuthProvider
 @inject IPostService PostService
 @inject ISMUserService UserService
 @inject ICategoryService CategoryService
+@inject INotificationService NotificationService
 
 <PageTitle>Home</PageTitle>
 
@@ -177,7 +179,8 @@
             title = string.Empty;
             body = string.Empty;
             categoryId = 0;
-
+        
+           
             StateHasChanged();
             await GetAllPosts();
         }

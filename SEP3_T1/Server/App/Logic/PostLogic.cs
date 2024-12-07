@@ -105,7 +105,6 @@ public class PostLogic : IPostLogic
                 PropertyNameCaseInsensitive = true
             };
             List<Post> posts = JsonSerializer.Deserialize<List<Post>>(json, options);
-            Console.WriteLine(posts);
             return posts;
         }
         catch (Exception e)

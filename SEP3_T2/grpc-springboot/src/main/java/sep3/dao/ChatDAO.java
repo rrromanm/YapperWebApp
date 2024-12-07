@@ -1,7 +1,7 @@
 package sep3.dao;
 
-import sep3.dto.MessageDTO;
-import sep3.dto.SendMessageDTO;
+import sep3.dto.chat.MessageDTO;
+import sep3.dto.chat.SendMessageDTO;
 import sep3.util.DatabaseConnectionManager;
 
 import java.sql.Connection;

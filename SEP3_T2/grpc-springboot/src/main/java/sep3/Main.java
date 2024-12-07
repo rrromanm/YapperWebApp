@@ -19,6 +19,7 @@ public class Main {
                 .addService(new PostImpl(PostDAO.getInstance()))
                 .addService(new CommentImpl(CommentDAO.getInstance()))
                 .addService(new ChatImpl(ChatDAO.getInstance()))
+                .addService(new NotificationImpl(NotificationDAO.getInstance()))
                 .build()
                 .start();
 

@@ -87,7 +87,6 @@ message GetThreeRandomUsersRequest {
   int32 userId = 1;
 }
 
-//Responses
 message GetAllUsersResponse{
   string list = 1;
 }

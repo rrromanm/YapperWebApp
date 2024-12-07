@@ -1,10 +1,12 @@
 ﻿@using DTOs.DTOs.Comment
+@using DTOs.DTOs.Notification
 @using DTOs.Models
 @using HttpClients.ClientInterfaces
 @inject ICommentService CommentService
 @inject ISMUserService SMUserService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
+@inject INotificationService NotificationService
 
 <div class="comments-container">
     @if (commentsWithUsers != null && commentsWithUsers.Count > 0)
@@ -128,6 +130,18 @@
                 comment.Comment.likeCount++;
                 comment.Comment.userLiked = true;
             }
+            
+            if(CurrentUserId != comment.Comment.userId){ 
+                var currentUserDetails = await SMUserService.GetByUserId(CurrentUserId);
+                var currentUserNickname = currentUserDetails.Nickname;
+                NotificationDTO notification = new NotificationDTO
+                {
+                NotificationMessage = $"{currentUserNickname} reacted to your comment: {comment.Comment.body}!",
+                UserId = comment.Comment.userId,
+                Timestamp = DateTime.Now.ToString()
+                };
+                await NotificationService.SendNotificationAsync(notification);
+            }
             StateHasChanged();
         }
         catch (Exception ex)
@@ -209,7 +223,7 @@
             await CommentService.DeleteCommentAsync(commentId);
             await ReloadCommentsAsync();
             
-            await OnCommentDeleted.InvokeAsync(); // EventCallback to notify PostComponent that comment is deleted
+            await OnCommentDeleted.InvokeAsync();
         }
         catch (Exception ex)
         {

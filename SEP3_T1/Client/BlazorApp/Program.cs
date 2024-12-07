@@ -20,6 +20,7 @@ builder.Services.AddScoped<IPostService, PostHttpClient>();
 builder.Services.AddScoped<ICommentService, CommentHttpClient>();
 builder.Services.AddScoped<ICategoryService, CategoryHttpClient>();
 builder.Services.AddScoped<IChatService, ChatHttpClient>();
+builder.Services.AddScoped<INotificationService, NotificationHttpClient>();
 builder.Services.AddScoped<AuthenticationStateProvider, SimpleAuthProvider>();
 
 var app = builder.Build();

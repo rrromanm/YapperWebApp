@@ -4,13 +4,11 @@ import chat.*;
 import com.google.gson.Gson;
 import io.grpc.stub.StreamObserver;
 import sep3.dao.ChatDAOInterface;
-import sep3.dto.MessageDTO;
-import sep3.dto.SendMessageDTO;
+import sep3.dto.chat.MessageDTO;
+import sep3.dto.chat.SendMessageDTO;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Channel;
 
 public class ChatImpl extends ChatServiceGrpc.ChatServiceImplBase {
 

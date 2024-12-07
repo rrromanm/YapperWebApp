@@ -148,8 +148,11 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
   {
     try
     {
-      dao.likeComment(request.getCommentId(), request.getUserId());
+      CommentDTO comment = dao.getComment(request.getCommentId());
+      String creatorId = "" + comment.getUserId();
 
+
+      dao.likeComment(request.getCommentId(), request.getUserId());
       responseObserver.onNext(CommentEmptyResponse.newBuilder().build());
       responseObserver.onCompleted();
     }

@@ -76,7 +76,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Get initial authentication state
         await UpdateUsernameAsync();
     }
 
@@ -84,7 +83,7 @@
     {
         if (firstRender)
         {
-            // Subscribe to authentication state changes
+            
             AuthProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
         }
     }
@@ -103,12 +102,11 @@
             username = null;
         }
 
-        StateHasChanged(); // Notify the UI to re-render
+        StateHasChanged(); 
     }
 
     private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
     {
-        // When authentication state changes, update username
         InvokeAsync(UpdateUsernameAsync);
     }
 
@@ -124,7 +122,6 @@
 
     public void Dispose()
     {
-        // Unsubscribe from the event when the component is disposed
         AuthProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
     }
 }
