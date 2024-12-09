@@ -22,4 +22,5 @@ public interface SMUserDAOInterface
     ArrayList<FollowerDTO> getFollowing(int userId) throws SQLException;
     boolean isFollowing(int followerId, int followedId) throws SQLException;
     ArrayList<FollowerDTO> getThreeRandomUsers(int userId) throws SQLException;
+    ArrayList<FollowerDTO> getUsersBySearch (String search) throws SQLException;
 }
