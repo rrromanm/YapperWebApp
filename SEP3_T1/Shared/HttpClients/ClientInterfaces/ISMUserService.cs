@@ -18,4 +18,5 @@ public interface ISMUserService
     Task<List<User>> GetAllUsers();
     Task<bool> IsFollowing(int followerId, int followedId);
     Task<List<FollowersDTO>> GetThreeRandomUsers(int id);
+    Task<List<FollowersDTO>> GetUsersBySearch(string searchText);
 }

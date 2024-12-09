@@ -59,7 +59,7 @@
                     {
                         <div class="post-buttons">
                             <button @onclick="ShowSearchedPosts" class="post-btn @(showSearchedPosts ? "active" : "grey")">Posts</button>
-                            <button class="post-btn @(showSearchedAccounts ? "active" : "grey")">Accounts</button>
+                            <button @onclick="ShowSearchedUsers" class="post-btn @(showSearchedUsers ? "active" : "grey")">Accounts</button>
                         </div>
                     }
                     else
@@ -119,6 +119,30 @@
                             }
                         </div>
                     }
+                    
+                    @if (showSearchedUsers)
+                    {
+                        <div class="posts">
+                            @if (searchedUsers != null && searchedUsers.Count > 0)
+                            {
+                                @foreach (var user in searchedUsers)
+                                {
+                                    <div class="account">
+                                        <div>
+                                            <div class="account-nickname" @onclick="() => NavigateToUserProfile(user.username)">@user.username</div>
+                                        </div>
+                                        <div>
+                                            <FollowBtn userId="@user.id" OnFollowStatusChanged="ShowSearchedUsers"/>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>No users available.</p>
+                            }
+                        </div>
+                    }
                 </div>
             </div>
 
@@ -158,13 +182,14 @@
     private List<Post> followingPosts = new List<Post>();
     private List<Post> searchedPosts = new List<Post>();
     private List<FollowersDTO> threeRandomUsers = new List<FollowersDTO>();
+    private List<FollowersDTO> searchedUsers = new List<FollowersDTO>();
 
     private bool showAllPosts = true;
     private bool showFollowingPosts = false;
     private string searchText;
 
     private bool showSearchedPosts = false;
-    private bool showSearchedAccounts = false;
+    private bool showSearchedUsers = false;
 
     private string errorMessage;
 
@@ -262,6 +287,7 @@
             showSearchedPosts = false;
             showAllPosts = true;
             showFollowingPosts = false;
+            showSearchedUsers = false;
             searchedPosts.Clear();
         }
     }
@@ -269,7 +295,7 @@
     private async Task ShowSearchedPosts()
     {
         showSearchedPosts = true;
-        showSearchedAccounts = false;
+        showSearchedUsers = false;
         showAllPosts = false;
         showFollowingPosts = false;
 
@@ -298,5 +324,24 @@
         {
             user.IsFollowedByCurrentUser = await UserService.IsFollowing(userId, user.id);
         }
+    }
+
+    private async Task ShowSearchedUsers()
+    {
+        showSearchedUsers = true;
+        showSearchedPosts = false;
+        showAllPosts = false;
+        showFollowingPosts = false;
+
+        try
+        {
+            searchedUsers = await UserService.GetUsersBySearch(searchText);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to fetch searched posts. " + ex.Message;
+        }
+
+        StateHasChanged();
     }
 }

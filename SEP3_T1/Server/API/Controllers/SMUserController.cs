@@ -196,4 +196,18 @@ public class SMUserController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    
+    [HttpGet("search/{searchText}")]
+    public async Task<ActionResult> GetUsersBySearch([FromRoute] string searchText)
+    {
+        try
+        {
+            var users = await _smUserLogic.GetUsersBySearch(searchText);
+            return Ok(users);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

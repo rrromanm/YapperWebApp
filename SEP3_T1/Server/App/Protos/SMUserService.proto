@@ -87,6 +87,10 @@ message GetThreeRandomUsersRequest {
   int32 userId = 1;
 }
 
+message GetUsersBySearchRequest {
+  string searchText = 1;
+}
+
 //Responses
 message GetAllUsersResponse{
   string list = 1;
@@ -106,12 +110,16 @@ message SMUserResponse {
   int32 followingCount = 7;
 }
 
-message SMUserEmptyResponse {
-
-}
-
 message GetThreeRandomUsersResponse {
   string list = 1;
+}
+
+message GetUsersBySearchResponse {
+  string list = 1;
+}
+
+message SMUserEmptyResponse {
+
 }
 
 service SMUserService {
@@ -129,4 +137,5 @@ service SMUserService {
   rpc GetFollowing (GetFollowersRequest) returns (GetFollowersResponse);
   rpc IsFollowing (IsFollowingRequest) returns (IsFollowingResponse);
   rpc GetThreeRandomUsers (GetThreeRandomUsersRequest) returns (GetThreeRandomUsersResponse);
+  rpc GetUsersBySearch (GetUsersBySearchRequest) returns (GetUsersBySearchResponse);
 }
