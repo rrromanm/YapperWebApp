@@ -69,7 +69,7 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
     catch (Exception e)
     {
       System.err.println("Error occurred: " + e.getMessage());
-      e.printStackTrace(); // This will give you a stack trace to trace the error.
+      e.printStackTrace();
       responseObserver.onError(e);
     }
   }
@@ -88,7 +88,7 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
     catch (Exception e)
     {
       System.err.println("Error occurred: " + e.getMessage());
-      e.printStackTrace(); // This will give you a stack trace to trace the error.
+      e.printStackTrace(); 
       responseObserver.onError(e);
     }
   }
