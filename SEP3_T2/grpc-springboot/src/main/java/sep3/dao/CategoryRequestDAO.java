@@ -33,7 +33,7 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
   {
     try (Connection connection = DatabaseConnectionManager.getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("INSERT INTO categoryRequest (categoryName, userId) VALUES (?,?)");
+      PreparedStatement statement = connection.prepareStatement("INSERT INTO category_request (categoryName, userId) VALUES (?,?)");
       statement.setString(1, dto.getCategoryName());
       statement.setInt(2, dto.getUserId());
       statement.executeUpdate();
@@ -49,7 +49,7 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
   {
     try(Connection connection = DatabaseConnectionManager.getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("DELETE FROM categoryRequest WHERE requestId = ?");
+      PreparedStatement statement = connection.prepareStatement("DELETE FROM category_request WHERE requestId = ?");
       statement.setInt(1, id);
       statement.executeUpdate();
     }
@@ -63,7 +63,7 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
   {
     try(Connection connection = DatabaseConnectionManager.getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("SELECT * FROM categoryRequest WHERE requestId = ?");
+      PreparedStatement statement = connection.prepareStatement("SELECT * FROM category_request WHERE requestid = ?");
       statement.setInt(1, id);
       ResultSet resultSet = statement.executeQuery();
 
@@ -91,7 +91,7 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
   @Override public ArrayList<CategoryRequestDTO> getAllCategoryRequests() throws SQLException
   {
     try(Connection connection = DatabaseConnectionManager.getConnection()){
-      PreparedStatement statement = connection.prepareStatement("SELECT * FROM categoryRequest");
+      PreparedStatement statement = connection.prepareStatement("SELECT * FROM category_request");
       ResultSet resultSet = statement.executeQuery();
       ArrayList<CategoryRequestDTO> categoryRequests = new ArrayList<>();
 
@@ -117,8 +117,8 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
   {
     try(Connection connection = DatabaseConnectionManager.getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("SELECT * FROM categoryRequest WHERE categoryName = ?");
-      statement.setString(1, name);
+      PreparedStatement statement = connection.prepareStatement("SELECT * FROM category_request WHERE categoryName ILIKE ?");
+      statement.setString(1, "%" + name + "%");
       ResultSet resultSet = statement.executeQuery();
       ArrayList<CategoryRequestDTO> categoryRequests = new ArrayList<>();
 
@@ -144,6 +144,8 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
       statement.setString(1, categoryName);
       statement.setInt(2, addedBy);
       statement.executeUpdate();
+
+      disapproveCategoryRequest(categoryName);
     }
     catch (SQLException e)
     {
@@ -155,7 +157,7 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
   {
     try(Connection connection = DatabaseConnectionManager.getConnection())
     {
-      PreparedStatement statement = connection.prepareStatement("DELETE FROM categoryRequest WHERE categoryName = ?");
+      PreparedStatement statement = connection.prepareStatement("DELETE FROM category_request WHERE categoryName = ?");
       statement.setString(1, categoryName);
       statement.executeUpdate();
     }

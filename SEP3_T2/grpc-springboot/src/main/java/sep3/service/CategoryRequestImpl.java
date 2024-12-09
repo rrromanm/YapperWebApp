@@ -63,12 +63,13 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
         .setCategoryName(categoryRequest.getCategoryName())
         .setUserId(categoryRequest.getUserId())
         .setId(categoryRequest.getRequestId())
-
         .build());
       responseObserver.onCompleted();
     }
     catch (Exception e)
     {
+      System.err.println("Error occurred: " + e.getMessage());
+      e.printStackTrace(); // This will give you a stack trace to trace the error.
       responseObserver.onError(e);
     }
   }
@@ -86,6 +87,8 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
     }
     catch (Exception e)
     {
+      System.err.println("Error occurred: " + e.getMessage());
+      e.printStackTrace(); // This will give you a stack trace to trace the error.
       responseObserver.onError(e);
     }
   }
