@@ -21,27 +21,35 @@ public class AuthController : ControllerBase
     [HttpPost("/login")]
     public async Task<IResult> LoginAsync([FromBody] LoginRequestDTO requestDto)
     {
-        try
+        var user = await smUserLogic.GetByUsernameAsync(requestDto.Username);
+        if (user == null)
         {
-            var moderator = await moderatorLogic.GetModeratorByUsernameAsync(requestDto.Username);
-            if (moderator != null && moderator.Password == requestDto.Password)
-            {
-                return Results.Ok(new { user = moderator, role = "Admin" });
-            }
-            
-            
-            var smUser = await smUserLogic.GetByUsernameAsync(requestDto.Username);
-            if (smUser != null && smUser.Password == requestDto.Password)
-            {
-                return Results.Ok(new { user = smUser, role = "User" });
-            }
-
-            return Results.NotFound($"User or Admin with username '{requestDto.Username}' not found.");
+            return Results.NotFound($"User with username '{requestDto.Username}' not found.");
         }
-        catch (Exception ex)
+    
+        if (user.Password != requestDto.Password)
         {
-            return Results.Problem("An error occurred while processing the request.", statusCode: 500);
+            return Results.Unauthorized();
         }
+    
+        return Results.Ok(user);
+    }
+    
+    [HttpPost("/moderatorLogin")]
+    public async Task<IResult> ModeratorLoginAsync([FromBody] LoginRequestDTO requestDto)
+    {
+        var moderator = await moderatorLogic.GetModeratorByUsernameAsync(requestDto.Username);
+        if (moderator == null)
+        {
+            return Results.NotFound($"Moderator with username '{requestDto.Username}' not found.");
+        }
+        
+        if (moderator.Password != requestDto.Password)
+        {
+            return Results.Unauthorized();
+        }
+        
+        return Results.Ok(moderator);
     }
 
     

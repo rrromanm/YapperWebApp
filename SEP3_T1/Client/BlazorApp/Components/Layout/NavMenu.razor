@@ -1,4 +1,5 @@
-﻿@inject AuthenticationStateProvider AuthProvider
+﻿@using BlazorApp.Auth
+@inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavManager
 
 <div class="top-row ps-3 navbar navbar-dark">
@@ -14,41 +15,68 @@
     <nav class="flex-column">
         <AuthorizeView>
             <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="@GetProfileUrl()">
-                        <span class="bi bi-person-fill" aria-hidden="true"></span>My Account
-                    </NavLink>
-                </div>
+                @if (isAdmin)
+                {
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/ModeratorHome">
+                            <span class="bi bi-house-door" aria-hidden="true"></span> Home
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/manage-posts">
+                            <span class="bi bi-file-earmark-post" aria-hidden="true"></span> Manage Posts
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/reports">
+                            <span class="bi bi-bar-chart" aria-hidden="true"></span> Reports
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/accounts">
+                            <span class="bi bi-person-lines-fill" aria-hidden="true"></span> See Accounts
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/manage-categories">
+                            <span class="bi bi-gear" aria-hidden="true"></span> Manage Categories
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/requests">
+                            <span class="bi bi-file-earmark-text" aria-hidden="true"></span> See Requests
+                        </NavLink>
+                    </div>
 
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/">
-                        <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/chat">
-                        <span class="bi bi-chat-fill" aria-hidden="true"></span> Chat
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/notifications">
-                        <span class="bi bi-bell-fill" aria-hidden="true"></span> Notifications
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/browse-categories">
-                        <span class="bi bi-list-ul" aria-hidden="true"></span> Browse Categories
-                    </NavLink>
-                </div>
-                
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/manage-categories">
-                        <span class="bi bi-pencil-fill" aria-hidden="true"></span> Manage Categories
-                    </NavLink>
-                </div>
+                }
+                else
+                {
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/">
+                            <span class="bi bi-house-door-fill" aria-hidden="true"></span> Home
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/chat">
+                            <span class="bi bi-chat-fill" aria-hidden="true"></span> Chat
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/notifications">
+                            <span class="bi bi-bell-fill" aria-hidden="true"></span> Notifications
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/browse-categories">
+                            <span class="bi bi-list-ul" aria-hidden="true"></span> Browse Categories
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/manage-categories">
+                            <span class="bi bi-pencil-fill" aria-hidden="true"></span> Manage Categories
+                        </NavLink>
+                    </div>
+                }
             </Authorized>
 
             <NotAuthorized>
@@ -62,57 +90,55 @@
                         <span class="bi bi-person-plus-fill" aria-hidden="true"></span> Register
                     </NavLink>
                 </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/moderatorLogin">
+                        <span class="bi bi-person-plus-fill" aria-hidden="true"></span> Moderator Login
+                    </NavLink>
+                </div>
             </NotAuthorized>
-
         </AuthorizeView>
     </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
-    private string? username;
+    private bool isAdmin = false;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     protected override async Task OnInitializedAsync()
     {
-        await UpdateUsernameAsync();
+        await UpdateUserRoleAsync();
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
-            
-            AuthProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+            ((SimpleAuthProvider)AuthProvider).AuthenticationStateChanged += OnAuthenticationStateChanged;
         }
     }
 
-    private async Task UpdateUsernameAsync()
+    private async Task UpdateUserRoleAsync()
     {
-        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var authState = await ((SimpleAuthProvider)AuthProvider).GetAuthenticationStateAsync();
         var user = authState.User;
 
         if (user.Identity.IsAuthenticated)
         {
-            username = user.Identity.Name;
+            isAdmin = user.IsInRole("Moderator");
         }
         else
         {
-            username = null;
+            isAdmin = false;
         }
 
-        StateHasChanged(); 
+        StateHasChanged();
     }
 
     private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
     {
-        InvokeAsync(UpdateUsernameAsync);
-    }
-
-    private string GetProfileUrl()
-    {
-        return $"/Profiles/{username}";
+        InvokeAsync(UpdateUserRoleAsync);
     }
 
     private void ToggleNavMenu()

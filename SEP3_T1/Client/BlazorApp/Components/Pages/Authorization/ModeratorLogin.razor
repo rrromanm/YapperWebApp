@@ -1,0 +1,58 @@
+﻿@page "/moderatorLogin"
+@using BlazorApp.Auth
+@using DTOs.Models
+@using HttpClients.ClientInterfaces
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthProvider
+
+<div class="login-page-container">
+    <link href="LoginStylesheet.css" rel="stylesheet" />
+
+    <!-- Left section for image -->
+    <div class="login-image">
+        <img src="yapper.png" alt="Placeholder Image"/>
+    </div>
+
+    <!-- Right section for login form -->
+    <div class="login-form-container">
+        <div class="login-form">
+            <input @bind="username" placeholder="Moderator Username"/>
+            <input @bind="password" type="password" placeholder="Password"/>
+            <button @onclick="LoginImpl">Login</button>
+        </div>
+
+        <!-- Error or alert messages -->
+        <div class="login-exceptions">
+            <p class="error-message">@errorMessage</p>
+        </div>
+
+        <!-- Sign up or guest access link -->
+        <div class="login-footer">
+            <p>Don't have an account? <a href="/Register">Sign up</a></p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string username;
+    private string password;
+    private string errorMessage;
+
+    private async Task LoginImpl()
+    {
+        try
+        {
+            await ((SimpleAuthProvider)AuthProvider).ModeratorLogin(username, password);
+            Navigation.NavigateTo("/ModeratorHome");
+        }
+        catch (Exception ex)
+        {
+            if (username == null || password == null)
+            {
+                errorMessage = "Username and password are required!";
+                return;
+            }
+            errorMessage = "Credentials do not match, try again!";
+        }
+    }
+}

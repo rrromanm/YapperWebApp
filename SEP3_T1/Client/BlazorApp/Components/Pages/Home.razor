@@ -18,7 +18,7 @@
 
 <link href="HomeStylesheet.css" rel="stylesheet"/>
 
-<AuthorizeView>
+<AuthorizeView Roles="User">
     <Authorized>
         <p>Hello, @context.User.Identity.Name!</p>
         <p>You are logged in.</p>
@@ -179,8 +179,8 @@
             title = string.Empty;
             body = string.Empty;
             categoryId = 0;
-        
-           
+
+
             StateHasChanged();
             await GetAllPosts();
         }
