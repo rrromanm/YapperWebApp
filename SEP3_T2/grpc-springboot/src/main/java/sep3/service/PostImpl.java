@@ -212,4 +212,21 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
             responseObserver.onError(e);
         }
     }
+
+    @Override
+    public void getPostsBySearch(PostSearchRequest request, StreamObserver<PostSearchResponse> responseObserver) {
+        try {
+            ArrayList<PostDTO> posts = dao.getPostsBySearch(request.getSearchText());
+
+            String string = gson.toJson(posts);
+            PostSearchResponse response = PostSearchResponse.newBuilder().setList(string).build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        }
+        catch (Exception e)
+        {
+            responseObserver.onError(e);
+        }
+    };
 }

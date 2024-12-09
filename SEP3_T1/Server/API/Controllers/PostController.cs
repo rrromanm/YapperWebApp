@@ -176,4 +176,18 @@ public class PostController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+    
+    [HttpGet("GetPostsBySearch/{searchText}")]
+    public async Task<ActionResult> GetPostsBySearch([FromRoute] string searchText)
+    {
+        try
+        {
+            var result = await _postLogic.GetPostsBySearch(searchText);
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }
