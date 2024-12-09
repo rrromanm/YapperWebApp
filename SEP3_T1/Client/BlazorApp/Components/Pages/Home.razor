@@ -52,9 +52,7 @@
 
                 <div class="profile-posts">
                     <div class="search-bar">
-                        <InputText @bind-Value="@searchText" 
-                                   placeholder="Enter your search term" 
-                                   @oninput="OnSearchInput" />
+                        <InputText @bind-Value="@searchText" placeholder="Enter your search term" @oninput="OnSearchInput" />
                     </div>
                     
                     @if (!string.IsNullOrEmpty(searchText))
@@ -252,16 +250,12 @@
         showFollowingPosts = true;
     }
 
-    private async Task OnSearchInput()
+    private async Task OnSearchInput(ChangeEventArgs e)
     {
+        searchText = e.Value.ToString();
         if (!string.IsNullOrWhiteSpace(searchText))
         {
-            showSearchedPosts = true;
-            showSearchedAccounts = false;
-            showAllPosts = false;
-            showFollowingPosts = false;
-            
-            searchedPosts = await PostService.GetPostsBySearch(searchText);
+            await ShowSearchedPosts();
         }
         else
         {
@@ -270,21 +264,28 @@
             showFollowingPosts = false;
             searchedPosts.Clear();
         }
-
-        StateHasChanged();
     }
 
-    private void ShowSearchedPosts()
+    private async Task ShowSearchedPosts()
     {
         showSearchedPosts = true;
         showSearchedAccounts = false;
         showAllPosts = false;
         showFollowingPosts = false;
-        
-        PostService.GetPostsBySearch(searchText);
+
+        try
+        {
+            searchedPosts = await PostService.GetPostsBySearch(searchText);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to fetch searched posts. " + ex.Message;
+        }
+
+        StateHasChanged();
     }
 
-    private async void NavigateToUserProfile(string username)
+    private void NavigateToUserProfile(string username)
     {
         NavMgr.NavigateTo($"/Profiles/{username}");
     }
