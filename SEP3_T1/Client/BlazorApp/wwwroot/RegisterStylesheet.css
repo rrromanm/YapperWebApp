@@ -11,8 +11,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #e8eaf6, #fff);
-    border-right: 1px solid #ccc;
+    background: linear-gradient(135deg, #A79078, #BDB19A, #74655E, #563D39);
     position: relative;
 }
 

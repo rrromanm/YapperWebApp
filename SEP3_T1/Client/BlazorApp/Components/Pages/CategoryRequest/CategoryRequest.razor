@@ -1,0 +1,63 @@
+@page "/category-request"
+@using DTOs.DTOs.CategoryRequest
+@using HttpClients.ClientInterfaces
+@inject ICategoryRequestService CategoryRequestService
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="container">
+    <div class="icon-container">
+        <img src="yapper-transparent.png" alt="yapper_icon" />
+    </div>
+    <div class="centered-text">
+        <p> Do you have some idea for new category?</p>
+        <p> Share it with us and our team of moderators will review it !</p>
+    </div>
+
+    <h3 class="form-title">Category Request Form</h3>
+
+    <form @onsubmit="HandleValidSubmit" class="form-container">
+        <div class="form-group">
+            <label for="name">Category Name</label>
+            <input type="text" id="name" class="form-control" @bind="categoryRequest.CategoryName" placeholder="Enter category name" required/>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    @if (isSubmitted)
+    {
+        <div class="submission-message">
+            Thank you for submitting your category request!
+        </div>
+    }
+</div>
+
+@code {
+    private CreateCategoryRequestDTO categoryRequest = new CreateCategoryRequestDTO(); 
+    private bool isSubmitted = false;
+    private int CurrentUserId { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userId = user.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+            CurrentUserId = int.Parse(userId);
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (string.IsNullOrWhiteSpace(categoryRequest.CategoryName))
+        {
+            return;
+        }
+        categoryRequest = new CreateCategoryRequestDTO(categoryRequest.CategoryName, CurrentUserId);
+        await CategoryRequestService.CreateCategoryRequest(categoryRequest);
+        isSubmitted = true;
+        categoryRequest.CategoryName = "";
+    }
+}
