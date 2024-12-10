@@ -68,7 +68,7 @@
 
                 <div class="profile-posts">
                     <div class="search-bar">
-                        <InputText @bind-Value="@searchText" placeholder="Enter your search term" @oninput="OnSearchInput" />
+                        <InputText @bind-Value="@searchText" placeholder="Looking for something?" @oninput="OnSearchInput" />
                     </div>
                     
                     @if (!string.IsNullOrEmpty(searchText))
@@ -147,9 +147,16 @@
                                         <div>
                                             <div class="account-nickname" @onclick="() => NavigateToUserProfile(user.username)">@user.username</div>
                                         </div>
-                                        <div>
-                                            <FollowBtn userId="@user.id" OnFollowStatusChanged="ShowSearchedUsers"/>
-                                        </div>
+                                        @if (user.id == userId)
+                                        {
+                                            
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                <FollowBtn userId="@user.id" OnFollowStatusChanged="ShowSearchedUsers"/>
+                                            </div>
+                                        }
                                     </div>
                                 }
                             }
