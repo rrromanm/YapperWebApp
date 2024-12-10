@@ -388,4 +388,32 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    @Override
+    public ArrayList<FollowerDTO> getUsersBySearch(String search) throws SQLException {
+        try (Connection connection = DatabaseConnectionManager.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT smu.userid, smu.username, smu.nickname\n" +
+                    "FROM yapper_database.social_media_user smu\n" +
+                    "WHERE LOWER(smu.username) LIKE LOWER(?)\n" +
+                    "   OR LOWER(smu.nickname) LIKE LOWER(?)\n" +
+                    "ORDER BY smu.username ASC;\n"
+            );
+            statement.setString(1,"%" + search + "%");
+            statement.setString(2, "%" + search + "%");
+
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<FollowerDTO> followers = new ArrayList<>();
+
+            while (resultSet.next()) {
+                FollowerDTO follower = new FollowerDTO(
+                        resultSet.getInt("userid"),
+                        resultSet.getString("nickname"),
+                        resultSet.getString("username")
+                );
+
+                followers.add(follower);
+            }
+            return followers;
+        }
+    }
 }

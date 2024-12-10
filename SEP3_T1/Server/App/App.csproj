@@ -14,6 +14,8 @@
         <Protobuf Include="Protos\ChatService.proto" GrpcServices="Client" />
         <Protobuf Include="Protos\NotificationService.proto" GrpcServices="Client" />
         <Protobuf Include="Protos\ModeratorService.proto" GrpcServices="Client" />
+        <Protobuf Include="Protos\ReportService.proto" GrpcServices="Client" />
+        <Protobuf Include="Protos\CategoryRequestService.proto" GrpcServices="Client" />
     </ItemGroup>
 
     <ItemGroup>

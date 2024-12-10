@@ -309,4 +309,31 @@ public class SMUserLogic : ISMUserLogic
             throw;
         }
     }
+
+    public async Task<List<FollowersDTO>> GetUsersBySearch(string searchText)
+    {
+        try
+        {
+            GetUsersBySearchResponse response = await client.GetUsersBySearchAsync(new GetUsersBySearchRequest
+            {
+                SearchText = searchText
+            });
+            
+            string json = response.List;
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNameCaseInsensitive = true
+            };
+            
+            List<FollowersDTO> users = JsonSerializer.Deserialize<List<FollowersDTO>>(json, options);
+
+            return users;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

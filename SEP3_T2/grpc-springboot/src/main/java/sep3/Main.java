@@ -21,6 +21,8 @@ public class Main {
                 .addService(new ChatImpl(ChatDAO.getInstance()))
                 .addService(new NotificationImpl(NotificationDAO.getInstance()))
                 .addService(new ModeratorImpl(ModeratorDAO.getInstance()))
+                .addService(new ReportImpl(ReportDAO.getInstance()))
+                .addService(new CategoryRequestImpl(CategoryRequestDAO.getInstance()))
                 .build()
                 .start();
 

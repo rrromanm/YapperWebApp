@@ -1,5 +1,6 @@
 package sep3.dao;
 
+import org.checkerframework.checker.units.qual.C;
 import sep3.dto.post.CreatePostDTO;
 import sep3.dto.post.PostDTO;
 import sep3.dto.post.UpdatePostDTO;
@@ -283,6 +284,44 @@ public class PostDAO implements PostDAOInterface {
         } catch (SQLException e) {
             e.printStackTrace();
             throw new SQLException("Failed to unlike post");
+        }
+    }
+
+    @Override
+    public ArrayList<PostDTO> getPostsBySearch(String search) throws SQLException {
+        try (Connection connection = DatabaseConnectionManager.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT p.*, pc.categoryId\n" +
+                            "FROM yapper_database.post p\n" +
+                            "LEFT JOIN yapper_database.post_category pc ON p.postId = pc.postId\n" +
+                            "WHERE LOWER(p.title) LIKE LOWER(?)\n" +
+                            "OR LOWER(p.body) LIKE LOWER(?)\n" +
+                            "ORDER BY p.postDate DESC;"
+            );
+            statement.setString(1,"%" + search + "%");
+            statement.setString(2, "%" + search + "%");
+
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<PostDTO> posts = new ArrayList<>();
+
+            while (resultSet.next()) {
+                YapDate date = new YapDate(resultSet.getTimestamp("postDate"));
+
+                posts.add(new PostDTO(
+                        resultSet.getString("title"),
+                        resultSet.getString("body"),
+                        resultSet.getInt("likeCount"),
+                        resultSet.getInt("commentCount"),
+                        date.toString(),
+                        resultSet.getInt("categoryId"),
+                        resultSet.getInt("postId"),
+                        resultSet.getInt("userId")
+                ));
+            }
+            return posts;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to retrieve posts by search");
         }
     }
 }

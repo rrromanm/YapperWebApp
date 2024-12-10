@@ -16,4 +16,5 @@ public interface IPostLogic
     Task<List<Post>> GetLikedPosts(int userId);
     Task LikePost(int userId, int postId);
     Task UnlikePost(int userId, int postId);
+    Task<List<Post>> GetPostsBySearch(string searchText);
 }

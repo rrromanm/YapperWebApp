@@ -106,8 +106,8 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
                     .setUsername(user.getUsername())
                     .setNickname(user.getNickname())
                     .setPassword(user.getPassword())
-                    .setFollowersCount(user.getFollowerCount())
-                    .setFollowingCount(user.getFollowingCount())
+                    .setFollowersCount(user.getFollowerCount()) // Assuming SMUserDTO has these fields
+                    .setFollowingCount(user.getFollowingCount()) // Assuming SMUserDTO has these fields
                     .build();
 
             responseObserver.onNext(response);
@@ -247,6 +247,24 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
             String jsonFollowers = gson.toJson(randomUsers);
 
             GetThreeRandomUsersResponse response = GetThreeRandomUsersResponse.newBuilder()
+                    .setList(jsonFollowers)
+                    .build();
+
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void getUsersBySearch(GetUsersBySearchRequest request, StreamObserver<GetUsersBySearchResponse> responseObserver) {
+        try {
+            ArrayList<FollowerDTO> usersBySearch = dao.getUsersBySearch(request.getSearchText());
+
+            String jsonFollowers = gson.toJson(usersBySearch);
+
+            GetUsersBySearchResponse response = GetUsersBySearchResponse.newBuilder()
                     .setList(jsonFollowers)
                     .build();
 

@@ -1,0 +1,23 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option csharp_namespace = "GrpcClient";
+package report;
+
+message SendReportRequest {
+  int32 userid = 1;
+  int32 postid = 2;
+}
+
+message GetReportsRequest {}
+
+message SendReportEmptyResponse {}
+
+message GetReportsResponse {
+  string list = 1;
+}
+
+
+service ReportService {
+  rpc SendReport (SendReportRequest) returns (SendReportEmptyResponse) {}
+  rpc GetReports (GetReportsRequest) returns (GetReportsResponse) {}
+}

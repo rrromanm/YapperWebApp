@@ -1,0 +1,52 @@
+syntax = "proto3";
+option java_multiple_files = true;
+package CategoryRequest;
+
+message CreateCategoryRequestRequest {
+  string name = 1;
+  int32 userId = 2;
+}
+message DeleteCategoryRequestRequest {
+  int32 id = 1;
+}
+message GetCategoryRequestRequest {
+  int32 id = 1;
+}
+message EmptyGetAllCategoriesRequestRequest {
+}
+message GetCategoryRequestByNameRequest {
+  string categoryName = 1;
+}
+
+message ApproveCategoryRequestRequest {
+  string categoryName = 1;
+  int32 addedBy = 2;
+}
+
+message DisapproveCategoryRequestRequest {
+  string categoryName = 1;
+}
+
+message EmptyCategoryRequestResponse {
+}
+message CategoryRequestResponse {
+  string date = 1;
+  string categoryName = 2;
+  int32 userId = 3;
+  int32 id = 4;
+}
+
+message GetAllCategoriesRequestResponse {
+  string list = 1;
+}
+
+
+service CategoryRequestService {
+  rpc CreateCategoryRequest (CreateCategoryRequestRequest) returns (EmptyCategoryRequestResponse);
+  rpc DeleteCategoryRequest (DeleteCategoryRequestRequest) returns (EmptyCategoryRequestResponse);
+  rpc GetCategoryRequest (GetCategoryRequestRequest) returns (CategoryRequestResponse);
+  rpc GetAllCategoriesRequest (EmptyGetAllCategoriesRequestRequest) returns (GetAllCategoriesRequestResponse);
+  rpc GetCateogryRequestByName (GetCategoryRequestByNameRequest) returns (GetAllCategoriesRequestResponse);
+  rpc ApproveCategoryRequest (ApproveCategoryRequestRequest) returns (EmptyCategoryRequestResponse);
+  rpc DisapproveCategoryRequest (DisapproveCategoryRequestRequest) returns (EmptyCategoryRequestResponse);
+}

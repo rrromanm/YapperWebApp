@@ -149,4 +149,15 @@ public class SMUserHttpClient : ISMUserService
         }
         return await response.Content.ReadFromJsonAsync<List<FollowersDTO>>();
     }
+
+    public async Task<List<FollowersDTO>> GetUsersBySearch(string searchText)
+    {
+        HttpResponseMessage response = await _client.GetAsync($"/SMUser/search/{searchText}");
+        if (!response.IsSuccessStatusCode)
+        {
+            string e = response.Content.ReadAsStringAsync().Result;
+            throw new Exception(e);
+        }
+        return await response.Content.ReadFromJsonAsync<List<FollowersDTO>>();
+    }
 }

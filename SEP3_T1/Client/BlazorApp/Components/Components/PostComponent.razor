@@ -1,5 +1,6 @@
 ﻿@using DTOs.DTOs.Comment
 @using DTOs.DTOs.Notification
+@using DTOs.DTOs.Report
 @using DTOs.Models
 @using DTOs.User
 @using DTOs.User.PostDTOs
@@ -12,6 +13,7 @@
 @inject ICommentService CommentService
 @inject INotificationService NotificationService
 @inject ISMUserService SMUserService
+@inject IReportService ReportService
 
 <div class="post-item card my-3 custom-card">
     <div class="card-body">
@@ -70,8 +72,7 @@
         {
             <span class="fw-bold username-link" @onclick="() => NavigateToCategoryPage()">@categoryName</span> <br/> 
         }
-
-        <!-- Actions Section -->
+        
         <div class="d-flex justify-content-between align-items-center mt-3">
             <div>
                 <button class="btn btn-sm @LikeButtonClass" @onclick="() => ToggleLike(Post.PostId)">
@@ -152,6 +153,29 @@
     <div class="modal-backdrop fade show" @onclick="CloseDeleteModal"></div>
 }
 
+@if (isReportModalOpen)
+{
+<div class="modal fade show" style="display: block;" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Confirm Report</h5>
+                <button type="button" class="btn-close" @onclick="CloseReportModal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to report this post?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" @onclick="CloseReportModal">Cancel</button>
+                <button type="button" class="btn btn-danger" @onclick="ConfirmReportPost">Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop fade show" @onclick="CloseReportModal"></div>
+}
+
 @code {
     [Parameter] public Post Post { get; set; }
     [Parameter] public EventCallback OnStateChange { get; set; }
@@ -176,6 +200,8 @@
     private bool isDeleteModalOpen = false;
     private bool isPostDeleted = false;
     private int postIdToDelete;
+    private bool isReportModalOpen = false;
+    private int postIdToReport;
 
     private string LikeText => Post.UserLiked ? "Unlike" : "Like";
     private string LikeIconClass => Post.UserLiked ? "bi bi-hand-thumbs-up-fill" : "bi bi-hand-thumbs-up";
@@ -309,8 +335,34 @@
 
     private void ReportPost(int postId)
     {
-        // Handle report post logic (e.g., show a confirmation modal or call a service)
-        Console.WriteLine($"Post {postId} reported by user {CurrentUserId}");
+        postIdToReport = postId;
+        isReportModalOpen = true;
+    }
+    private void CloseReportModal()
+    {
+        isReportModalOpen = false;
+        postIdToReport = 0;
+    }
+    
+    private async Task ConfirmReportPost()
+    {
+        try
+        {
+            ReportDTO report = new ReportDTO
+            {
+                PostId = postIdToReport,
+                UserId = CurrentUserId
+            };
+            await ReportService.SendReport(report);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to report post: {ex.Message}");
+        }
+        finally
+        {
+            CloseReportModal();
+        }
     }
 
     private void EditPost()

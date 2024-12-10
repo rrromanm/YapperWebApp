@@ -54,6 +54,10 @@ message UnlikePostRequest {
   int32 postId = 2;
 }
 
+message PostSearchRequest {
+  string searchText = 1;
+}
+
 message GetPostResponse {
   string title = 1;
   string body = 2;
@@ -85,6 +89,10 @@ message GetAllLikedPostsResponse {
   string list = 1;
 }
 
+message PostSearchResponse {
+  string list = 1;
+}
+
 message PostEmptyMessage {}
 
 service PostService {
@@ -99,4 +107,5 @@ service PostService {
   rpc GetAllLikedPosts (GetAllLikedPostsRequest) returns (GetAllLikedPostsResponse);
   rpc LikePost (LikePostRequest) returns (PostEmptyMessage);
   rpc UnlikePost (UnlikePostRequest) returns (PostEmptyMessage);
+  rpc GetPostsBySearch (PostSearchRequest) returns (PostSearchResponse);
 }

@@ -21,7 +21,9 @@ builder.Services.AddScoped<ICommentService, CommentHttpClient>();
 builder.Services.AddScoped<ICategoryService, CategoryHttpClient>();
 builder.Services.AddScoped<IChatService, ChatHttpClient>();
 builder.Services.AddScoped<INotificationService, NotificationHttpClient>();
+builder.Services.AddScoped<IReportService, ReportHttpClient>();
 builder.Services.AddScoped<AuthenticationStateProvider, SimpleAuthProvider>();
+builder.Services.AddScoped<ICategoryRequestService, CategoryRequestHttpClient>();
 
 builder.Services.AddAuthorization(options =>
 {
