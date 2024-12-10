@@ -1,28 +1,27 @@
 /* Container for the entire login page */
 .login-page-container {
     display: flex;
-    height: 100vh; /* Full viewport height */
+    height: 100vh; 
     font-family: Arial, sans-serif;
 }
 
 /* Left section: image container */
 .login-image {
-    width: 50%; /* Takes up half of the screen */
+    width: 50%; 
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #e8eaf6, #fff); /* Example of softer gradient */
-    border-right: 1px solid #ccc;
+    background: linear-gradient(135deg, #A79078, #BDB19A, #74655E, #563D39);
 }
 
 .login-image img {
-    max-width: 70%; /* Scaled image */
-    max-height: 70%; /* Keep within bounds */
+    max-width: 70%; 
+    max-height: 50%; 
 }
 
 /* Right section: login form and footer */
 .login-form-container {
-    width: 50%; /* Takes up the other half */
+    width: 50%; 
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -32,7 +31,7 @@
 
 /* Login form styling */
 .login-form {
-    width: 60%; /* Adjust form width */
+    width: 60%; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -87,41 +86,20 @@
     text-decoration: underline;
 }
 
-/* Container for the left image section */
-.login-image {
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #f5f5f5, #e0e0e0); /* Gradient background */
-    position: relative;
-}
-
-/* Semi-transparent overlay to blend the image */
-.login-image::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.6); /* Light overlay */
-    z-index: 1;
-}
 
 /* Logo image styling */
 .login-image img {
-    max-width: 70%; /* Resize to fit nicely */
+    max-width: 70%; 
     max-height: 70%;
-    z-index: 2; /* Place image above overlay */
-    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2)); /* Add subtle shadow */
-    opacity: 0.9; /* Slightly transparent */
-    transition: transform 0.3s, opacity 0.3s; /* Smooth hover effects */
+    z-index: 2; 
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2)); 
+    opacity: 0.9; 
+    transition: transform 0.3s, opacity 0.3s; 
 }
 
 .login-image img:hover {
-    transform: scale(1.05); /* Slight zoom-in on hover */
-    opacity: 1; /* Full opacity */
+    transform: scale(1.05); 
+    opacity: 1; 
 }
 
 .login-exceptions {
