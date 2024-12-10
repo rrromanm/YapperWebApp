@@ -43,7 +43,7 @@
         try
         {
             await ((SimpleAuthProvider)AuthProvider).ModeratorLogin(username, password);
-            Navigation.NavigateTo("/ModeratorHome");
+            Navigation.NavigateTo("/");
         }
         catch (Exception ex)
         {

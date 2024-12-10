@@ -18,8 +18,22 @@
 
 <link href="HomeStylesheet.css" rel="stylesheet"/>
 
-<AuthorizeView Roles="User">
+<AuthorizeView>
     <Authorized>
+        @if (context.User.IsInRole("Moderator"))
+        {
+            <!-- Admin Home Content -->
+            <h1>Welcome, Admin!</h1>
+            <p>This is the admin home page.</p>
+            <!-- Add admin-specific components here -->
+            <div>
+                <h3>Admin Dashboard</h3>
+                <p>Manage users, content, and settings.</p>
+            </div>
+        }
+        
+        else if (context.User.IsInRole("User"))
+        {
         <p>Hello, @context.User.Identity.Name!</p>
         <p>You are logged in.</p>
 
@@ -28,11 +42,11 @@
                 <div class="post-div">
                     <div>
                         <label>Title:</label>
-                        <InputText @bind-Value="title" />
+                        <InputText @bind-Value="title"/>
                     </div>
                     <div>
                         <label>Body:</label>
-                        <InputTextArea @bind-Value="body" />
+                        <InputTextArea @bind-Value="body"/>
                     </div>
                     <div class="category-submit">
                         <div>
@@ -41,7 +55,7 @@
                                 <option value="0">General</option>
                                 @foreach (var category in categories.Where(c => c.Name != "General"))
                                 {
-                                    <option value="@category.Id">@category.Name</option>
+                                <option value="@category.Id">@category.Name</option>
                                 }
                             </InputSelect>
                         </div>
@@ -60,35 +74,35 @@
 
                     @if (showAllPosts)
                     {
-                        <div class="posts">
-                            @if (allPosts != null && allPosts.Count > 0)
-                            {
-                                @foreach (var post in allPosts)
-                                {
-                                    <PostComponent Post="post" OnStateChange="GetAllPosts"/>
-                                }
-                            }
-                            else
-                            {
-                                <p>No posts available.</p>
-                            }
-                        </div>
+                    <div class="posts">
+                        @if (allPosts != null && allPosts.Count > 0)
+                        {
+                        @foreach (var post in allPosts)
+                        {
+                        <PostComponent Post="post" OnStateChange="GetAllPosts"/>
+                        }
+                        }
+                        else
+                        {
+                        <p>No posts available.</p>
+                        }
+                    </div>
                     }
                     else if (showFollowingPosts)
                     {
-                        <div class="posts">
-                            @if (followingPosts != null && followingPosts.Count > 0)
-                            {
-                                @foreach (var post in followingPosts)
-                                {
-                                    <PostComponent Post="post" OnStateChange="GetFollowingPosts"/>
-                                }
-                            }
-                            else
-                            {
-                                <p>No posts available.</p>
-                            }
-                        </div>
+                    <div class="posts">
+                        @if (followingPosts != null && followingPosts.Count > 0)
+                        {
+                        @foreach (var post in followingPosts)
+                        {
+                        <PostComponent Post="post" OnStateChange="GetFollowingPosts"/>
+                        }
+                        }
+                        else
+                        {
+                        <p>No posts available.</p>
+                        }
+                    </div>
                     }
                 </div>
             </div>
@@ -98,18 +112,23 @@
                     <h4>Recommended accounts</h4>
                     @foreach (var user in threeRandomUsers)
                     {
-                        <div class="account">
-                            <div>
-                                <div class="account-nickname" @onclick="() => NavigateToUserProfile(user.username)">@user.username</div>
-                            </div>
-                            <div>
-                                <FollowBtn userId="@user.id" OnFollowStatusChanged="GetFollowingPosts"/>
-                            </div>
+                    <div class="account">
+                        <div>
+                            <div class="account-nickname" @onclick="() => NavigateToUserProfile(user.username)">@user.username</div>
                         </div>
+                        <div>
+                            <FollowBtn userId="@user.id" OnFollowStatusChanged="GetFollowingPosts"/>
+                        </div>
+                    </div>
                     }
                 </div>
             </div>
-        </div>
+        </div> 
+        }
+        else
+        {
+            <p>You do not have access to this page.</p>
+        }
     </Authorized>
     <NotAuthorized>
         <p>You are not logged in.</p>
