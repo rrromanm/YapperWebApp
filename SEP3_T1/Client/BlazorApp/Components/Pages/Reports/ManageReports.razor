@@ -4,48 +4,40 @@
 @inject IReportService ReportService
 @inject IPostService PostService
 
-<h3>Manage Reports</h3>
+<h3 class="page-title">Manage Reports</h3>
 
 <AuthorizeView Roles="Moderator">
     <Authorized>
         @if (reports == null)
         {
-            <p>Loading...</p>
+            <p class="loading-text">Loading...</p>
         }
         else if (!reports.Any())
         {
-            <p>No reports found.</p>
+            <p class="no-reports-text">No reports found.</p>
         }
         else
         {
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Post ID</th>
-                    <th>Reported By</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="reports-container">
                 @foreach (var report in reports)
                 {
-                    <tr>
-                        <td>@report.PostId</td>
-                        <td>@report.UserId</td>
-                        <td>@FormatDate(report.Timestamp)</td>
-                        <td>
-                            <button class="btn btn-danger" @onclick="() => DeletePost(report.PostId)">Delete Post</button>
-                            <button class="btn btn-secondary" @onclick="() => RejectReport(report.ReportId)">Reject Report</button>
-                        </td>
-                    </tr>
+                    <div class="report-card">
+                        <div class="report-details">
+                            <p><strong>Post ID:</strong> @report.PostId</p>
+                            <p><strong>Reported By:</strong> @report.UserId</p>
+                            <p><strong>Date:</strong> @FormatDate(report.Timestamp)</p>
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn-action btn-danger" @onclick="() => DeletePost(report.PostId)">Delete Post</button>
+                            <button class="btn-action btn-secondary" @onclick="() => RejectReport(report.ReportId)">Dismiss</button>
+                        </div>
+                    </div>
                 }
-                </tbody>
-            </table>
+            </div>
         }
     </Authorized>
     <NotAuthorized>
-        <p>You are not authorized to view this page. Please log in as a moderator.</p>
+        <p class="not-authorized-text">You are not authorized to view this page. Please log in as a moderator.</p>
     </NotAuthorized>
 </AuthorizeView>
 
