@@ -7,6 +7,11 @@ message SendReportRequest {
   int32 postid = 2;
 }
 
+message RejectReportRequest {
+
+  int32 reportid = 1;
+}
+
 message GetReportsRequest {}
 
 message SendReportEmptyResponse {}
@@ -18,7 +23,9 @@ message GetReportsResponse {
 
 
 
+
 service ReportService {
   rpc SendReport (SendReportRequest) returns (SendReportEmptyResponse) {}
   rpc GetReports (GetReportsRequest) returns (GetReportsResponse) {}
+  rpc RejectReport (RejectReportRequest) returns (SendReportEmptyResponse) {}
 }

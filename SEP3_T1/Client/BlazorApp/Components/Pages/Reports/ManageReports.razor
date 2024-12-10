@@ -1,0 +1,94 @@
+@page "/ManageReports"
+@using DTOs.DTOs.Report
+@using HttpClients.ClientInterfaces
+@inject IReportService ReportService
+@inject IPostService PostService
+
+<h3>Manage Reports</h3>
+
+<AuthorizeView Roles="Moderator">
+    <Authorized>
+        @if (reports == null)
+        {
+            <p>Loading...</p>
+        }
+        else if (!reports.Any())
+        {
+            <p>No reports found.</p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Post ID</th>
+                    <th>Reported By</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var report in reports)
+                {
+                    <tr>
+                        <td>@report.PostId</td>
+                        <td>@report.UserId</td>
+                        <td>@FormatDate(report.Timestamp)</td>
+                        <td>
+                            <button class="btn btn-danger" @onclick="() => DeletePost(report.PostId)">Delete Post</button>
+                            <button class="btn btn-secondary" @onclick="() => RejectReport(report.ReportId)">Reject Report</button>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not authorized to view this page. Please log in as a moderator.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private List<ReportDTO> reports;
+
+    protected override async Task OnInitializedAsync()
+    {
+        reports = await ReportService.GetAllReports();
+    }
+
+    private async Task DeletePost(int postId)
+    {
+        try
+        {
+            await PostService.DeletePost(postId);
+            reports = await ReportService.GetAllReports();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to delete post: {ex.Message}");
+        }
+    }
+
+    private async Task RejectReport(int reportId)
+    {
+        try
+        {
+            await ReportService.RejectReport(reportId);
+            reports = await ReportService.GetAllReports();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to reject report: {ex.Message}");
+        }
+    }
+
+    private string FormatDate(string timestamp)
+    {
+        if (DateTime.TryParse(timestamp, out DateTime date))
+        {
+            return date.ToString("yyyy/MM/dd HH:mm");
+        }
+        return timestamp;
+    }
+}

@@ -43,4 +43,18 @@ public class ReportController : ControllerBase
         }
     }
     
+    [HttpDelete("{reportid}")]
+    public async Task<ActionResult> RejectReport(int reportid)
+    {
+        try
+        {
+            await _reportLogic.RejectReport(reportid);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
 }

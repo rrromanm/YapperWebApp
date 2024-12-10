@@ -8,5 +8,6 @@ import java.util.ArrayList;
 public interface ReportDAOInterface {
     void sendReport(int userID, int postID) throws SQLException;
     ArrayList<PostReportDTO> getReports() throws SQLException;
+    void rejectReport(int reportId) throws SQLException;
 
 }

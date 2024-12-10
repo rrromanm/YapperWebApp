@@ -56,4 +56,21 @@ public class ReportLogic : IReportLogic
             throw;
         }
     }
+
+    public async Task RejectReport(int reportid)
+    {
+        try
+        {
+            await _client.RejectReportAsync(new RejectReportRequest
+            {
+                Reportid = reportid
+            });
+            Console.WriteLine("report rejected with id: " + reportid);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

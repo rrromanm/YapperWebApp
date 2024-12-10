@@ -38,4 +38,23 @@ public class ReportHttpClient : IReportService
         }
         return JsonSerializer.Deserialize<List<ReportDTO>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
+
+    public async Task RejectReport(int reportid)
+    {
+        try
+        {
+            HttpResponseMessage response = await _client.DeleteAsync($"/Report/{reportid}");
+            Console.WriteLine("report rejected with id: " + reportid);
+            if (!response.IsSuccessStatusCode)
+            {
+                string e = await response.Content.ReadAsStringAsync();
+                throw new Exception(e);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

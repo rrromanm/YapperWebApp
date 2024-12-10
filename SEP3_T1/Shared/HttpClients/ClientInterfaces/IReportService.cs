@@ -6,4 +6,5 @@ public interface IReportService
 {
     Task SendReport(ReportDTO dto);
     Task<List<ReportDTO>> GetAllReports();
+    Task RejectReport(int reportid);
 }

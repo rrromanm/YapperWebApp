@@ -45,12 +45,25 @@ public class ReportDAO implements ReportDAOInterface {
                 reports.add(new PostReportDTO(
                         resultSet.getInt("userid"),
                         resultSet.getInt("postid"),
-                        resultSet.getString("date")));
+                        resultSet.getString("date"),
+                        resultSet.getInt("reportid")));
             }
             return reports;
         } catch (Exception e) {
             e.printStackTrace();
             throw new SQLException("Failed to get reports");
+        }
+    }
+
+    @Override
+    public void rejectReport(int reportId) throws SQLException {
+        try(Connection connection = DatabaseConnectionManager.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM yapper_database.reported_post WHERE reportid = ?");
+            statement.setInt(1, reportId);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SQLException("Failed to reject report");
         }
     }
 }

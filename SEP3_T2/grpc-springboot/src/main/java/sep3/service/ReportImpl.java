@@ -42,4 +42,15 @@ public class ReportImpl extends ReportServiceGrpc.ReportServiceImplBase {
             responseObserver.onError(e);
         }
     }
+
+    @Override
+    public void rejectReport(RejectReportRequest request, StreamObserver<SendReportEmptyResponse> responseObserver) {
+        try {
+            dao.rejectReport(request.getReportid());
+            responseObserver.onNext(SendReportEmptyResponse.newBuilder().build());
+            responseObserver.onCompleted();
+        } catch (Exception e) {
+            responseObserver.onError(e);
+        }
+    }
 }

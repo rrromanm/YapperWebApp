@@ -6,10 +6,13 @@ public class PostReportDTO {
 
     private String timestamp;
 
-    public PostReportDTO(int userID, int postID, String timestamp) {
+    private int reportID;
+
+    public PostReportDTO(int userID, int postID, String timestamp, int reportID) {
         this.userID = userID;
         this.postID = postID;
         this.timestamp = timestamp;
+        this.reportID = reportID;
     }
 
     public int getUserID() {
@@ -36,10 +39,19 @@ public class PostReportDTO {
         this.timestamp = timestamp;
     }
 
+    public int getReportID() {
+        return reportID;
+    }
+
+    public void setReportID(int reportID) {
+        this.reportID = reportID;
+    }
+
     public String toString() {
         return "userID=" + userID +
                 ", postID=" + postID +
                 ", timestamp=" + timestamp +
+                ", reportID=" + reportID +
                 '}';
     }
 
