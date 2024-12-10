@@ -206,11 +206,14 @@
     private int userId;
 
     private List<Category> categories = new List<Category>();
-    private List<Post> allPosts = new List<Post>();
-    private List<Post> followingPosts = new List<Post>();
-    private List<Post> searchedPosts = new List<Post>();
+    
     private List<FollowersDTO> threeRandomUsers = new List<FollowersDTO>();
     private List<FollowersDTO> searchedUsers = new List<FollowersDTO>();
+
+    private List<Post> allPosts = new List<Post>();
+    private List<Post> followingPosts = new List<Post>();
+    private List<Post> displayedPosts = new List<Post>();
+    private List<Post> searchedPosts = new List<Post>();
 
     private bool showAllPosts = true;
     private bool showFollowingPosts = false;
@@ -238,6 +241,7 @@
         await GetCategories();
         await GetAllPosts();
         await GetFollowingPosts();
+        UpdateDisplayedPosts();
         await GetThreeRandomUsers();
     }
 
@@ -256,8 +260,14 @@
             errorMessage = "Body cannot be empty.";
             return;
         }
+        
+        if (categoryId == 0)
+        {
+            categoryId = categories.FirstOrDefault(c => c.Name == "General").Id;
+        }
 
         var createPostDto = new CreatePostDTO(title, body, categoryId, userId);
+        Console.WriteLine(createPostDto.CategoryId);
 
         try
         {
@@ -266,8 +276,7 @@
             title = string.Empty;
             body = string.Empty;
             categoryId = 0;
-
-
+            
             StateHasChanged();
             await GetAllPosts();
         }
@@ -280,28 +289,39 @@
     private async Task GetAllPosts()
     {
         allPosts = await PostService.GetAllPosts();
+        UpdateDisplayedPosts();
     }
 
     private async Task GetFollowingPosts()
     {
         followingPosts = await PostService.GetFollowingPosts(userId);
-    }
-
-    private async Task GetCategories()
-    {
-        categories = await CategoryService.GetAllCategories();
+        UpdateDisplayedPosts();
     }
 
     private void ShowAllPosts()
     {
         showAllPosts = true;
         showFollowingPosts = false;
+        UpdateDisplayedPosts();
     }
 
     private void ShowFollowingPosts()
     {
         showAllPosts = false;
         showFollowingPosts = true;
+        UpdateDisplayedPosts();
+    }
+
+    private void UpdateDisplayedPosts()
+    {
+        if (showAllPosts)
+        {
+            displayedPosts = allPosts;
+        }
+        else if (showFollowingPosts)
+        {
+            displayedPosts = followingPosts;
+        }
     }
 
     private async Task OnSearchInput(ChangeEventArgs e)
@@ -318,6 +338,7 @@
             showFollowingPosts = false;
             showSearchedUsers = false;
             searchedPosts.Clear();
+            UpdateDisplayedPosts();
         }
     }
 
@@ -331,6 +352,7 @@
         try
         {
             searchedPosts = await PostService.GetPostsBySearch(searchText);
+            displayedPosts = searchedPosts;
         }
         catch (Exception ex)
         {
@@ -338,7 +360,17 @@
         }
 
         StateHasChanged();
+    }   
+    
+    //TODO: Category methods
+    
+    private async Task GetCategories()
+    {
+        categories = await CategoryService.GetAllCategories();
     }
+
+
+    //TODO: User methods
 
     private void NavigateToUserProfile(string username)
     {
@@ -373,4 +405,5 @@
 
         StateHasChanged();
     }
+
 }
