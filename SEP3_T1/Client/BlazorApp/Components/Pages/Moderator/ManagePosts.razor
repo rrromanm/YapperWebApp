@@ -1,6 +1,87 @@
 ﻿@page "/ManagePosts"
-<h3>ManagePosts</h3>
+@using DTOs.Models
+@using HttpClients.ClientInterfaces
+@inject IPostService PostService
+@inject ICategoryService CategoryService
+@inject ISMUserService UserService
+
+<h3>Manage Posts</h3>
+
+<div>
+    @if (posts == null)
+    {
+        <p>Loading...</p>
+    }
+    else if (posts.Count == 0)
+    {
+        <p>No posts found.</p>
+    }
+    else
+    {
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Body</th>
+                <th>Username</th>
+                <th>Category</th>
+                <th>Likes</th>
+                <th>Comments</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var post in posts)
+            {
+                <tr>
+                    <td>@post.PostId</td>
+                    <td>@post.Title</td>
+                    <td>@post.Body</td>
+                    <td>@usernames[post.UserId]</td>
+                    <td>@categories[post.CategoryId]</td>
+                    <td>@post.LikeCount</td>
+                    <td>@post.CommentCount</td>
+                    <td>@post.PostDate</td>
+                    <td>
+                        <button @onclick="() => DeletePost(post.PostId)">Delete</button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
 
 @code {
-    
+    private List<Post> posts;
+    private Dictionary<int, string> usernames = new();
+    private Dictionary<int, string> categories = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        posts = await PostService.GetAllPosts();
+
+        var userIds = posts.Select(p => p.UserId).Distinct();
+        var categoryIds = posts.Select(p => p.CategoryId).Distinct();
+
+        foreach (var userId in userIds)
+        {
+            var user = await UserService.GetByUserId(userId);
+            usernames[userId] = user.Username;
+        }
+
+        foreach (var categoryId in categoryIds)
+        {
+            var category = await CategoryService.GetCategoryById(categoryId);
+            categories[categoryId] = category.Name;
+        }
+    }
+
+    private async Task DeletePost(int postId)
+    {
+        await PostService.DeletePost(postId);
+        posts = await PostService.GetAllPosts();
+    }
 }
