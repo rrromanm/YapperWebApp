@@ -25,6 +25,12 @@ builder.Services.AddScoped<IReportService, ReportHttpClient>();
 builder.Services.AddScoped<AuthenticationStateProvider, SimpleAuthProvider>();
 builder.Services.AddScoped<ICategoryRequestService, CategoryRequestHttpClient>();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Moderator", policy => policy.RequireRole("Moderator"));
+    options.AddPolicy("User", policy => policy.RequireRole("User"));
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,11 +41,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 // To avoid the HTTPS port error, ensure HTTPS redirection is only used if the app supports it.
-if (app.Configuration.GetValue<bool>("UseHttpsRedirection", false)) 
+if (app.Configuration.GetValue<bool>("UseHttpsRedirection", false))
 {
     app.UseHttpsRedirection();
 }
-
 
 app.UseStaticFiles();
 app.UseAntiforgery();

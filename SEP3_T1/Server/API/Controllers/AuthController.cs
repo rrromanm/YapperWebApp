@@ -9,17 +9,19 @@ namespace API.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly ISMUserLogic _logic;
+    private readonly ISMUserLogic smUserLogic;
+    private readonly IModeratorLogic moderatorLogic;
     
-    public AuthController(ISMUserLogic logic)
+    public AuthController(ISMUserLogic logic, IModeratorLogic moderatorLogic)
     {
-        _logic = logic;
+        smUserLogic = logic;
+        this.moderatorLogic = moderatorLogic;
     }
     
     [HttpPost("/login")]
     public async Task<IResult> LoginAsync([FromBody] LoginRequestDTO requestDto)
     {
-        var user = await _logic.GetByUsernameAsync(requestDto.Username);
+        var user = await smUserLogic.GetByUsernameAsync(requestDto.Username);
         if (user == null)
         {
             return Results.NotFound($"User with username '{requestDto.Username}' not found.");
@@ -33,13 +35,31 @@ public class AuthController : ControllerBase
         return Results.Ok(user);
     }
     
+    [HttpPost("/moderatorLogin")]
+    public async Task<IResult> ModeratorLoginAsync([FromBody] LoginRequestDTO requestDto)
+    {
+        var moderator = await moderatorLogic.GetModeratorByUsernameAsync(requestDto.Username);
+        if (moderator == null)
+        {
+            return Results.NotFound($"Moderator with username '{requestDto.Username}' not found.");
+        }
+        
+        if (moderator.Password != requestDto.Password)
+        {
+            return Results.Unauthorized();
+        }
+        
+        return Results.Ok(moderator);
+    }
+
+    
     [HttpPost("/register")]
     public async Task<IResult> RegisterAsync(CreateUserDTO dto)
     {
         try
         {
-            var user = await _logic.CreateSMUser(dto);
-            var user1 = await _logic.GetByUsernameAsync(user.Username); // spaghetti ahh code
+            var user = await smUserLogic.CreateSMUser(dto);
+            var user1 = await smUserLogic.GetByUsernameAsync(user.Username); // spaghetti ahh code
             var userDto = new UserDTO
             {
                 Id = user1.Id,

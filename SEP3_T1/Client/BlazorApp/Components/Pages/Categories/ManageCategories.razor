@@ -5,9 +5,12 @@
 @using HttpClients.ClientInterfaces
 @inject ICategoryService CategoryService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavMgr
 
 <h3>Create Category</h3>
 
+<AuthorizeView Roles="User">
+    <Authorized>
 <div>
     <label for="categoryName">Category Name:</label>
     <input type="text" @bind="newCategoryName" />
@@ -40,6 +43,13 @@
     <button @onclick="UpdateSelectedCategory">Save</button>
     <button @onclick="DeleteSelectedCategory">Delete</button>
 }
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not logged in.</p>
+        <button @onclick='() => NavMgr.NavigateTo("login")'>Login</button>
+        <button @onclick='() => NavMgr.NavigateTo("register")'>Register</button>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private string newCategoryName;

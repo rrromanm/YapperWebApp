@@ -1,7 +1,17 @@
 namespace DTOs.Models;
 
-public class Moderator : User
+public class Moderator
 {
+    public int Id { get; set; }
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public string Role { get; set; } = "Moderator";
+    
+    public Moderator()
+    {
+        
+    }
+    
     public Moderator(string username, string password)
     {
         Username = username;

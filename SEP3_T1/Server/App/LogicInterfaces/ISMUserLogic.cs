@@ -6,14 +6,14 @@ namespace App.LogicInterfaces;
 
 public interface ISMUserLogic
 {
-    Task<User> CreateSMUser(CreateUserDTO dto);
+    Task<SMUser> CreateSMUser(CreateUserDTO dto);
     Task UpdateEmail(UpdateUserDTO dto);
     Task UpdatePassword(UpdateUserDTO dto);
     Task UpdateNickname(UpdateUserDTO dto);
     Task DeleteUser(int accountId);
-    Task<List<User>> GetAllUsers();
-    Task<User> GetByUsernameAsync(string username);
-    Task<User> GetByIdAsync(int userId); // Add this method
+    Task<List<SMUser>> GetAllUsers();
+    Task<SMUser> GetByUsernameAsync(string username);
+    Task<SMUser> GetByIdAsync(int userId); // Add this method
     Task FollowUser(int followerId, int followedId);
     Task UnfollowUser(int followerId, int followedId);
     Task<List<FollowersDTO>> GetFollowers(int userId);

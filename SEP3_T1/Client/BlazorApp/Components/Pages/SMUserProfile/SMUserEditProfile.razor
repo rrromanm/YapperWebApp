@@ -6,51 +6,58 @@
 @inject AuthenticationStateProvider AuthProvider
 @inject ISMUserService IsmUserService
 
-@attribute [Authorize]
+<AuthorizeView Roles="User">
+    <Authorized>
+    <div class="edit-profile-page">
+        <button @onclick="NavigateBack" class="back-btn">Back</button>
+        <h2>Edit Profile</h2>
+        <div class="edit-profile-container">
+            <div class="left-column">
+                <label for="nickname">Nickname:</label>
+                <input type="text" id="nickname" placeholder="@nickname" @bind="newNickname" />
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="@nickname" @bind="newEmail" />
+            </div>
+            <div class="right-column">
+                <label for="oldPassword">Current Password:</label>
+                <input type="password" id="oldPassword" @bind="oldPassword" class="password-input" />
 
-<div class="edit-profile-page">
-    <button @onclick="NavigateBack" class="back-btn">Back</button>
-    <h2>Edit Profile</h2>
-    <div class="edit-profile-container">
-        <div class="left-column">
-            <label for="nickname">Nickname:</label>
-            <input type="text" id="nickname" placeholder="@nickname" @bind="newNickname" />
-            <label for="email">Email:</label>
-            <input type="email" id="email" placeholder="@nickname" @bind="newEmail" />
-        </div>
-        <div class="right-column">
-            <label for="oldPassword">Current Password:</label>
-            <input type="password" id="oldPassword" @bind="oldPassword" class="password-input" />
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="newPassword" @bind="newPassword" class="password-input" />
 
-            <label for="newPassword">New Password:</label>
-            <input type="password" id="newPassword" @bind="newPassword" class="password-input" />
-
-            <label for="repeatPassword">Repeat Password:</label>
-            <input type="password" id="repeatPassword" @bind="repeatPassword" class="password-input" />
-        </div>
-    </div>
-    <button @onclick="SaveProfile" class="save-btn">Save</button>
-    <button @onclick="ConfirmDeleteAccount" class="delete-account-btn">Delete Account</button>
-    @if (!string.IsNullOrEmpty(errorMessage))
-    {
-        <div class="error-message">@errorMessage</div>
-    }
-
-    @if (showDeleteConfirmation)
-    {
-        <div class="overlay"></div>
-        <div class="confirmation-popup">
-            <h3>Are you sure you want to delete your account?</h3>
-            <p>All information will be permanently deleted and cannot be recovered.</p>
-            <label for="deletePassword">Enter Current Password:</label>
-            <input type="password" id="deletePassword" @bind="deletePassword" class="password-input" />
-            <div class="confirmation-buttons">
-                <button @onclick="DeleteAccount" class="confirm-delete-btn">Yes, Delete</button>
-                <button @onclick="CancelDelete" class="cancel-delete-btn">Cancel</button>
+                <label for="repeatPassword">Repeat Password:</label>
+                <input type="password" id="repeatPassword" @bind="repeatPassword" class="password-input" />
             </div>
         </div>
-    }
-</div>
+        <button @onclick="SaveProfile" class="save-btn">Save</button>
+        <button @onclick="ConfirmDeleteAccount" class="delete-account-btn">Delete Account</button>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-message">@errorMessage</div>
+        }
+
+        @if (showDeleteConfirmation)
+        {
+            <div class="overlay"></div>
+            <div class="confirmation-popup">
+                <h3>Are you sure you want to delete your account?</h3>
+                <p>All information will be permanently deleted and cannot be recovered.</p>
+                <label for="deletePassword">Enter Current Password:</label>
+                <input type="password" id="deletePassword" @bind="deletePassword" class="password-input" />
+                <div class="confirmation-buttons">
+                    <button @onclick="DeleteAccount" class="confirm-delete-btn">Yes, Delete</button>
+                    <button @onclick="CancelDelete" class="cancel-delete-btn">Cancel</button>
+                </div>
+            </div>
+        }
+    </div>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not logged in.</p>
+        <button @onclick='() => NavMgr.NavigateTo("login")'>Login</button>
+        <button @onclick='() => NavMgr.NavigateTo("register")'>Register</button>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private int userId;

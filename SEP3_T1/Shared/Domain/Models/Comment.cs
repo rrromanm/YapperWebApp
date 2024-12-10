@@ -22,7 +22,7 @@ public class Comment
     }
     public override string ToString()
     {
-        return $"Body: {body}, Comment Date: {commentDate}, Like Count: {likeCount}, Comment ID: {commentId}, User ID: {userId}, Post ID: {postId}";
+        return $"Body: {body}, Comment Date: {commentDate}, Like Count: {likeCount}, Comment ID: {commentId}, SMUser ID: {userId}, Post ID: {postId}";
     }
     protected bool Equals(Comment other)
     {

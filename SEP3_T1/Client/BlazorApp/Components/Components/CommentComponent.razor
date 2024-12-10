@@ -15,8 +15,8 @@
         {
             <div class="comment-item">
                 <p>
-                    <strong class="username-link" @onclick="() => NavigateToUserProfile(commentWithUser.User.Username)">
-                        @commentWithUser.User.Nickname:
+                    <strong class="username-link" @onclick="() => NavigateToUserProfile(commentWithUser.SmUser.Username)">
+                        @commentWithUser.SmUser.Nickname:
                     </strong>
                     @if (commentWithUser.isEditMode)
                     {
@@ -107,7 +107,7 @@
             var tasks = comments.Select(async comment => new CommentWithUser
             {
                 Comment = comment,
-                User = await SMUserService.GetByUserId(comment.userId)
+                SmUser = await SMUserService.GetByUserId(comment.userId)
             });
 
             commentsWithUsers = (await Task.WhenAll(tasks)).ToList();
@@ -201,7 +201,7 @@
     private class CommentWithUser
     {
         public Comment Comment { get; set; }
-        public User User { get; set; }
+        public SMUser SmUser { get; set; }
         public bool isEditMode { get; set; }
         public string editedCommentBody { get; set; }
     }

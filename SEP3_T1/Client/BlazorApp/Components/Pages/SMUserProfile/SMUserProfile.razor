@@ -8,7 +8,7 @@
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager NavMgr
 
-<AuthorizeView>
+<AuthorizeView Roles="User">
     <Authorized>
         @if (!string.IsNullOrEmpty(errorMessage))
         {
@@ -91,7 +91,9 @@
         }
     </Authorized>
     <NotAuthorized>
-        <p>You are not authorized to view this profile.</p>
+        <p>You are not logged in.</p>
+        <button @onclick='() => NavMgr.NavigateTo("login")'>Login</button>
+        <button @onclick='() => NavMgr.NavigateTo("register")'>Register</button>
     </NotAuthorized>
 </AuthorizeView>
 

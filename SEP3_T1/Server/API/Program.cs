@@ -16,6 +16,7 @@ builder.Services.AddScoped<IChatLogic, ChatLogic>();
 builder.Services.AddScoped<INotificationLogic, NotificationLogic>();
 builder.Services.AddScoped<IReportLogic, ReportLogic>();
 builder.Services.AddScoped<ICategoryRequestLogic, CategoryRequestLogic>();
+builder.Services.AddScoped<IModeratorLogic, ModeratorLogic>();
 
 var app = builder.Build();
 
