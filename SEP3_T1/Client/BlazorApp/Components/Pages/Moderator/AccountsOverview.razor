@@ -1,0 +1,55 @@
+﻿@page "/Accounts"
+@using DTOs.Models
+@using HttpClients.ClientInterfaces
+@inject ISMUserService UserService
+
+<h3>Accounts</h3>
+
+<div>
+    @if (accounts == null)
+    {
+        <p>Loading...</p>
+    }
+    else if (accounts.Count == 0)
+    {
+        <p>No accounts found.</p>
+    }
+    else
+    {
+        <table>
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Nickname</th>
+                <th>Followers</th>
+                <th>Following</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var account in accounts)
+            {
+                <tr>
+                    <td>@account.Id</td>
+                    <td>@account.Username</td>
+                    <td>@account.Email</td>
+                    <td>@account.Nickname</td>
+                    <td>@account.followersCount</td>
+                    <td>@account.followingCount</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    private List<SMUser> accounts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var allUsers = await UserService.GetAllUsers();
+        accounts = allUsers.OrderBy(user => user.Id).ToList();
+    }
+}
