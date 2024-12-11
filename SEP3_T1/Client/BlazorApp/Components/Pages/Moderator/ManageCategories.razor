@@ -1,6 +1,126 @@
 ﻿@page "/ManageCategories"
-<h3>ManageCategories</h3>
+@using System.Security.Claims
+@using DTOs.Models
+@using DTOs.User
+@using HttpClients.ClientInterfaces
+@inject ICategoryService CategoryService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavMgr
+
+<h3>Manage Categories</h3>
+
+<AuthorizeView Roles="Moderator">
+    <Authorized>
+        <div class="manage-categories-container">
+            <div class="categories-list">
+                <h4>Current Categories</h4>
+                <ul class="category-list">
+                    @foreach (var category in categories)
+                    {
+                        <li class="category-item" @onclick="() => SelectCategory(category)">
+                            <span>@category.Name</span>
+                            <span>ID: @category.Id</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="category-actions">
+                <div class="add-category">
+                    <label for="categoryName">Category Name:</label>
+                    <input type="text" @bind="newCategoryName" />
+                    <button @onclick="CreateCategory">Add</button>
+                </div>
+
+                @if (selectedCategory != null)
+                {
+                    <div class="edit-category">
+                        <h4>Edit Category</h4>
+                        <div>
+                            <label>Id:</label> @selectedCategory.Id
+                        </div>
+                        <div>
+                            <label>Name:</label>
+                            <input type="text" @bind="selectedCategory.Name" />
+                        </div>
+                        <div>
+                            <label>Added By:</label> @selectedCategory.AddedBy
+                        </div>
+                        <button @onclick="UpdateSelectedCategory">Save</button>
+                        <button @onclick="DeleteSelectedCategory">Delete</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not authorized to manage categories.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
-    
+    private string newCategoryName;
+    private List<Category> categories = new List<Category>();
+    private Category selectedCategory;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCategories();
+    }
+
+    private async Task LoadCategories()
+    {
+        categories = await CategoryService.GetAllCategories();
+    }
+
+    private async Task CreateCategory()
+    {
+        if (!string.IsNullOrWhiteSpace(newCategoryName))
+        {
+            AuthenticationState authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            ClaimsPrincipal user = authState.User;
+            Claim userIdClaim = user.FindFirst("Id");
+            if (userIdClaim != null)
+            {
+                int userId = int.Parse(userIdClaim.Value);
+                CreateCategoryDTO newCategory = new CreateCategoryDTO
+                {
+                    Name = newCategoryName,
+                    addedBy = userId
+                };
+                await CategoryService.CreateCategory(newCategory);
+                newCategoryName = string.Empty;
+                await LoadCategories();
+            }
+        }
+    }
+
+    private void SelectCategory(Category category)
+    {
+        selectedCategory = category;
+    }
+
+    private async Task UpdateSelectedCategory()
+    {
+        if (selectedCategory != null)
+        {
+            var updateCategoryDto = new UpdateCategoryDTO
+            {
+                id = selectedCategory.Id,
+                name = selectedCategory.Name
+            };
+            await CategoryService.UpdateCategory(updateCategoryDto);
+            selectedCategory = null;
+            await LoadCategories();
+        }
+    }
+
+    private async Task DeleteSelectedCategory()
+    {
+        if (selectedCategory != null)
+        {
+            await CategoryService.DeleteCategory(selectedCategory.Id);
+            selectedCategory = null; 
+            await LoadCategories();
+        }
+    }
 }

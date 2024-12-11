@@ -27,7 +27,7 @@ public class CategoryHttpClient : ICategoryService
 
     public async Task UpdateCategory(UpdateCategoryDTO dto)
     {
-        HttpResponseMessage response = await _client.PutAsJsonAsync($"/Categories/{dto.id}", dto);
+        HttpResponseMessage response = await _client.PatchAsJsonAsync($"/Categories", dto);
         if (!response.IsSuccessStatusCode)
         {
             string e = await response.Content.ReadAsStringAsync();

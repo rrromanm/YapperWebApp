@@ -8,12 +8,10 @@
 <div class="login-page-container">
     <link href="LoginStylesheet.css" rel="stylesheet" />
 
-    <!-- Left section for image -->
     <div class="login-image">
         <img src="yapper-transparent.png" alt="Placeholder Image"/>
     </div>
 
-    <!-- Right section for login form -->
     <div class="login-form-container">
         <div class="login-form">
             <input @bind="username" placeholder="Moderator Username"/>
@@ -21,7 +19,6 @@
             <button @onclick="LoginImpl">Login</button>
         </div>
 
-        <!-- Error or alert messages -->
         <div class="login-exceptions">
             <p class="error-message">@errorMessage</p>
         </div>

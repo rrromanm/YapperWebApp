@@ -16,3 +16,4 @@ Thumbs.db
 **/.idea/
 **/.vscode/
 SEP3_T2/grpc-springboot/src/main/java/sep3/util/DatabaseConnectionManager.java
+SEP3_T2/grpc-springboot/src/main/java/sep3/util/DatabaseConnectionManager.java

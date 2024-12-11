@@ -1,0 +1,49 @@
+﻿.manage-categories-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.categories-list {
+    width: 40%;
+}
+
+.category-actions {
+    width: 55%;
+}
+
+.category-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.category-item:hover {
+    background-color: #f1f1f1;
+}
+
+.add-category, .edit-category {
+    margin-bottom: 20px;
+}
+
+.add-category input, .edit-category input {
+    margin-right: 10px;
+}
+
+.btn-delete {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.btn-delete:hover {
+    background-color: #ff1a1a;
+}

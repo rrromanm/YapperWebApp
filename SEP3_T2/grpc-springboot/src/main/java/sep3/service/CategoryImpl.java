@@ -22,7 +22,6 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
     @Override
     public void createCategory(CreateCategoryRequest request, StreamObserver<EmptyCategoryResponse> responseObserver) {
         try{
-            System.out.println("Category created with name: " + request.getName());
             CreateCategoryDTO dto = new CreateCategoryDTO(request.getName(), request.getAddedBy());
             dao.createCategory(dto);
             responseObserver.onNext(EmptyCategoryResponse.newBuilder().build());
@@ -36,7 +35,6 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
     @Override
     public void updateCategory(UpdateCategoryRequest request, StreamObserver<EmptyCategoryResponse> responseObserver) {
         try{
-            System.out.println("Category updated with id: " + request.getId());
 
             UpdateCategoryDTO dto = new UpdateCategoryDTO(request.getName(), request.getId());
 
@@ -54,7 +52,6 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
     public void deleteCategory(DeleteCategoryRequest request, StreamObserver<EmptyCategoryResponse> responseObserver) {
         try{
             int id = request.getId();
-            System.out.println("Category deleted with id: " + id);
 
             dao.deleteCategory(id);
 
@@ -68,7 +65,6 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
     @Override
     public void getCategory(GetCategoryRequest request, StreamObserver<CategoryResponse> responseObserver) {
         try{
-            System.out.println("Category retrieved with id: " + request.getId());
 
             CategoryDTO category = dao.getCategory(request.getId());
 
