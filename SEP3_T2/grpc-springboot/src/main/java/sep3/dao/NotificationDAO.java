@@ -59,5 +59,4 @@ public class NotificationDAO implements NotificationDAOInterface {
             throw new SQLException("Failed to get notifications");
         }
     }
-
 }

@@ -96,7 +96,6 @@ class CategoryRequestDAOTest {
         dao.createCategoryRequest(new CreateCategoryRequestDTO("ApprovedCategory", 1));
         dao.approveCategoryRequest("ApprovedCategory", 2);
 
-        // Verify category is added
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM category WHERE name = ?");
             statement.setString(1, "ApprovedCategory");
@@ -106,7 +105,6 @@ class CategoryRequestDAOTest {
             assertEquals(2, resultSet.getInt("addedBy"));
         }
 
-        // Verify request is removed
         ArrayList<CategoryRequestDTO> remainingRequests = dao.getCategoryRequestsByName("ApprovedCategory");
         assertTrue(remainingRequests.isEmpty());
     }

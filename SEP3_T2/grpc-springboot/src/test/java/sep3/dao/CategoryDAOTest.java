@@ -46,6 +46,20 @@ class CategoryDAOTest {
     }
 
     @Test
+    void deleteCategoryRemovesFromDatabase() throws SQLException {
+        PreparedStatement createCategoryStatement = DatabaseConnectionManager.getConnection().prepareStatement(
+                "INSERT INTO category (categoryid, name) VALUES (1, 'Category to delete')"
+        );
+        createCategoryStatement.executeUpdate();
+
+        CategoryDAO dao = CategoryDAO.getInstance();
+        CategoryDTO createdCategory = dao.getCategory(1);
+        assertEquals("Category to delete", createdCategory.getName());
+
+        dao.deleteCategory(1);
+    }
+
+    @Test
     void creatingCategoryWithDuplicateNameThrowsException() {
         CreateCategoryDTO dto = new CreateCategoryDTO("DuplicateCategory", 1);
         assertDoesNotThrow(() -> dao.createCategory(dto));
