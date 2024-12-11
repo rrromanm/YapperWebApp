@@ -74,8 +74,15 @@
 
         foreach (var categoryId in categoryIds)
         {
-            var category = await CategoryService.GetCategoryById(categoryId);
-            categories[categoryId] = category.Name;
+            if (categoryId != 0)
+            {
+                var category = await CategoryService.GetCategoryById(categoryId);
+                categories[categoryId] = category.Name;
+            }
+            else
+            {
+                categories[categoryId] = "Deleted";
+            }
         }
     }
 

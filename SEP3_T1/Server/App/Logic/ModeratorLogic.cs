@@ -23,7 +23,12 @@ public class ModeratorLogic : IModeratorLogic
             Username = username
         });
         
-        Moderator moderator = new Moderator(response.Username, response.Password);
+        Moderator moderator = new Moderator
+        {
+            Id = response.Id,
+            Username = response.Username,
+            Password = response.Password
+        };
         
         return moderator;
     }
