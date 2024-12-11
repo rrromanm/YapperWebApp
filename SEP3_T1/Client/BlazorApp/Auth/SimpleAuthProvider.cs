@@ -76,7 +76,8 @@ public class SimpleAuthProvider : AuthenticationStateProvider
         List<Claim> claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Name, moderator.Username),
-            new Claim(ClaimTypes.Role, "Moderator")
+            new Claim("Id", moderator.Id.ToString()),
+            new Claim(ClaimTypes.Role, "Moderator"),
         };
 
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
@@ -112,7 +113,7 @@ public class SimpleAuthProvider : AuthenticationStateProvider
             new Claim(ClaimTypes.Name, userDto.Username),
             new Claim(ClaimTypes.Email, userDto.Email),
             new Claim("Id", userDto.Id.ToString()),
-            new Claim(ClaimTypes.Role, "User")
+            new Claim(ClaimTypes.Role, "User") 
         };
 
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
@@ -148,17 +149,15 @@ public class SimpleAuthProvider : AuthenticationStateProvider
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
-        // Determine if the stored user is a Moderator or a regular UserDTO
         dynamic deserializedUser;
-        if (userAsJson.Contains("\"Role\":\"Moderator\"")) // Use role to identify the type
+        if (userAsJson.Contains("\"Role\":\"Moderator\""))
         {
             deserializedUser = JsonSerializer.Deserialize<Moderator>(userAsJson)!;
 
-            // Create claims for Moderator
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, deserializedUser.Username),
-                new Claim(ClaimTypes.Role, deserializedUser.Role), // Add the "Moderator" role
+                new Claim(ClaimTypes.Role, deserializedUser.Role),
                 new Claim("Id", deserializedUser.Id.ToString())
             };
 
@@ -170,13 +169,12 @@ public class SimpleAuthProvider : AuthenticationStateProvider
         {
             deserializedUser = JsonSerializer.Deserialize<UserDTO>(userAsJson)!;
 
-            // Create claims for regular UserDTO
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, deserializedUser.Username),
                 new Claim(ClaimTypes.Email, deserializedUser.Email),
                 new Claim("Id", deserializedUser.Id.ToString()),
-                new Claim(ClaimTypes.Role, "User") // Add the "User" role
+                new Claim(ClaimTypes.Role, "User")
             };
 
             ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
