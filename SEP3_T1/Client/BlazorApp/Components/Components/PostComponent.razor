@@ -221,12 +221,13 @@
         {
             var userId = user.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
             CurrentUserId = int.Parse(userId);
-
-            await FetchLikedPosts();
         }
+        
+        var fetchPostsTask = FetchLikedPosts();
+        var loadNicknameAndUsernameTask = LoadNicknameAndUsername();
+        var getCategoriesTask = GetCategories();
 
-        await LoadNicknameAndUsername();
-        await GetCategories();
+        await Task.WhenAll(fetchPostsTask, loadNicknameAndUsernameTask, getCategoriesTask);
     }
 
     //TODO: USER METHODS
