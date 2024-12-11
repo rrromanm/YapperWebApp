@@ -43,7 +43,7 @@ public class SimpleAuthProvider : AuthenticationStateProvider
             new Claim(ClaimTypes.Name, userDto.Username),
             new Claim(ClaimTypes.Email, userDto.Email),
             new Claim("Id", userDto.Id.ToString()),
-            new Claim(ClaimTypes.Role, "User") // Add the "User" role
+            new Claim(ClaimTypes.Role, "User")
         };
 
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
@@ -112,7 +112,7 @@ public class SimpleAuthProvider : AuthenticationStateProvider
             new Claim(ClaimTypes.Name, userDto.Username),
             new Claim(ClaimTypes.Email, userDto.Email),
             new Claim("Id", userDto.Id.ToString()),
-            new Claim(ClaimTypes.Role, "User") // Add the "User" role
+            new Claim(ClaimTypes.Role, "User")
         };
 
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
