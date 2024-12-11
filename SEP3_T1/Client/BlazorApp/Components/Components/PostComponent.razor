@@ -127,6 +127,10 @@
                 </button>
             </div>
         </div>
+        @if (!string.IsNullOrEmpty(commentErrorMessage))
+        {
+            <div class="text-danger mt-2">@commentErrorMessage</div>
+        }
     }
 </div>
 
@@ -184,6 +188,7 @@
     private string username;
     private string commentBody;
     private int categoryId;
+    private string commentErrorMessage;
 
     private List<Category> categories = new List<Category>();
     private string categoryName;
@@ -464,7 +469,7 @@
     {
         if (string.IsNullOrWhiteSpace(commentBody))
         {
-            //TODO add something to show that comment cannot be empty
+            commentErrorMessage = "Comment cannot be empty.";
             return;
         }
 
@@ -487,6 +492,7 @@
         
         
         commentBody = string.Empty;
+        commentErrorMessage = string.Empty;
         Post.CommentCount++;
         await commentComponentRef.ReloadCommentsAsync();
         StateHasChanged();

@@ -82,7 +82,7 @@ public class CategoryRequestController : ControllerBase
             return BadRequest(e.Message);
         }
     }
-    [HttpPost("{categoryName}/Approve{addedBy:int}")]
+    [HttpPost("{categoryName}/Approve/{addedBy:int}")]
     public async Task<ActionResult> ApproveCategoryRequest(string categoryName, int addedBy)
     {
         try
