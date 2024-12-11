@@ -13,10 +13,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PostDAOTest {
     private PostDAO dao;
+    private SMUserDAO smUserDAO;
 
     @BeforeEach
     void setUp() throws SQLException {
         dao = PostDAO.getInstance();
+        smUserDAO = SMUserDAO.getInstance();
 
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM liked_post");
@@ -51,7 +53,6 @@ class PostDAOTest {
 
             statement = connection.prepareStatement("INSERT INTO post_category (postId, categoryId) VALUES (1000, 1)");
             statement.executeUpdate();
-            statement = connection.prepareStatement("INSERT INTO post_category (postId, categoryId) VALUES (1001, 2)");
         }
     }
 
@@ -103,7 +104,7 @@ class PostDAOTest {
 
     @Test
     void deletePostRemovesFromDatabase() throws SQLException {
-        CreatePostDTO createPostDto = new CreatePostDTO("Post to Delete", "Content for post to delete", 1, 100);  // userId and categoryId
+        CreatePostDTO createPostDto = new CreatePostDTO("Post to Delete", "Content for post to delete", 1, 100);
         dao.createPost(createPostDto);
 
         PostDTO createdPost = dao.getAllPosts().get(0);
@@ -120,7 +121,7 @@ class PostDAOTest {
 
     @Test
     void getPostReturnsCorrectPost() throws SQLException {
-        dao.createPost(new CreatePostDTO("Post 1", "Content for Post 1", 1, 100));  // userId and categoryId
+        dao.createPost(new CreatePostDTO("Post 1", "Content for Post 1", 1, 100));
 
         PostDTO createdPost = dao.getAllPosts().get(0);
         PostDTO retrievedPost = dao.getPost(createdPost.getPostId());
@@ -196,5 +197,10 @@ class PostDAOTest {
     }
 
     @Test
-    
+    void getFollowingPostsReturnsMatchingPosts() throws SQLException {
+        smUserDAO.followUser(100,101);
+
+        ArrayList<PostDTO> posts = dao.getAllFollowingPosts(100);
+        assertEquals(1, posts.size());
+    }
 }
