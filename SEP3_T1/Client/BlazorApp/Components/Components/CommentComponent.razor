@@ -69,6 +69,8 @@
 @code {
     [Parameter] public int PostId { get; set; }
     [Parameter] public EventCallback OnCommentDeleted { get; set; }
+    [Parameter] public EventCallback<string> OnCommentError { get; set; }
+    [Parameter] public EventCallback OnEditSuccess { get; set; }
     private List<CommentWithUser> commentsWithUsers;
     private int CurrentUserId { get; set; }
     
@@ -232,7 +234,6 @@
     }
     private void EditComment(CommentWithUser commentWithUser)
     {
-        //TODO add the exception for editing 
         commentWithUser.isEditMode = true;
         commentWithUser.editedCommentBody = commentWithUser.Comment.body;
     }
@@ -245,6 +246,7 @@
     {
         if (string.IsNullOrWhiteSpace(commentWithUser.editedCommentBody))
         {
+            await OnCommentError.InvokeAsync("Comment cannot be empty.");
             return;
         }
         try
@@ -253,11 +255,11 @@
             UpdateCommentDTO dto = new UpdateCommentDTO(commentWithUser.Comment.commentId, commentWithUser.editedCommentBody);
             await CommentService.UpdateCommentAsync(dto);
             commentWithUser.isEditMode = false;
+            await OnEditSuccess.InvokeAsync();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error saving comment {commentWithUser.Comment.commentId}: {ex.Message}");
-            Console.WriteLine($"Stack Trace: {ex.StackTrace}"); 
         }
     }
 }

@@ -5,11 +5,11 @@
 
 .profile-container {
     flex: 1;
-    background-color: white;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #563D39;
     padding: 10px; 
-    border-radius: 5px; 
+    border-radius: 5px;
+    background: #BDB19A;
 }
 
 .profile-header {
@@ -69,12 +69,16 @@ textarea {
 
 .profile-posts {
     margin-top: 20px;
+    background: #BDB19A;
+    border: 1px solid #563D39;
+    border-radius: 5px;
 }
 
 .post-buttons {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+    padding-top: 15px;
 }
 
 .post-btn {
@@ -88,10 +92,11 @@ textarea {
 }
 
 .posts, .liked-posts {
-    border: 1px solid #ccc;
     padding: 10px;
+    background-color: #BDB19A;
+    border-bottom: 1px solid #563D39;
+    border-top: 1px solid #563D39;
     border-radius: 5px;
-    background-color: #f9f9f9;
 }
 
 .post-btn.grey {

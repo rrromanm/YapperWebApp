@@ -13,9 +13,6 @@
 @inject INotificationService NotificationService
 
 <PageTitle>Home</PageTitle>
-
-<h1>Home page</h1>
-
 <link href="HomeStylesheet.css" rel="stylesheet"/>
 
 <AuthorizeView>
@@ -33,9 +30,10 @@
         }
         
         else if (context.User.IsInRole("User"))
-        {
-        <p>Hello, @context.User.Identity.Name!</p>
-        <p>You are logged in.</p>
+        { 
+            <h1 class="top-text">Yapper home page</h1>
+        <p class="top-text" >Hello, @context.User.Identity.Name!</p>
+        <p class="top-text">You are logged in.</p>
 
         <div class="home-container">
             <div class="posts-container">
@@ -193,9 +191,19 @@
         }
     </Authorized>
     <NotAuthorized>
-        <p>You are not logged in.</p>
-        <button @onclick='() => NavMgr.NavigateTo("login")'>Login</button>
-        <button @onclick='() => NavMgr.NavigateTo("register")'>Register</button>
+        <div class="not-authorized-container">
+            <img class="not-authorized-image" src="yapper-transparent-cropped.png" alt="Yapper Logo"/>
+            <div class="not-authorized-container-inside">
+                <p class="not-authorized-description">Welcome to Yapper !</p>
+                <div class="button-container">
+                    <button class="not-authorized-buttons" @onclick='() => NavMgr.NavigateTo("login")'>Login</button>
+                    <button class="not-authorized-buttons" @onclick='() => NavMgr.NavigateTo("register")'>Register</button>
+                </div>
+                <p class="not-authorized-moderator-text" ><a href="moderatorLogin" class="moderator-link">Are you our moderator?</a></p>
+                
+            </div>
+            <img class="bottom-left-image" src="talking_people transparent.png" alt="Bottom Left Image"/>
+        </div>
     </NotAuthorized>
 </AuthorizeView>
 

@@ -33,8 +33,8 @@
     margin-right: 0.75rem;
     top: -1px;
     background-size: cover;
-    line-height: 1.25rem; /* Ensure the line height matches the icon size */
-    vertical-align: middle; /* Align the icon vertically in the middle */
+    line-height: 1.25rem; 
+    vertical-align: middle; 
 }
 
 .nav-item {

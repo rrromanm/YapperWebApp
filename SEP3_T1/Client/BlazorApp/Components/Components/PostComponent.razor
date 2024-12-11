@@ -119,7 +119,7 @@
     @if (CommentsVisibility.TryGetValue(Post.PostId, out var isVisible) && isVisible)
     {
         <div class="comments-section border-top mt-3 pt-3">
-            <CommentComponent @ref="commentComponentRef" PostId="Post.PostId" OnCommentDeleted="HandleCommentDeleted"/>
+            <CommentComponent @ref="commentComponentRef" PostId="Post.PostId" OnCommentDeleted="HandleCommentDeleted" OnCommentError="HandleCommentError" OnEditSuccess="HandleEditSuccess"/>
             <div class="input-group mt-3">
                 <textarea class="form-control custom-textarea" placeholder="Write a comment..." @bind="commentBody"></textarea>
                 <button class="send-btn" @onclick="SubmitComment">
@@ -505,6 +505,16 @@
             Post.CommentCount--;
         }
 
+        StateHasChanged();
+    }
+    private void HandleCommentError(string errorMessage)
+    {
+        commentErrorMessage = errorMessage;
+        StateHasChanged();
+    }
+    private void HandleEditSuccess()
+    {
+        commentErrorMessage = string.Empty;
         StateHasChanged();
     }
 

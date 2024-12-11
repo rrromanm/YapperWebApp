@@ -1,9 +1,9 @@
-﻿/* Add this CSS to your stylesheet */
+﻿
 .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Full viewport height */
+    height: 100vh;
 }
 
 .login-form {
@@ -11,9 +11,9 @@
     flex-direction: column;
     width: 300px;
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #563D39;
     border-radius: 5px;
-    background-color: #fff;
+    background: #74655E;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -25,14 +25,16 @@
 }
 
 .login-form button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background-color: #563D39;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .login-form button:hover {
-    background-color: #0056b3;
+    background-color: #BDB19A;
+    transform: scale(1.05);
 }

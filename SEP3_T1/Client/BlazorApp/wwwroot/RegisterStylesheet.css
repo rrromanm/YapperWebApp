@@ -1,11 +1,10 @@
-/* Container for the entire register page */
+
 .register-page-container {
     display: flex;
     height: 100vh;
     font-family: Arial, sans-serif;
 }
 
-/* Left section: image container */
 .register-image {
     width: 50%;
     display: flex;
@@ -29,7 +28,6 @@
     opacity: 1;
 }
 
-/* Right section: register form */
 .register-form-container {
     width: 50%;
     display: flex;
@@ -71,7 +69,6 @@
     background-color: #0056b3;
 }
 
-/* Error messages styling */
 .register-exceptions {
     margin-top: 20px;
     color: red;
