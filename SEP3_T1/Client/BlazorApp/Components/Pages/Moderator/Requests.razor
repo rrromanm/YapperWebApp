@@ -1,6 +1,97 @@
 ﻿@page "/Requests"
-<h3>Requests</h3>
+@using DTOs.DTOs.CategoryRequest
+@using HttpClients.ClientInterfaces
+@inject ICategoryRequestService CategoryRequestService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<h3 class="page-title">Category requests </h3>
 
+<AuthorizeView Roles="Moderator">
+    <Authorized>
+        @if (requests == null)
+        {
+        <p class="loading-text">Loading...</p>
+        }
+        else if (!requests.Any())
+        {
+        <p class="no-requests-text">No category requests found.</p>
+        }
+        else
+        {
+        <div class="requests-container">
+            @foreach (var request in requests)
+            {
+            <div class="request-card">
+                <div class="request-details">
+                    <p><strong>Date:</strong> @FormatDate(request.Date)</p>
+                    <p><strong>Category name:</strong> @request.categoryName</p>
+                    <p><strong>User Id:</strong> @request.userId</p>
+                    <p><strong>Request Id::</strong> @request.requestId</p>
+                </div>
+                <div class="request-actions">
+                    <button class="btn-action btn-success" @onclick="() => ApproveCategoryRequest(request.categoryName)">Approve request</button>
+                    <button class="btn-action btn-danger" @onclick="() => DisapproveCategoryRequest(request.categoryName)">Disapprove request</button>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p class="not-authorized-text">You are not authorized to view this page. Please log in as a moderator.</p>
+    </NotAuthorized>
+</AuthorizeView>
 @code {
-    
+    private List<CategoryRequestDTO> requests;
+    private int CurrentUserId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userId = user.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
+            CurrentUserId = int.Parse(userId);
+            requests = await CategoryRequestService.GetAllCategoryRequests();
+        }
+    }
+
+    private async Task ApproveCategoryRequest(string categoryName)
+    {
+        try
+        {
+            Console.WriteLine($"Attempting to approve category request for: {categoryName}");
+            await CategoryRequestService.ApproveCategoryRequest(categoryName,CurrentUserId);
+            Console.WriteLine("Category request approved successfully.");
+            requests = await CategoryRequestService.GetAllCategoryRequests();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to approve category request: {ex.Message}");
+            Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+        }
+    }
+
+    private async Task DisapproveCategoryRequest(string categoryName)
+    {
+        try
+        {
+            await CategoryRequestService.DisapproveCategoryRequest(categoryName);
+            requests = await CategoryRequestService.GetAllCategoryRequests();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to disapprove category request: {ex.Message}");
+        }
+    }
+
+    private string FormatDate(string timestamp)
+    {
+        if (DateTime.TryParse(timestamp, out DateTime date))
+        {
+            return date.ToString("yyyy/MM/dd HH:mm");
+        }
+        return timestamp;
+    }
 }

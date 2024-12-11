@@ -94,3 +94,7 @@
     box-shadow: none; 
     background-color: #F7F3EF; 
 }
+.text-danger {
+    padding-left: 10px;
+    padding-bottom: 5px;
+}
