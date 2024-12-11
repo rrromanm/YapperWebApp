@@ -5,14 +5,18 @@ import sep3.dto.category.CreateCategoryDTO;
 import sep3.dto.category.UpdateCategoryDTO;
 import sep3.util.DatabaseConnectionManager;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CategoryDAO implements CategoryDAOInterface {
 
     private static CategoryDAO instance;
 
-    private CategoryDAO() {}
+    private CategoryDAO() {
+    }
 
     public static CategoryDAO getInstance() throws SQLException {
         if (instance == null) {
@@ -28,7 +32,9 @@ public class CategoryDAO implements CategoryDAOInterface {
             statement.setString(1, dto.getName());
             statement.setInt(2, dto.getAddedBy());
             statement.executeUpdate();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             throw new SQLException("Failed to create category");
         }
@@ -41,7 +47,9 @@ public class CategoryDAO implements CategoryDAOInterface {
             statement.setString(1, dto.getName());
             statement.setInt(2, dto.getId());
             statement.executeUpdate();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             throw new SQLException("Failed to update category");
         }
@@ -53,7 +61,9 @@ public class CategoryDAO implements CategoryDAOInterface {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM yapper_database.category WHERE categoryid =?");
             statement.setInt(1, id);
             statement.executeUpdate();
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             throw new SQLException("Failed to delete category");
         }
@@ -62,18 +72,21 @@ public class CategoryDAO implements CategoryDAOInterface {
     @Override
     public CategoryDTO getCategory(int id) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
+            CategoryDTO category = null;
+
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM yapper_database.category WHERE categoryid =?");
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return new CategoryDTO(
+            while (resultSet.next()) {
+                category = new CategoryDTO(
                         resultSet.getString("name"),
                         resultSet.getInt("categoryid"),
                         resultSet.getInt("addedBy"));
-            } else {
-                throw new SQLException("Category not found with id: " + id);
             }
-        } catch (Exception e) {
+            return category;
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             throw new SQLException("Failed to get category");
         }
@@ -81,22 +94,26 @@ public class CategoryDAO implements CategoryDAOInterface {
 
     @Override
     public CategoryDTO getCategoryByName(String name) throws SQLException {
+        CategoryDTO category = null;
+        
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM yapper_database.category WHERE name =?");
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
+            
             if (resultSet.next()) {
-                return new CategoryDTO(
+                category = new CategoryDTO(
                         resultSet.getString("name"),
                         resultSet.getInt("categoryid"),
                         resultSet.getInt("addedBy"));
-            } else {
-                throw new SQLException("Category not found with name: " + name);
             }
-        } catch (Exception e) {
+        }
+        catch(Exception e)
+        {
             e.printStackTrace();
             throw new SQLException("Failed to get category");
         }
+        return category;
     }
 
     @Override
@@ -112,7 +129,9 @@ public class CategoryDAO implements CategoryDAOInterface {
                         resultSet.getInt("addedBy")));
             }
             return categories;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
             throw new SQLException("Failed to get categories");
         }

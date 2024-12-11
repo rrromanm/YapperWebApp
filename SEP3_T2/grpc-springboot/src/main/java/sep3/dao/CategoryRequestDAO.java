@@ -23,11 +23,6 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
     }
     return instance;
   }
-  private String formatTimestamp(Timestamp timestamp) {
-    LocalDateTime categoryRequestDateTime = timestamp.toLocalDateTime();
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    return categoryRequestDateTime.format(formatter);
-  }
 
   @Override public void createCategoryRequest(CreateCategoryRequestDTO dto) throws SQLException
   {
@@ -63,24 +58,23 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
   {
     try(Connection connection = DatabaseConnectionManager.getConnection())
     {
+      CategoryRequestDTO categoryRequest = null;
+
       PreparedStatement statement = connection.prepareStatement("SELECT * FROM category_request WHERE requestid = ?");
       statement.setInt(1, id);
       ResultSet resultSet = statement.executeQuery();
 
-      if(resultSet.next()){
+      while (resultSet.next()){
         String formattedDateTime = new YapDate(resultSet.getTimestamp("date")).toString();
 
-        return new CategoryRequestDTO(
-          formattedDateTime,
-          resultSet.getString("categoryName"),
-          resultSet.getInt("userId"),
-          resultSet.getInt("requestId")
+        categoryRequest = new CategoryRequestDTO(
+                formattedDateTime,
+                resultSet.getString("categoryName"),
+                resultSet.getInt("userId"),
+                resultSet.getInt("requestId")
         );
       }
-      else
-      {
-        throw new SQLException("Category request not found");
-      }
+      return categoryRequest;
     }
     catch (SQLException e)
     {
