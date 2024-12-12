@@ -1,110 +1,105 @@
+using NUnit.Framework;
+
+namespace Logic;
 using App.Logic;
+using DTOs.Models;
 using DTOs.User;
-
-namespace Tests.Logic;
-
-public class CategoryLogicTests
-{
-    private CategoryLogic _logic;
-
-    [SetUp]
-    public void Setup()
+    public class CategoryLogicTests
     {
-        _logic = new CategoryLogic(new GRPCService());
-    }
-
-    [Test]
-    public async Task CreatingCategoryShouldAddItToTheList()
-    {
-        var createCategoryDTO = new CreateCategoryDTO
+        private CategoryLogic categoryLogic;
+    
+        [SetUp]
+        public void Setup()
         {
-            Name = "TestCategory",
-            addedBy = 1
-        };
-
-        Assert.DoesNotThrowAsync(() => _logic.CreateCategoryAsync(createCategoryDTO));
-
-        var categories = await _logic.GetAllCategoriesAsync();
-        Assert.IsTrue(categories.Any(c => c.Name == "TestCategory"), "The category was not added.");
-    }
-
-    [Test]
-    public async Task UpdatingCategoryShouldChangeItsName()
-    {
-        var createCategoryDTO = new CreateCategoryDTO
+            categoryLogic = new CategoryLogic(new GRPCService());
+        }
+    
+        [Test]
+        public async Task creating_category_adds_it_to_database()
         {
-            Name = "CategoryToUpdate",
-            addedBy = 1
-        };
-        await _logic.CreateCategoryAsync(createCategoryDTO);
+            CreateCategoryDTO dto = new CreateCategoryDTO();
+            dto.Name = "Test";
+            dto.addedBy = 1;
+            Assert.DoesNotThrowAsync(() => categoryLogic.CreateCategoryAsync(dto));
+            Category category = await categoryLogic.GetCategoryByName("Test");
+            Assert.That(category.Name, Is.EqualTo("Test"));
+            Assert.That(category.AddedBy, Is.EqualTo(1));
+            Assert.That(category.Id, Is.Not.EqualTo(0));
+        }
 
-        var categories = await _logic.GetAllCategoriesAsync();
-        var category = categories.FirstOrDefault(c => c.Name == "CategoryToUpdate");
-        Assert.IsNotNull(category, "Category to update does not exist.");
-
-        var updateCategoryDTO = new UpdateCategoryDTO
+        [Test]
+        public async Task updating_category_updates_it_in_database()
         {
-            id = category.Id,
-            name = "UpdatedCategoryName"
-        };
-
-        Assert.DoesNotThrowAsync(() => _logic.UpdateCategoryAsync(updateCategoryDTO));
-
-        categories = await _logic.GetAllCategoriesAsync();
-        Assert.IsTrue(categories.Any(c => c.Name == "UpdatedCategoryName"), "The category name was not updated.");
-    }
-
-    [Test]
-    public async Task DeletingCategoryShouldRemoveItFromTheList()
-    {
-        var createCategoryDTO = new CreateCategoryDTO
+            CreateCategoryDTO dto = new CreateCategoryDTO();
+            dto.Name = "Test";
+            dto.addedBy = 1;
+            await categoryLogic.CreateCategoryAsync(dto);
+            Category category = await categoryLogic.GetCategoryByName("Test");
+            UpdateCategoryDTO updateDto = new UpdateCategoryDTO();
+            updateDto.id = category.Id;
+            updateDto.name = "Test2";
+            Assert.DoesNotThrowAsync(() => categoryLogic.UpdateCategoryAsync(updateDto));
+            Category updatedCategory = await categoryLogic.GetCategoryByName("Test2");
+            Assert.That(updatedCategory.Name, Is.EqualTo("Test2"));
+            Assert.That(updatedCategory.AddedBy, Is.EqualTo(1));
+            Assert.That(updatedCategory.Id, Is.EqualTo(category.Id));
+        }
+        
+        [Test]
+        public async Task deleting_category_deletes_it_from_database()
         {
-            Name = "CategoryToDelete",
-            addedBy = 1
-        };
-        await _logic.CreateCategoryAsync(createCategoryDTO);
-
-        var categories = await _logic.GetAllCategoriesAsync();
-        var category = categories.FirstOrDefault(c => c.Name == "CategoryToDelete");
-        Assert.IsNotNull(category, "Category to delete does not exist.");
-
-        Assert.DoesNotThrowAsync(() => _logic.DeleteCategoryAsync(category.Id));
-
-        categories = await _logic.GetAllCategoriesAsync();
-        Assert.IsFalse(categories.Any(c => c.Name == "CategoryToDelete"), "The category was not deleted.");
-    }
-
-    [Test]
-    public async Task GetCategoryByIdShouldReturnCorrectCategory()
-    {
-        var createCategoryDTO = new CreateCategoryDTO
+            CreateCategoryDTO dto = new CreateCategoryDTO();
+            dto.Name = "Test";
+            dto.addedBy = 1;
+            await categoryLogic.CreateCategoryAsync(dto);
+            Category category = await categoryLogic.GetCategoryByName("Test");
+            Assert.DoesNotThrowAsync(() => categoryLogic.DeleteCategoryAsync(category.Id));
+            Assert.ThrowsAsync<Exception>(() => categoryLogic.GetCategoryByName("Test"));
+        }
+        
+        [Test]
+        public async Task getting_category_by_name_returns_correct_category()
         {
-            Name = "CategoryById",
-            addedBy = 1
-        };
-        await _logic.CreateCategoryAsync(createCategoryDTO);
-
-        var categories = await _logic.GetAllCategoriesAsync();
-        var category = categories.FirstOrDefault(c => c.Name == "CategoryById");
-        Assert.IsNotNull(category, "Category to retrieve by ID does not exist.");
-
-        var retrievedCategory = await _logic.GetCategoryById(category.Id);
-        Assert.AreEqual(category.Id, retrievedCategory.Id, "Retrieved category ID does not match.");
-        Assert.AreEqual(category.Name, retrievedCategory.Name, "Retrieved category name does not match.");
-    }
-
-    [Test]
-    public async Task GetCategoryByNameShouldReturnCorrectCategory()
-    {
-        var createCategoryDTO = new CreateCategoryDTO
+            CreateCategoryDTO dto = new CreateCategoryDTO();
+            dto.Name = "Test";
+            dto.addedBy = 1;
+            await categoryLogic.CreateCategoryAsync(dto);
+            Category category = await categoryLogic.GetCategoryByName("Test");
+            Assert.That(category.Name, Is.EqualTo("Test"));
+            Assert.That(category.AddedBy, Is.EqualTo(1));
+            Assert.That(category.Id, Is.Not.EqualTo(0));
+        }
+        
+        [Test]
+        public async Task getting_category_by_id_returns_correct_category()
         {
-            Name = "CategoryByName",
-            addedBy = 1
-        };
-        await _logic.CreateCategoryAsync(createCategoryDTO);
+            CreateCategoryDTO dto = new CreateCategoryDTO();
+            dto.Name = "Test";
+            dto.addedBy = 1;
+            await categoryLogic.CreateCategoryAsync(dto);
+            Category category = await categoryLogic.GetCategoryByName("Test");
+            Category categoryById = await categoryLogic.GetCategoryById(category.Id);
+            Assert.That(categoryById.Name, Is.EqualTo("Test"));
+            Assert.That(categoryById.AddedBy, Is.EqualTo(1));
+            Assert.That(categoryById.Id, Is.EqualTo(category.Id));
+        }
+        
+        [Test]
+        public async Task getting_all_categories_returns_all_categories()
+        {
+            CreateCategoryDTO dto = new CreateCategoryDTO();
+            dto.Name = "Test";
+            dto.addedBy = 1;
+            await categoryLogic.CreateCategoryAsync(dto);
+            CreateCategoryDTO dto2 = new CreateCategoryDTO();
+            dto2.Name = "Test2";
+            dto2.addedBy = 1;
+            await categoryLogic.CreateCategoryAsync(dto2);
+            List<Category> categories = await categoryLogic.GetAllCategoriesAsync();
+            Assert.That(categories.Count, Is.EqualTo(2));
+            Assert.That(categories[0].Name, Is.EqualTo("Test"));
+            Assert.That(categories[1].Name, Is.EqualTo("Test2"));
+        }
+        
 
-        var retrievedCategory = await _logic.GetCategoryByName("CategoryByName");
-        Assert.IsNotNull(retrievedCategory, "Category not found by name.");
-        Assert.AreEqual("CategoryByName", retrievedCategory.Name, "Retrieved category name does not match.");
     }
-}
