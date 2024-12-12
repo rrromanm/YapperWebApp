@@ -1,35 +1,44 @@
 @page "/ManageReports"
 @using DTOs.DTOs.Report
+@using DTOs.Models
 @using HttpClients.ClientInterfaces
 @inject IReportService ReportService
 @inject IPostService PostService
 
+<link href="ManageReports.css" rel="stylesheet"/>
 <h3 class="page-title">Manage Reports</h3>
+
+<div class="s-bar">
+    <input @bind="SearchQuery" class="s-input" placeholder="Search by Post ID, Title, or Content..." />
+</div>
+
 
 <AuthorizeView Roles="Moderator">
     <Authorized>
-        @if (reports == null)
+        @if (filteredReports == null)
         {
             <p class="loading-text">Loading...</p>
         }
-        else if (!reports.Any())
+        else if (!filteredReports.Any())
         {
             <p class="no-reports-text">No reports found.</p>
         }
         else
         {
             <div class="reports-container">
-                @foreach (var report in reports)
+                @foreach (var report in filteredReports)
                 {
                     <div class="report-card">
                         <div class="report-details">
                             <p><strong>Post ID:</strong> @report.PostId</p>
                             <p><strong>Reported By:</strong> @report.UserId</p>
+                            <p><strong>Title:</strong> @report.PostTitle</p>
+                            <p><strong>Content:</strong> @report.PostContent</p>
                             <p><strong>Date:</strong> @FormatDate(report.Timestamp)</p>
                         </div>
                         <div class="report-actions">
-                            <button class="btn-action btn-danger" @onclick="() => DeletePost(report.PostId)">Delete Post</button>
-                            <button class="btn-action btn-secondary" @onclick="() => RejectReport(report.ReportId)">Dismiss</button>
+                            <button class="btn-action btn-danger" @onclick="async () => await DeletePost(report.PostId)">Delete Post</button>
+                            <button class="btn-action btn-secondary" @onclick="async () => await RejectReport(report.ReportId)">Dismiss</button>
                         </div>
                     </div>
                 }
@@ -42,11 +51,73 @@
 </AuthorizeView>
 
 @code {
-    private List<ReportDTO> reports;
+    private List<ReportWithPostDTO> reports;
+    private List<ReportWithPostDTO> filteredReports;
+    private string searchQuery;
+    
+    
+    private string SearchQuery
+    {
+        get => searchQuery;
+        set
+        {
+            searchQuery = value;
+            PerformLiveSearch();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        reports = await ReportService.GetAllReports();
+        var fetchedReports = await ReportService.GetAllReports();
+        reports = new List<ReportWithPostDTO>();
+
+        foreach (var report in fetchedReports)
+        {
+            try
+            {
+                var post = await PostService.GetPost(report.PostId);
+                reports.Add(new ReportWithPostDTO
+                {
+                    ReportId = report.ReportId,
+                    PostId = report.PostId,
+                    UserId = report.UserId,
+                    Timestamp = report.Timestamp,
+                    PostTitle = post?.Title ?? "N/A",
+                    PostContent = post?.Body ?? "N/A"
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load post details for Post ID {report.PostId}: {ex.Message}");
+                reports.Add(new ReportWithPostDTO
+                {
+                    ReportId = report.ReportId,
+                    PostId = report.PostId,
+                    UserId = report.UserId,
+                    Timestamp = report.Timestamp,
+                    PostTitle = "Error loading title",
+                    PostContent = "Error loading content"
+                });
+            }
+        }
+
+        filteredReports = reports;
+    }
+
+    private void PerformLiveSearch()
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            filteredReports = reports;
+        }
+        else
+        {
+            filteredReports = reports.Where(r =>
+                    r.PostId.ToString().Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                    (r.PostTitle?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (r.PostContent?.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ?? false))
+                .ToList();
+        }
     }
 
     private async Task DeletePost(int postId)
@@ -54,7 +125,8 @@
         try
         {
             await PostService.DeletePost(postId);
-            reports = await ReportService.GetAllReports();
+            reports = reports.Where(r => r.PostId != postId).ToList();
+            PerformLiveSearch();
         }
         catch (Exception ex)
         {
@@ -67,7 +139,8 @@
         try
         {
             await ReportService.RejectReport(reportId);
-            reports = await ReportService.GetAllReports();
+            reports = reports.Where(r => r.ReportId != reportId).ToList();
+            PerformLiveSearch();
         }
         catch (Exception ex)
         {
@@ -84,3 +157,4 @@
         return timestamp;
     }
 }
+
