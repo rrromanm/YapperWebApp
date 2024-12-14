@@ -31,7 +31,7 @@
                     <button @onclick="CreateCategory">Add</button>
                 </div>
 
-                @if (selectedCategory != null)
+                @if (selectedCategory != null && selectedCategory.Id != 0)
                 {
                     <div class="edit-category">
                         <h4>Edit Category</h4>
