@@ -86,12 +86,10 @@ public class SMUserDAO implements SMUserDAOInterface {
     @Override
     public void deleteSMUser(int id) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            // First, delete the related posts
             PreparedStatement deletePostsStatement = connection.prepareStatement("DELETE FROM yapper_database.post WHERE userid = ?");
             deletePostsStatement.setInt(1, id);
             deletePostsStatement.executeUpdate();
 
-            // Then, delete the user
             PreparedStatement deleteUserStatement = connection.prepareStatement("DELETE FROM yapper_database.social_media_user WHERE userid = ?");
             deleteUserStatement.setInt(1, id);
             deleteUserStatement.executeUpdate();
@@ -153,7 +151,6 @@ public class SMUserDAO implements SMUserDAOInterface {
     @Override
     public SMUserDTO getUserById(int id) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
-            // Query to get user details
             PreparedStatement userStatement = connection.prepareStatement(
                     "SELECT * FROM yapper_database.social_media_user WHERE userid = ?"
             );
@@ -161,7 +158,6 @@ public class SMUserDAO implements SMUserDAOInterface {
             ResultSet userResultSet = userStatement.executeQuery();
 
             if (userResultSet.next()) {
-                // Query to count followers
                 PreparedStatement followersStatement = connection.prepareStatement(
                         "SELECT COUNT(*) AS followersCount FROM yapper_database.follows WHERE followedid = ?"
                 );
@@ -172,7 +168,6 @@ public class SMUserDAO implements SMUserDAOInterface {
                     followersCount = followersResultSet.getInt("followersCount");
                 }
 
-                // Query to count followings
                 PreparedStatement followingsStatement = connection.prepareStatement(
                         "SELECT COUNT(*) AS followingCount FROM yapper_database.follows WHERE followerid = ?"
                 );
@@ -183,7 +178,6 @@ public class SMUserDAO implements SMUserDAOInterface {
                     followingCount = followingsResultSet.getInt("followingCount");
                 }
 
-                // Return SMUserDTO with additional counts
                 return new SMUserDTO(
                         userResultSet.getInt("userid"),
                         userResultSet.getString("username"),

@@ -106,8 +106,8 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
                     .setUsername(user.getUsername())
                     .setNickname(user.getNickname())
                     .setPassword(user.getPassword())
-                    .setFollowersCount(user.getFollowerCount()) // Assuming SMUserDTO has these fields
-                    .setFollowingCount(user.getFollowingCount()) // Assuming SMUserDTO has these fields
+                    .setFollowersCount(user.getFollowerCount())
+                    .setFollowingCount(user.getFollowingCount())
                     .build();
 
             responseObserver.onNext(response);
@@ -127,8 +127,8 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
                     .setNickname(userDTO.getNickname())
                     .setPassword(userDTO.getPassword())
                     .setEmail(userDTO.getEmail())
-                    .setFollowersCount(userDTO.getFollowerCount()) // Assuming SMUserDTO has these fields
-                    .setFollowingCount(userDTO.getFollowingCount()) // Assuming SMUserDTO has these fields
+                    .setFollowersCount(userDTO.getFollowerCount())
+                    .setFollowingCount(userDTO.getFollowingCount())
                     .build();
 
             responseObserver.onNext(response);

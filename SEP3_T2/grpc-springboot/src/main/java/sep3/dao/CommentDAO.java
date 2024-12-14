@@ -25,7 +25,6 @@ public class CommentDAO implements CommentDAOInterface {
     }
 
     private String formatTimestamp(Timestamp timestamp) {
-        // Converting commentDate to string
         LocalDateTime commentDateTime = timestamp.toLocalDateTime();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return commentDateTime.format(formatter);
