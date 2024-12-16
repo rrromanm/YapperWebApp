@@ -47,6 +47,7 @@
                         </div>
                         <button @onclick="UpdateSelectedCategory">Save</button>
                         <button @onclick="DeleteSelectedCategory">Delete</button>
+                        <p class="error-message">@errorMessage</p>
                     </div>
                 }
             </div>
@@ -61,6 +62,7 @@
     private string newCategoryName;
     private List<Category> categories = new List<Category>();
     private Category selectedCategory;
+    private string errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -103,6 +105,20 @@
     {
         if (selectedCategory != null)
         {
+            if (string.IsNullOrWhiteSpace(selectedCategory.Name))
+            {
+                errorMessage = "Category name can't be empty.";
+                await LoadCategories();
+                return;
+            }
+
+            if (categories.Any(c => c.Name.Equals(selectedCategory.Name, StringComparison.OrdinalIgnoreCase) && c.Id != selectedCategory.Id))
+            {
+                errorMessage = "Category name already exists.";
+                await LoadCategories();
+                return;
+            }
+
             var updateCategoryDto = new UpdateCategoryDTO
             {
                 id = selectedCategory.Id,
@@ -110,6 +126,7 @@
             };
             await CategoryService.UpdateCategory(updateCategoryDto);
             selectedCategory = null;
+            errorMessage = string.Empty;
             await LoadCategories();
         }
     }
