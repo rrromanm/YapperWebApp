@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="grpc-springboot" />
+        <module name="TestgRPC" />
       </profile>
     </annotationProcessing>
   </component>
