@@ -2,17 +2,14 @@ package sep3.dao;
 
 import sep3.dto.smuser.*;
 import sep3.util.DatabaseConnectionManager;
-import sep3.util.RSAUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class SMUserDAO implements SMUserDAOInterface {
     private static SMUserDAO instance;
-    private final RSAUtil rsaUtil;
 
     private SMUserDAO() {
-        this.rsaUtil = new RSAUtil(61, 53, 3233);
     }
 
     public static SMUserDAO getInstance() throws SQLException {

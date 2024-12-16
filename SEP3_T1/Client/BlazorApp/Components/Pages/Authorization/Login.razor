@@ -1,6 +1,7 @@
 ﻿@page "/Login"
 @using BlazorApp.Auth
 @using DTOs.Models
+@using DTOs.Util
 @using HttpClients.ClientInterfaces
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthProvider
@@ -40,10 +41,25 @@
         try
         {
             var user = await UserService.GetByUsername(username);
-            Console.WriteLine(user);
+            PasswordManager passwordManager = new PasswordManager();
 
-            await ((SimpleAuthProvider)AuthProvider).Login(username, password);
-            Navigation.NavigateTo("/");
+            if (passwordManager.VerifyPassword(password, user.Password))
+            {
+                try
+                {
+                    await ((SimpleAuthProvider)AuthProvider).Login(username, password);
+                    Navigation.NavigateTo("/");
+                }
+                catch (Exception loginEx)
+                {
+                    errorMessage = "Credentials do not match, try again!";
+                }
+            }
+            else
+            {
+                Console.WriteLine("Password is incorrect");
+                errorMessage = "Invalid credentials!";
+            }
         }
         catch (Exception ex)
         {
@@ -52,6 +68,7 @@
                 errorMessage = "Username and password are required!";
                 return;
             }
+            Console.WriteLine($"Exception: {ex.Message}");
             errorMessage = "Credentials do not match, try again!";
         }
     }

@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using DTOs.Models;
 using DTOs.User;
 using HttpClients.ClientInterfaces;
+using Newtonsoft.Json;
 
 namespace HttpClients.ClientImplementations;
 
@@ -68,7 +69,7 @@ public class SMUserHttpClient : ISMUserService
         {
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                return null; // Return null if the user is not found
+                return null; 
             }
             string e = await response.Content.ReadAsStringAsync();
             throw new Exception(e);
@@ -160,4 +161,6 @@ public class SMUserHttpClient : ISMUserService
         }
         return await response.Content.ReadFromJsonAsync<List<FollowersDTO>>();
     }
+    
+    
 }

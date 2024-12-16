@@ -3,6 +3,7 @@ using System.Text.Json;
 using DTOs.DTOs.Auth;
 using DTOs.Models;
 using DTOs.User;
+using DTOs.Util;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 
@@ -21,44 +22,55 @@ public class SimpleAuthProvider : AuthenticationStateProvider
 
     public async Task Login(string username, string password)
     {
-        HttpResponseMessage response = await client.PostAsJsonAsync(
-            $"/login",
-            new LoginRequestDTO(username, password));
-
-        string content = await response.Content.ReadAsStringAsync();
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            throw new Exception(content);
+            PasswordManager passwordManager = new PasswordManager();
+            HttpResponseMessage response = await client.PostAsJsonAsync(
+                $"/login",
+                new LoginRequestDTO(username, passwordManager.HashPassword(password)));
+
+            string content = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Login failed: {content}");
+                throw new Exception(content);
+            }
+            UserDTO userDto = JsonSerializer.Deserialize<UserDTO>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            })!;
+
+            string serialisedData = JsonSerializer.Serialize(userDto);
+            await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
+
+            List<Claim> claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, userDto.Username),
+                new Claim(ClaimTypes.Email, userDto.Email),
+                new Claim("Id", userDto.Id.ToString()),
+                new Claim(ClaimTypes.Role, "User")
+            };
+
+            ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
+            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
+
+            NotifyAuthenticationStateChanged(
+                Task.FromResult(new AuthenticationState(claimsPrincipal))
+            );
         }
-        UserDTO userDto = JsonSerializer.Deserialize<UserDTO>(content, new JsonSerializerOptions
+        catch (Exception ex)
         {
-            PropertyNameCaseInsensitive = true
-        })!;
-
-        string serialisedData = JsonSerializer.Serialize(userDto);
-        await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
-
-        List<Claim> claims = new List<Claim>()
-        {
-            new Claim(ClaimTypes.Name, userDto.Username),
-            new Claim(ClaimTypes.Email, userDto.Email),
-            new Claim("Id", userDto.Id.ToString()),
-            new Claim(ClaimTypes.Role, "User")
-        };
-
-        ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
-        ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
-
-        NotifyAuthenticationStateChanged(
-            Task.FromResult(new AuthenticationState(claimsPrincipal))
-        );
+            Console.WriteLine($"Exception in Login method: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task ModeratorLogin(string username, string password)
     {
+        PasswordManager passwordManager = new PasswordManager();
         HttpResponseMessage response = await client.PostAsJsonAsync(
             $"/moderatorLogin",
-            new LoginRequestDTO(username, password));
+            new LoginRequestDTO(username, passwordManager.HashPassword(password)));
 
         string content = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)

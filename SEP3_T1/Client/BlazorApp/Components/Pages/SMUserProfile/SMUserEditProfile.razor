@@ -1,6 +1,7 @@
 ﻿@page "/EditProfile"
 @using BlazorApp.Auth
 @using DTOs.User
+@using DTOs.Util
 @using HttpClients.ClientInterfaces
 @inject NavigationManager NavMgr
 @inject AuthenticationStateProvider AuthProvider
@@ -119,8 +120,9 @@
     private async Task SaveProfile()
     {
         errorMessage = null;
+        PasswordManager passwordManager = new PasswordManager();
 
-        if (oldPassword != currentPassword)
+        if (passwordManager.HashPassword(oldPassword) != currentPassword)
         {
             errorMessage = "Incorrect current password.";
             return;
@@ -143,12 +145,13 @@
             errorMessage = "Invalid email format or length.";
             return;
         }
-
+        
+        
         var updateUserDto = new UpdateUserDTO
         {
             UserId = userId,
             Email = email != newEmail && !string.IsNullOrWhiteSpace(newEmail) ? newEmail : "",
-            Password = !string.IsNullOrEmpty(newPassword) ? newPassword : "",
+            Password = !string.IsNullOrEmpty(newPassword) ? passwordManager.HashPassword(newPassword) : "",
             Nickname = nickname != newNickname && !string.IsNullOrWhiteSpace(newNickname) ? newNickname : ""
         };
 
@@ -179,7 +182,8 @@
 
     private async Task DeleteAccount()
     {
-        if (deletePassword != currentPassword)
+        PasswordManager passwordManager = new PasswordManager();
+        if (passwordManager.HashPassword(deletePassword) != currentPassword)
         {
             errorMessage = "Incorrect password. Account deletion aborted.";
             return;

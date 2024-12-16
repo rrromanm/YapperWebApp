@@ -8,7 +8,7 @@ public class DatabaseConnectionManager {
 
     private static final String URL = "jdbc:postgresql://localhost:5432/postgres?currentSchema=yapper_database";
     private static final String USER = "postgres";
-    private static final String PASSWORD = "343460";
+    private static final String PASSWORD = "VIAVIA";
 
 
     static {

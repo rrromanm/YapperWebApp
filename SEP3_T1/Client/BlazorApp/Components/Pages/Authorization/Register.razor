@@ -1,6 +1,7 @@
 ﻿@page "/Register"
 @using BlazorApp.Auth
 @using DTOs.User
+@using DTOs.Util
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthProvider
 
@@ -98,13 +99,16 @@
         }
 
         try
-        {
+        {   
+            PasswordManager passwordManager = new PasswordManager();
+            var hashedPassword = passwordManager.HashPassword(password);
+            
             var registerDto = new CreateUserDTO()
             {
                 Username = username,
                 Nickname = nickname,
                 Email = email,
-                Password = password
+                Password = hashedPassword
             };
 
             await ((SimpleAuthProvider)AuthProvider).Register(registerDto);
