@@ -15,9 +15,19 @@ public class CategoryDAO implements CategoryDAOInterface {
 
     private static CategoryDAO instance;
 
+    /**
+     * Private constructor to prevent direct instantiation.
+     * Use {@link #getInstance()} to get the singleton instance.
+     */
     private CategoryDAO() {
     }
 
+    /**
+     * Retrieves the singleton instance of {@code CategoryDAO}.
+     *
+     * @return the singleton instance of {@code CategoryDAO}
+     * @throws SQLException if a database access error occurs
+     */
     public static CategoryDAO getInstance() throws SQLException {
         if (instance == null) {
             instance = new CategoryDAO();
@@ -25,6 +35,12 @@ public class CategoryDAO implements CategoryDAOInterface {
         return instance;
     }
 
+    /**
+     * Creates a new category in the database.
+     *
+     * @param dto the {@link CreateCategoryDTO} object containing the category details
+     * @throws SQLException if there is an error during the insert operation
+     */
     @Override
     public void createCategory(CreateCategoryDTO dto) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -40,6 +56,12 @@ public class CategoryDAO implements CategoryDAOInterface {
         }
     }
 
+    /**
+     * Updates an existing category in the database.
+     *
+     * @param dto the {@link UpdateCategoryDTO} object containing the updated category details
+     * @throws SQLException if there is an error during the update operation
+     */
     @Override
     public void updateCategory(UpdateCategoryDTO dto) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -55,6 +77,12 @@ public class CategoryDAO implements CategoryDAOInterface {
         }
     }
 
+    /**
+     * Deletes a category from the database.
+     *
+     * @param id the ID of the category to be deleted
+     * @throws SQLException if there is an error during the delete operation
+     */
     @Override
     public void deleteCategory(int id) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -69,6 +97,13 @@ public class CategoryDAO implements CategoryDAOInterface {
         }
     }
 
+    /**
+     * Retrieves a category by its ID from the database.
+     *
+     * @param id the ID of the category to retrieve
+     * @return a {@link CategoryDTO} object representing the category, or {@code null} if not found
+     * @throws SQLException if there is an error during the retrieval
+     */
     @Override
     public CategoryDTO getCategory(int id) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -92,6 +127,13 @@ public class CategoryDAO implements CategoryDAOInterface {
         }
     }
 
+    /**
+     * Retrieves a category by its name from the database.
+     *
+     * @param name the name of the category to retrieve
+     * @return a {@link CategoryDTO} object representing the category, or {@code null} if not found
+     * @throws SQLException if there is an error during the retrieval
+     */
     @Override
     public CategoryDTO getCategoryByName(String name) throws SQLException {
         CategoryDTO category = null;
@@ -116,6 +158,12 @@ public class CategoryDAO implements CategoryDAOInterface {
         return category;
     }
 
+    /**
+     * Retrieves all categories from the database.
+     *
+     * @return an {@link ArrayList} of {@link CategoryDTO} objects representing all categories
+     * @throws SQLException if there is an error during the retrieval
+     */
     @Override
     public ArrayList<CategoryDTO> getAllCategories() throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {

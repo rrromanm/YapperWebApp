@@ -15,8 +15,18 @@ public class CommentDAO implements CommentDAOInterface {
 
     private static CommentDAO instance;
 
+    /**
+     * Private constructor to prevent direct instantiation.
+     * Use {@link #getInstance()} to get the singleton instance.
+     */
     private CommentDAO() {}
 
+    /**
+     * Returns the singleton instance of {@code CommentDAO}.
+     *
+     * @return the singleton instance of {@code CommentDAO}
+     * @throws SQLException if a database access error occurs
+     */
     public static CommentDAO getInstance() throws SQLException {
         if (instance == null) {
             instance = new CommentDAO();
@@ -24,12 +34,24 @@ public class CommentDAO implements CommentDAOInterface {
         return instance;
     }
 
+    /**
+     * Helper method to format a SQL {@link Timestamp} into a readable date-time string.
+     *
+     * @param timestamp the SQL {@link Timestamp} to be formatted
+     * @return the formatted date-time string
+     */
     private String formatTimestamp(Timestamp timestamp) {
         LocalDateTime commentDateTime = timestamp.toLocalDateTime();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return commentDateTime.format(formatter);
     }
 
+    /**
+     * Creates a new comment by inserting it into the database.
+     *
+     * @param dto the {@link CreateCommentDTO} object containing the comment details
+     * @throws SQLException if there is an error while creating the comment
+     */
     @Override
     public void createComment(CreateCommentDTO dto) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -43,6 +65,12 @@ public class CommentDAO implements CommentDAOInterface {
         }
     }
 
+    /**
+     * Updates the content of an existing comment in the database.
+     *
+     * @param dto the {@link UpdateCommentDTO} object containing the updated comment details
+     * @throws SQLException if there is an error while updating the comment
+     */
     @Override
     public void updateComment(UpdateCommentDTO dto) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -55,6 +83,12 @@ public class CommentDAO implements CommentDAOInterface {
         }
     }
 
+    /**
+     * Deletes a comment from the database by its ID.
+     *
+     * @param commentId the ID of the comment to be deleted
+     * @throws SQLException if there is an error while deleting the comment
+     */
     @Override
     public void deleteComment(int commentId) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -66,6 +100,13 @@ public class CommentDAO implements CommentDAOInterface {
         }
     }
 
+    /**
+     * Retrieves a single comment from the database by its ID.
+     *
+     * @param commentId the ID of the comment to retrieve
+     * @return a {@link CommentDTO} object containing the comment details
+     * @throws SQLException if there is an error while retrieving the comment
+     */
     @Override
     public CommentDTO getComment(int commentId) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -92,6 +133,12 @@ public class CommentDAO implements CommentDAOInterface {
         }
     }
 
+    /**
+     * Retrieves all comments from the database, sorted by the most recent.
+     *
+     * @return an {@link ArrayList} of {@link CommentDTO} objects containing all comments
+     * @throws SQLException if there is an error while retrieving the comments
+     */
     @Override
     public ArrayList<CommentDTO> getAllComments() throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -117,6 +164,13 @@ public class CommentDAO implements CommentDAOInterface {
         }
     }
 
+    /**
+     * Retrieves all comments related to a specific post.
+     *
+     * @param postId the ID of the post whose comments are to be retrieved
+     * @return an {@link ArrayList} of {@link CommentDTO} objects related to the post
+     * @throws SQLException if there is an error while retrieving the comments
+     */
     @Override
     public ArrayList<CommentDTO> getCommentsByPostId(int postId) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -143,6 +197,13 @@ public class CommentDAO implements CommentDAOInterface {
         }
     }
 
+    /**
+     * Retrieves all comments made by a specific user.
+     *
+     * @param userId the ID of the user whose comments are to be retrieved
+     * @return an {@link ArrayList} of {@link CommentDTO} objects related to the user
+     * @throws SQLException if there is an error while retrieving the comments
+     */
     @Override
     public ArrayList<CommentDTO> getCommentsByUserId(int userId) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -169,6 +230,13 @@ public class CommentDAO implements CommentDAOInterface {
         }
     }
 
+    /**
+     * Marks a comment as "liked" by a user.
+     *
+     * @param commentId the ID of the comment to be liked
+     * @param userId the ID of the user who likes the comment
+     * @throws SQLException if there is an error while liking the comment
+     */
     @Override
     public void likeComment(int commentId, int userId) throws SQLException
     {
@@ -185,6 +253,13 @@ public class CommentDAO implements CommentDAOInterface {
         }
     }
 
+    /**
+     * Removes the "like" from a comment for a user.
+     *
+     * @param commentId the ID of the comment to be unliked
+     * @param userId the ID of the user who unlikes the comment
+     * @throws SQLException if there is an error while unliking the comment
+     */
     @Override public void unlikeComment(int commentId, int userId) throws SQLException
     {
         try{
@@ -201,6 +276,13 @@ public class CommentDAO implements CommentDAOInterface {
 
     }
 
+    /**
+     * Retrieves all comments that have been liked by a specific user.
+     *
+     * @param userId the ID of the user whose liked comments are to be retrieved
+     * @return an {@link ArrayList} of {@link CommentDTO} objects representing the liked comments
+     * @throws SQLException if there is an error while retrieving the liked comments
+     */
     @Override public ArrayList<CommentDTO> getLikedCommentsByUserId(int userId) throws SQLException
     {
         try{

@@ -27,7 +27,7 @@ message CreateSMUserResponse  {
 }
 
 message GetFollowersResponse {
-  string list = 1; // JSON representation of followers
+  string list = 1;
 }
 
 message IsFollowingResponse {

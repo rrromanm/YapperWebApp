@@ -13,8 +13,19 @@ import java.util.ArrayList;
 public class CategoryRequestDAO implements CategoryRequestDAOInterface
 {
   private static CategoryRequestDAO instance;
+
+  /**
+   * Private constructor to prevent direct instantiation.
+   * Use {@link #getInstance()} to get the singleton instance.
+   */
   private CategoryRequestDAO() {}
 
+  /**
+   * Retrieves the singleton instance of {@code CategoryRequestDAO}.
+   *
+   * @return the singleton instance of {@code CategoryRequestDAO}
+   * @throws SQLException if a database access error occurs
+   */
   public static CategoryRequestDAO getInstance() throws SQLException
   {
     if (instance == null)
@@ -24,6 +35,12 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
     return instance;
   }
 
+  /**
+   * Creates a new category request in the database.
+   *
+   * @param dto the {@link CreateCategoryRequestDTO} object containing the category request details
+   * @throws SQLException if there is an error during the insert operation
+   */
   @Override public void createCategoryRequest(CreateCategoryRequestDTO dto) throws SQLException
   {
     try (Connection connection = DatabaseConnectionManager.getConnection())
@@ -39,7 +56,12 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
     }
   }
 
-
+  /**
+   * Deletes a category request from the database by its ID.
+   *
+   * @param id the ID of the category request to be deleted
+   * @throws SQLException if there is an error during the delete operation
+   */
   @Override public void deleteCategoryRequest(int id) throws SQLException
   {
     try(Connection connection = DatabaseConnectionManager.getConnection())
@@ -54,6 +76,13 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
     }
   }
 
+  /**
+   * Retrieves a category request by its ID from the database.
+   *
+   * @param id the ID of the category request to retrieve
+   * @return a {@link CategoryRequestDTO} object representing the category request, or {@code null} if not found
+   * @throws SQLException if there is an error during the retrieval
+   */
   @Override public CategoryRequestDTO getCategoryRequest(int id) throws SQLException
   {
     try(Connection connection = DatabaseConnectionManager.getConnection())
@@ -82,6 +111,12 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
     }
   }
 
+  /**
+   * Retrieves all category requests from the database.
+   *
+   * @return an {@link ArrayList} of {@link CategoryRequestDTO} objects representing all category requests
+   * @throws SQLException if there is an error during the retrieval
+   */
   @Override public ArrayList<CategoryRequestDTO> getAllCategoryRequests() throws SQLException
   {
     try(Connection connection = DatabaseConnectionManager.getConnection()){
@@ -107,6 +142,15 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
     }
   }
 
+
+  /**
+   * Retrieves category requests from the database by category name.
+   * Uses a case-insensitive search with partial matches.
+   *
+   * @param name the name of the category to search for
+   * @return an {@link ArrayList} of {@link CategoryRequestDTO} objects matching the search criteria
+   * @throws SQLException if there is an error during the retrieval
+   */
   @Override public ArrayList<CategoryRequestDTO> getCategoryRequestsByName(String name) throws SQLException
   {
     try(Connection connection = DatabaseConnectionManager.getConnection())
@@ -130,6 +174,14 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
     }
   }
 
+  /**
+   * Approves a category request by adding the category to the main category table.
+   * Once approved, the request is automatically disapproved (i.e., deleted).
+   *
+   * @param categoryName the name of the category to approve
+   * @param addedBy the ID of the user who approved the request
+   * @throws SQLException if there is an error during the approval or disapproval process
+   */
   @Override public void approveCategoryRequest(String categoryName, int addedBy) throws SQLException
   {
     try(Connection connection = DatabaseConnectionManager.getConnection())
@@ -147,6 +199,12 @@ public class CategoryRequestDAO implements CategoryRequestDAOInterface
     }
   }
 
+  /**
+   * Disapproves (deletes) a category request by its category name.
+   *
+   * @param categoryName the name of the category request to disapprove
+   * @throws SQLException if there is an error during the delete operation
+   */
   @Override public void disapproveCategoryRequest(String categoryName) throws SQLException
   {
     try(Connection connection = DatabaseConnectionManager.getConnection())

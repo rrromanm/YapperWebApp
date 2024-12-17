@@ -21,6 +21,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         this.gson = new Gson();
     }
 
+    /**
+     * Creates a new post with the specified details.
+     *
+     * @param request The request containing the title, body, category ID, and user ID.
+     * @param responseObserver The stream observer to send the response back.
+     */
     @Override
     public void createPost(CreatePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
         try
@@ -37,6 +43,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Updates an existing post with the specified details.
+     *
+     * @param request The request containing the title, body, category ID, and post ID.
+     * @param responseObserver The stream observer to send the response back.
+     */
     @Override
     public void updatePost(UpdatePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
         try
@@ -53,6 +65,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Deletes the post with the specified post ID.
+     *
+     * @param request The request containing the post ID to be deleted.
+     * @param responseObserver The stream observer to send the response back.
+     */
     @Override
     public void deletePost(DeletePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
         try
@@ -68,6 +86,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves the details of a post with the specified post ID.
+     *
+     * @param request The request containing the post ID to be fetched.
+     * @param responseObserver The stream observer to send the post details back.
+     */
     @Override
     public void getPost(GetPostRequest request, StreamObserver<GetPostResponse> responseObserver) {
         try
@@ -92,6 +116,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves all posts.
+     *
+     * @param request The request to fetch all posts.
+     * @param responseObserver The stream observer to send the list of posts back.
+     */
     @Override
     public void getAllPosts(EmptyGetAllPostsRequest request, StreamObserver<GetAllPostsResponse> responseObserver) {
         try
@@ -110,6 +140,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves all posts from users the specified user is following.
+     *
+     * @param request The request containing the user ID to fetch following posts for.
+     * @param responseObserver The stream observer to send the list of posts back.
+     */
     @Override
     public void getAllFollowingPosts(GetAllFollowingPostsRequest request, StreamObserver<GetAllFollowingPostsResponse> responseObserver) {
         try
@@ -128,6 +164,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves all posts created by a specified user.
+     *
+     * @param request The request containing the user ID to fetch posts for.
+     * @param responseObserver The stream observer to send the list of posts back.
+     */
     @Override
     public void getAllPostsById(GetAllPostsByIdRequest request, StreamObserver<GetAllPostsByIdResponse> responseObserver) {
         try
@@ -146,6 +188,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves all posts in a specific category.
+     *
+     * @param request The request containing the category ID to fetch posts for.
+     * @param responseObserver The stream observer to send the list of posts back.
+     */
     @Override
     public void getAllPostsByCategory(GetAllPostsByCategoryRequest request, StreamObserver<GetAllPostsByCategoryResponse> responseObserver) {
         try
@@ -164,6 +212,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves all posts liked by a specified user.
+     *
+     * @param request The request containing the user ID to fetch liked posts for.
+     * @param responseObserver The stream observer to send the list of liked posts back.
+     */
     @Override
     public void getAllLikedPosts(GetAllLikedPostsRequest request, StreamObserver<GetAllLikedPostsResponse> responseObserver) {
         try {
@@ -181,6 +235,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Likes a post with the specified post ID by the specified user.
+     *
+     * @param request The request containing the user ID and post ID to like.
+     * @param responseObserver The stream observer to send the response back.
+     */
     @Override
     public void likePost(LikePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
         try
@@ -197,6 +257,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Unlikes a post with the specified post ID by the specified user.
+     *
+     * @param request The request containing the user ID and post ID to unlike.
+     * @param responseObserver The stream observer to send the response back.
+     */
     @Override
     public void unlikePost(UnlikePostRequest request, StreamObserver<PostEmptyMessage> responseObserver) {
         try
@@ -213,6 +279,12 @@ public class PostImpl extends PostServiceGrpc.PostServiceImplBase {
         }
     }
 
+    /**
+     * Searches for posts that match the specified search text.
+     *
+     * @param request The request containing the search text to filter posts.
+     * @param responseObserver The stream observer to send the list of matching posts back.
+     */
     @Override
     public void getPostsBySearch(PostSearchRequest request, StreamObserver<PostSearchResponse> responseObserver) {
         try {

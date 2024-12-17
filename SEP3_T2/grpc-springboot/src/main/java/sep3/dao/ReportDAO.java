@@ -15,12 +15,26 @@ public class ReportDAO implements ReportDAOInterface {
 
     private ReportDAO() {}
 
+    /**
+     * Returns the singleton instance of {@code ReportDAO}.
+     *
+     * @return the singleton instance of {@code ReportDAO}
+     * @throws SQLException if an error occurs while retrieving the instance
+     */
     public static ReportDAO getInstance() throws SQLException {
         if (instance == null) {
             instance = new ReportDAO();
         }
         return instance;
     }
+
+    /**
+     * Sends a report for a specific post by a user.
+     *
+     * @param userID The ID of the user reporting the post.
+     * @param postID The ID of the post being reported.
+     * @throws SQLException if an error occurs while executing the SQL statement to insert the report.
+     */
     @Override
     public void sendReport(int userID, int postID) throws SQLException {
         try(Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -35,6 +49,12 @@ public class ReportDAO implements ReportDAOInterface {
         }
     }
 
+    /**
+     * Retrieves all reported posts from the database.
+     *
+     * @return An ArrayList of {@link PostReportDTO} objects representing the reported posts.
+     * @throws SQLException if an error occurs while retrieving the report data from the database.
+     */
     @Override
     public ArrayList<PostReportDTO> getReports() throws SQLException {
         try(Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -55,6 +75,12 @@ public class ReportDAO implements ReportDAOInterface {
         }
     }
 
+    /**
+     * Rejects a report by removing it from the database.
+     *
+     * @param reportId The ID of the report to be rejected.
+     * @throws SQLException if an error occurs while executing the SQL statement to delete the report.
+     */
     @Override
     public void rejectReport(int reportId) throws SQLException {
         try(Connection connection = DatabaseConnectionManager.getConnection()) {

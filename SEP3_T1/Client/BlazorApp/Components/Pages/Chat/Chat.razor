@@ -112,7 +112,12 @@
 
             if (receivedMessage.ReceiverId == currentUserId && receivedMessage.SenderId != currentUserId)
             {
-                messages.Add(new MessageDTO(0, receivedMessage.Message, receivedMessage.SenderId, receivedMessage.ReceiverId, DateTime.Now.ToString("o")));
+                messages.Add(new MessageDTO(
+                    0, 
+                    receivedMessage.Message, 
+                    receivedMessage.SenderId, 
+                    receivedMessage.ReceiverId, 
+                    DateTime.Now.ToString("o")));
                 await InvokeAsync(StateHasChanged);
             }
         };

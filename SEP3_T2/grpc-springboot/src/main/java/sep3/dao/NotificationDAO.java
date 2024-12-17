@@ -13,14 +13,31 @@ import java.util.List;
 public class NotificationDAO implements NotificationDAOInterface {
     private static NotificationDAO instance;
 
+    /**
+     * Private constructor to prevent direct instantiation.
+     * Use {@link #getInstance()} to get the singleton instance.
+     */
     private NotificationDAO() {}
 
+    /**
+     * Returns the singleton instance of {@code NotificationDAO}.
+     *
+     * @return the singleton instance of {@code NotificationDAO}
+     */
     public static NotificationDAO getInstance() {
         if (instance == null) {
             instance = new NotificationDAO();
         }
         return instance;
     }
+
+    /**
+     * Sends a notification to the specified user by adding an entry to the notification table.
+     *
+     * @param userId              the ID of the user to send the notification to
+     * @param notificationMessage the message to be sent as the notification
+     * @throws SQLException if an error occurs while inserting the notification into the database
+     */
     @Override
     public void sendNotification(int userId, String notificationMessage) throws SQLException {
         try{
@@ -36,6 +53,13 @@ public class NotificationDAO implements NotificationDAOInterface {
 
     }
 
+    /**
+     * Retrieves a list of notifications for a given user.
+     *
+     * @param userId the ID of the user whose notifications are being requested
+     * @return a list of {@link NotificationDTO} objects containing notification details
+     * @throws SQLException if an error occurs while retrieving notifications from the database
+     */
     @Override
     public List<NotificationDTO> getNotifications(int userId) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {

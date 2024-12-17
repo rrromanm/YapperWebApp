@@ -183,7 +183,7 @@
 @code {
     [Parameter] public Post Post { get; set; }
     [Parameter] public EventCallback OnStateChange { get; set; }
-    public int CurrentUserId { get; set; }
+    private int CurrentUserId { get; set; }
     private string nickname;
     private string username;
     private string commentBody;
@@ -194,7 +194,6 @@
     private string categoryName;
 
     private CommentComponent commentComponentRef;
-    private PostComponent postComponentRef;
     private Dictionary<int, bool> CommentsVisibility = new();
 
     private bool isEditMode = false;

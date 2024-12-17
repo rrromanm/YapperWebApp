@@ -17,6 +17,12 @@ public class ReportImpl extends ReportServiceGrpc.ReportServiceImplBase {
         this.gson = new Gson();
     }
 
+    /**
+     * Sends a report for a post, identified by the user and post IDs.
+     *
+     * @param request The request containing the user ID and post ID to report.
+     * @param responseObserver The stream observer to send the response back.
+     */
     @Override
     public void sendReport(SendReportRequest request, StreamObserver<SendReportEmptyResponse> responseObserver) {
         try {
@@ -28,6 +34,12 @@ public class ReportImpl extends ReportServiceGrpc.ReportServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves all reports.
+     *
+     * @param request The request to fetch all reports.
+     * @param responseObserver The stream observer to send the list of reports back.
+     */
     @Override
     public void getReports(GetReportsRequest request, StreamObserver<GetReportsResponse> responseObserver) {
         try {
@@ -43,6 +55,12 @@ public class ReportImpl extends ReportServiceGrpc.ReportServiceImplBase {
         }
     }
 
+    /**
+     * Rejects a report based on the provided report ID.
+     *
+     * @param request The request containing the report ID to reject.
+     * @param responseObserver The stream observer to send the response back.
+     */
     @Override
     public void rejectReport(RejectReportRequest request, StreamObserver<SendReportEmptyResponse> responseObserver) {
         try {

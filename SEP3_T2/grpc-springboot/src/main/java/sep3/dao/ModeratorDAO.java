@@ -12,6 +12,11 @@ public class ModeratorDAO implements ModeratorDAOInterface {
 
     private static ModeratorDAO instance;
 
+    /**
+     * Returns the singleton instance of {@code ModeratorDAO}.
+     *
+     * @return the singleton instance of {@code ModeratorDAO}
+     */
     public static ModeratorDAO getInstance() {
         if (instance == null) {
             instance = new ModeratorDAO();
@@ -19,6 +24,13 @@ public class ModeratorDAO implements ModeratorDAOInterface {
         return instance;
     }
 
+    /**
+     * Retrieves a moderator's details from the database by their username.
+     *
+     * @param username the username of the moderator
+     * @return a {@link ModeratorDTO} object containing the moderator's details
+     * @throws SQLException if the moderator is not found or if there is a database error
+     */
     @Override
     public ModeratorDTO getModeratorByUserName(String username) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {

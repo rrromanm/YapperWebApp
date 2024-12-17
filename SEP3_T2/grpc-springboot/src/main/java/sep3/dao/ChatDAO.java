@@ -15,8 +15,18 @@ public class ChatDAO implements ChatDAOInterface {
 
     private static ChatDAO instance;
 
+    /**
+     * Private constructor to prevent direct instantiation.
+     * Use {@link #getInstance()} to get the singleton instance.
+     */
     private ChatDAO() {}
 
+    /**
+     * Retrieves the singleton instance of {@code ChatDAO}.
+     *
+     * @return the singleton instance of {@code ChatDAO}
+     * @throws SQLException if a database access error occurs
+     */
     public static ChatDAO getInstance() throws SQLException {
         if (instance == null) {
             instance = new ChatDAO();
@@ -24,6 +34,12 @@ public class ChatDAO implements ChatDAOInterface {
         return instance;
     }
 
+    /**
+     * Sends a chat message by inserting the message details into the database.
+     *
+     * @param dto the {@link SendMessageDTO} object containing the message details
+     * @throws SQLException if there is an error during the insert operation
+     */
     @Override
     public void sendMessage(SendMessageDTO dto) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -38,6 +54,14 @@ public class ChatDAO implements ChatDAOInterface {
         }
     }
 
+    /**
+     * Retrieves all messages exchanged between a sender and a receiver, sorted by date.
+     *
+     * @param senderId the ID of the message sender
+     * @param receiverId the ID of the message receiver
+     * @return a {@link List} of {@link MessageDTO} objects representing the chat messages
+     * @throws SQLException if there is an error during the retrieval
+     */
     @Override
     public List<MessageDTO> getMessages(int senderId, int receiverId) throws SQLException {
         List<MessageDTO> messages = new ArrayList<>();
@@ -66,7 +90,12 @@ public class ChatDAO implements ChatDAOInterface {
         return messages;
     }
 
-
+    /**
+     * Retrieves all messages from the message table in the database.
+     *
+     * @return a {@link List} of {@link MessageDTO} objects representing all messages in the database
+     * @throws SQLException if there is an error during the retrieval
+     */
     @Override
     public List<MessageDTO> getAllMessages() throws SQLException {
         List<MessageDTO> messages = new ArrayList<>();

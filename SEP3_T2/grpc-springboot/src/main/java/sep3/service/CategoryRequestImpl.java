@@ -20,6 +20,12 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
     this.gson = new Gson();
   }
 
+  /**
+   * Creates a new category request.
+   *
+   * @param request The request containing the category details to create.
+   * @param responseObserver The stream observer to send responses.
+   */
   @Override
   public void createCategoryRequest(CreateCategoryRequestRequest request, StreamObserver<EmptyCategoryRequestResponse> responseObserver)
   {
@@ -37,6 +43,12 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
     }
   }
 
+  /**
+   * Deletes an existing category request by its ID.
+   *
+   * @param request The request containing the category request ID to delete.
+   * @param responseObserver The stream observer to send responses.
+   */
   @Override
   public void deleteCategoryRequest(DeleteCategoryRequestRequest request, StreamObserver<EmptyCategoryRequestResponse> responseObserver)
   {
@@ -53,6 +65,12 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
     }
   }
 
+  /**
+   * Retrieves a category request by its ID.
+   *
+   * @param request The request containing the category request ID to retrieve.
+   * @param responseObserver The stream observer to send the category request details.
+   */
   @Override public void getCategoryRequest(GetCategoryRequestRequest request, StreamObserver<CategoryRequestResponse> responseObserver)
   {
     try{
@@ -74,6 +92,12 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
     }
   }
 
+  /**
+   * Retrieves all category requests.
+   *
+   * @param request The request to retrieve all category requests.
+   * @param responseObserver The stream observer to send the list of category requests.
+   */
   @Override
   public void getAllCategoriesRequest(EmptyGetAllCategoriesRequestRequest request, StreamObserver<GetAllCategoriesRequestResponse> responseObserver)
   {
@@ -93,6 +117,12 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
     }
   }
 
+  /**
+   * Retrieves category requests by category name.
+   *
+   * @param request The request containing the category name to retrieve associated category requests.
+   * @param responseObserver The stream observer to send the list of category requests.
+   */
   @Override
   public void getCateogryRequestByName(GetCategoryRequestByNameRequest request, StreamObserver<GetAllCategoriesRequestResponse> responseObserver)
   {
@@ -110,6 +140,12 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
     }
   }
 
+  /**
+   * Approves a category request.
+   *
+   * @param request The request containing the category name and the user who added it for approval.
+   * @param responseObserver The stream observer to send responses.
+   */
   @Override
   public void approveCategoryRequest(ApproveCategoryRequestRequest request, StreamObserver<EmptyCategoryRequestResponse> responseObserver)
   {
@@ -126,6 +162,12 @@ public class CategoryRequestImpl extends CategoryRequestServiceGrpc.CategoryRequ
     }
   }
 
+  /**
+   * Disapproves a category request.
+   *
+   * @param request The request containing the category name to disapprove.
+   * @param responseObserver The stream observer to send responses.
+   */
   @Override
   public void disapproveCategoryRequest(DisapproveCategoryRequestRequest request, StreamObserver<EmptyCategoryRequestResponse> responseObserver)
   {

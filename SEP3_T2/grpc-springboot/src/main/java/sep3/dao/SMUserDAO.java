@@ -19,6 +19,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         return instance;
     }
 
+    /**
+     * Creates a new user in the system with the provided details.
+     *
+     * @param dto The data transfer object containing the user details.
+     * @return The ID of the newly created user.
+     * @throws SQLException if an error occurs while inserting the user into the database.
+     */
     @Override
     public int createUser(CreateSMUserDTO dto) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -44,6 +51,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Updates the email address of a specific user.
+     *
+     * @param userId The ID of the user to update.
+     * @param email The new email address.
+     * @throws SQLException if an error occurs while updating the user's email.
+     */
     @Override
     public void updateEmail(int userId, String email) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -56,6 +70,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Updates the nickname of a specific user.
+     *
+     * @param userId The ID of the user to update.
+     * @param nickname The new nickname.
+     * @throws SQLException if an error occurs while updating the user's nickname.
+     */
     @Override
     public void updateNickname(int userId, String nickname) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -68,6 +89,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Updates the password of a specific user.
+     *
+     * @param userId The ID of the user to update.
+     * @param password The new password.
+     * @throws SQLException if an error occurs while updating the user's password.
+     */
     @Override
     public void updatePassword(int userId, String password) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -80,6 +108,12 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Deletes a user and all their posts from the system.
+     *
+     * @param id The ID of the user to delete.
+     * @throws SQLException if an error occurs while deleting the user or their posts.
+     */
     @Override
     public void deleteSMUser(int id) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -96,6 +130,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Retrieves a user by their username.
+     *
+     * @param username The username of the user.
+     * @return The user data transfer object containing the user's details.
+     * @throws SQLException if an error occurs while retrieving the user by username.
+     */
     public SMUserDTO getUserByUsername(String username) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
             PreparedStatement userStatement = connection.prepareStatement(
@@ -145,6 +186,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Retrieves a user by their user ID.
+     *
+     * @param id The ID of the user.
+     * @return The user data transfer object containing the user's details.
+     * @throws SQLException if an error occurs while retrieving the user by ID.
+     */
     @Override
     public SMUserDTO getUserById(int id) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -193,6 +241,12 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Retrieves all users from the system.
+     *
+     * @return A list of user data transfer objects representing all users.
+     * @throws SQLException if an error occurs while retrieving all users.
+     */
     @Override
     public ArrayList<SMUserDTO> getAllUsers() throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -242,6 +296,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Follows a user.
+     *
+     * @param followerId The ID of the user who is following.
+     * @param followedId The ID of the user being followed.
+     * @throws SQLException if an error occurs while inserting the follow relationship.
+     */
     @Override public void followUser(int followerId, int followedId) throws SQLException
     {
         try{
@@ -257,6 +318,13 @@ public class SMUserDAO implements SMUserDAOInterface {
 
     }
 
+    /**
+     * Unfollows a user.
+     *
+     * @param followerId The ID of the user who is unfollowing.
+     * @param followedId The ID of the user being unfollowed.
+     * @throws SQLException if an error occurs while deleting the follow relationship.
+     */
     @Override public void unfollowUser(int followerId, int followedId)
         throws SQLException
     {
@@ -272,6 +340,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Retrieves a list of followers for a specific user.
+     *
+     * @param userId The ID of the user whose followers are being retrieved.
+     * @return A list of follower data transfer objects representing the user's followers.
+     * @throws SQLException if an error occurs while retrieving the followers.
+     */
     @Override
     public ArrayList<FollowerDTO> getFollowers(int userId) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -298,6 +373,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Retrieves a list of users being followed by a specific user.
+     *
+     * @param userId The ID of the user whose following list is being retrieved.
+     * @return A list of follower data transfer objects representing the users the user is following.
+     * @throws SQLException if an error occurs while retrieving the following list.
+     */
     @Override
     public ArrayList<FollowerDTO> getFollowing(int userId) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -324,6 +406,14 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Checks if a user is following another user.
+     *
+     * @param followerId The ID of the user who may be following.
+     * @param followedId The ID of the user being followed.
+     * @return True if the follower is following the followed user, false otherwise.
+     * @throws SQLException if an error occurs while checking the follow status.
+     */
     @Override
     public boolean isFollowing(int followerId, int followedId) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -344,6 +434,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Retrieves a list of three random users that the given user is not following.
+     *
+     * @param userId The ID of the user to exclude from the random selection.
+     * @return A list of follower data transfer objects representing the three random users.
+     * @throws SQLException if an error occurs while retrieving the random users.
+     */
     @Override
     public ArrayList<FollowerDTO> getThreeRandomUsers(int userId) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {
@@ -379,6 +476,13 @@ public class SMUserDAO implements SMUserDAOInterface {
         }
     }
 
+    /**
+     * Searches for users by username or nickname.
+     *
+     * @param search The search term to match against usernames or nicknames.
+     * @return A list of follower data transfer objects representing the matching users.
+     * @throws SQLException if an error occurs while searching for users.
+     */
     @Override
     public ArrayList<FollowerDTO> getUsersBySearch(String search) throws SQLException {
         try (Connection connection = DatabaseConnectionManager.getConnection()) {

@@ -19,6 +19,12 @@ public class ModeratorImpl extends ModeratorServiceGrpc.ModeratorServiceImplBase
         this.gson = new Gson();
     }
 
+    /**
+     * Retrieves the moderator details by their username.
+     *
+     * @param request The request containing the username of the moderator to be fetched.
+     * @param responseObserver The stream observer to send the moderator response.
+     */
     @Override
     public void getModeratorByUserName(GetModeratorRequest request, StreamObserver<ModeratorResponse> responseObserver) {
         try {

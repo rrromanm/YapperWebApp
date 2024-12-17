@@ -6,7 +6,6 @@ import sep3.dao.SMUserDAOInterface;
 import sep3.dto.smuser.CreateSMUserDTO;
 import sep3.dto.smuser.FollowerDTO;
 import sep3.dto.smuser.SMUserDTO;
-import socialMediaUser.*;
 import socialMediaUser.CreateSMUserRequest;
 import socialMediaUser.CreateSMUserResponse;
 import socialMediaUser.DeleteSMUserRequest;
@@ -24,6 +23,7 @@ import socialMediaUser.IsFollowingRequest;
 import socialMediaUser.IsFollowingResponse;
 import socialMediaUser.SMUserEmptyResponse;
 import socialMediaUser.SMUserResponse;
+import socialMediaUser.SMUserServiceGrpc;
 import socialMediaUser.UnfollowUserRequest;
 import socialMediaUser.UpdateSMUserEmailRequest;
 import socialMediaUser.UpdateSMUserNicknameRequest;
@@ -42,11 +42,21 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         this.gson = new Gson();
     }
 
+    /**
+     * Creates a new social media user.
+     *
+     * @param request The request containing user details (username, email, password, etc.).
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void createUser(CreateSMUserRequest request, StreamObserver<CreateSMUserResponse> responseObserver) {
         try {
             System.out.println("User created with username: " + request.getUsername());
-            CreateSMUserDTO dto = new CreateSMUserDTO(request.getUsername(), request.getNickname(), request.getPassword(), request.getEmail());
+            CreateSMUserDTO dto = new CreateSMUserDTO(
+                    request.getUsername(),
+                    request.getNickname(),
+                    request.getPassword(),
+                    request.getEmail());
             int userId = dao.createUser(dto);
             SMUserDTO user = dao.getUserById(userId);
             CreateSMUserResponse response = CreateSMUserResponse.newBuilder()
@@ -65,6 +75,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Updates the email of an existing user.
+     *
+     * @param request The request containing the user ID and the new email.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void updateEmail(UpdateSMUserEmailRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
         try {
@@ -78,6 +94,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Updates the nickname of an existing user.
+     *
+     * @param request The request containing the user ID and the new nickname.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void updateNickname(UpdateSMUserNicknameRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
         try {
@@ -91,6 +113,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Updates the password of an existing user.
+     *
+     * @param request The request containing the user ID and the new password.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void updatePassword(UpdateSMUserPasswordRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
         try {
@@ -104,6 +132,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Deletes an existing user by ID.
+     *
+     * @param request The request containing the user ID to delete.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void deleteUser(DeleteSMUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver) {
         try {
@@ -117,6 +151,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves a social media user by their username.
+     *
+     * @param request The request containing the username.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void getByUserName(GetSMUserRequest request, StreamObserver<SMUserResponse> responseObserver) {
         try {
@@ -138,6 +178,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves a social media user by their user ID.
+     *
+     * @param request The request containing the user ID.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void getByID(GetSMUserRequest request, StreamObserver<SMUserResponse> responseObserver) {
         try {
@@ -160,6 +206,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves a list of all users.
+     *
+     * @param request The request to get all users.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void getAllSMUsers(GetAllUsersRequest request, StreamObserver<GetAllUsersResponse> responseObserver) {
         try
@@ -176,6 +228,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Follows another user.
+     *
+     * @param request The request containing the follower and followed user IDs.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void followUser(FollowUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver)
     {
@@ -192,6 +250,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
 
     }
 
+    /**
+     * Unfollows a user.
+     *
+     * @param request The request containing the follower and followed user IDs.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void unfollowUser(UnfollowUserRequest request, StreamObserver<SMUserEmptyResponse> responseObserver)
     {
@@ -207,6 +271,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves the followers of a specific user.
+     *
+     * @param request The request containing the user ID.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void getFollowers(GetFollowersRequest request, StreamObserver<GetFollowersResponse> responseObserver) {
         try {
@@ -225,7 +295,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
-
+    /**
+     * Retrieves the users that a specific user is following.
+     *
+     * @param request The request containing the user ID.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void getFollowing(GetFollowersRequest request, StreamObserver<GetFollowersResponse> responseObserver) {
         try {
@@ -244,6 +319,13 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+
+    /**
+     * Checks if one user is following another user.
+     *
+     * @param request The request containing the follower and followed user IDs.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void isFollowing(IsFollowingRequest request, StreamObserver<IsFollowingResponse> responseObserver) {
         try {
@@ -260,6 +342,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves three random users based on a user's ID.
+     *
+     * @param request The request containing the user ID.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void getThreeRandomUsers(GetThreeRandomUsersRequest request, StreamObserver<GetThreeRandomUsersResponse> responseObserver) {
         try {
@@ -278,6 +366,12 @@ public class SMUserImpl extends SMUserServiceGrpc.SMUserServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves users based on a search text.
+     *
+     * @param request The request containing the search text.
+     * @param responseObserver The observer to handle the response or error.
+     */
     @Override
     public void getUsersBySearch(GetUsersBySearchRequest request, StreamObserver<GetUsersBySearchResponse> responseObserver) {
         try {

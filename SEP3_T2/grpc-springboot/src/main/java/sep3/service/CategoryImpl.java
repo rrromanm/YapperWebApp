@@ -19,6 +19,13 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
         this.dao = dao;
         this.gson = new Gson();
     }
+
+    /**
+     * Creates a new category.
+     *
+     * @param request The request containing the category details to create.
+     * @param responseObserver The stream observer to send responses.
+     */
     @Override
     public void createCategory(CreateCategoryRequest request, StreamObserver<EmptyCategoryResponse> responseObserver) {
         try{
@@ -32,6 +39,12 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
 
     }
 
+    /**
+     * Updates an existing category.
+     *
+     * @param request The request containing the category details to update.
+     * @param responseObserver The stream observer to send responses.
+     */
     @Override
     public void updateCategory(UpdateCategoryRequest request, StreamObserver<EmptyCategoryResponse> responseObserver) {
         try{
@@ -48,6 +61,12 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
         }
     }
 
+    /**
+     * Deletes a category by its ID.
+     *
+     * @param request The request containing the category ID to delete.
+     * @param responseObserver The stream observer to send responses.
+     */
     @Override
     public void deleteCategory(DeleteCategoryRequest request, StreamObserver<EmptyCategoryResponse> responseObserver) {
         try{
@@ -62,6 +81,12 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves a category by its ID.
+     *
+     * @param request The request containing the category ID to retrieve.
+     * @param responseObserver The stream observer to send the category details.
+     */
     @Override
     public void getCategory(GetCategoryRequest request, StreamObserver<CategoryResponse> responseObserver) {
         try{
@@ -75,6 +100,12 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves a category by its name.
+     *
+     * @param request The request containing the category name to retrieve.
+     * @param responseObserver The stream observer to send the category details.
+     */
     @Override
     public void getCategoryByName(GetCategoryByNameRequest request, StreamObserver<CategoryResponse> responseObserver) {
         try{
@@ -87,6 +118,12 @@ public class CategoryImpl extends CategoryServiceGrpc.CategoryServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves all categories.
+     *
+     * @param request The request to retrieve all categories.
+     * @param responseObserver The stream observer to send the list of categories.
+     */
     @Override
     public void getAllCategories(EmptyGetAllCategoriesRequest request, StreamObserver<GetAllCategoriesResponse> responseObserver) {
         try{

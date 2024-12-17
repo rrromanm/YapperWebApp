@@ -25,6 +25,12 @@ public class NotificationImpl extends NotificationServiceGrpc.NotificationServic
         this.gson = new Gson();
     }
 
+    /**
+     * Sends a notification to the specified user and publishes it to RabbitMQ.
+     *
+     * @param request The request containing the user ID and the notification message.
+     * @param responseObserver The stream observer to send the response back.
+     */
     @Override
     public void sendNotification(NotificationRequest request, StreamObserver<EmptyResponse> responseObserver) {
 
@@ -63,7 +69,12 @@ public class NotificationImpl extends NotificationServiceGrpc.NotificationServic
 
     }
 
-
+    /**
+     * Retrieves the notifications for a specified user.
+     *
+     * @param request The request containing the user ID for which notifications are to be fetched.
+     * @param responseObserver The stream observer to send the notifications response back.
+     */
     @Override
     public void getNotifications(GetNotificationRequest request, StreamObserver<GetNotificationResponse> responseObserver) {
         try {

@@ -23,6 +23,12 @@ public class ChatImpl extends ChatServiceGrpc.ChatServiceImplBase {
         this.gson = new Gson();
     }
 
+    /**
+     * Sends a message from the sender to the receiver and publishes it to RabbitMQ.
+     *
+     * @param request The request containing the message details, including the message text, receiver ID, and sender ID.
+     * @param responseObserver The stream observer to send the response.
+     */
     @Override
     public void sendMessage(SendMessageRequest request, StreamObserver<EmptyMessageResponse> responseObserver) {
         try {
@@ -47,6 +53,12 @@ public class ChatImpl extends ChatServiceGrpc.ChatServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves all messages from the database.
+     *
+     * @param request The request to retrieve all messages.
+     * @param responseObserver The stream observer to send the list of all messages.
+     */
     @Override
     public void getAllMessages(EmptyMessageRequest request, StreamObserver<GetAllMessagesResponse> responseObserver) {
         try{
@@ -60,6 +72,12 @@ public class ChatImpl extends ChatServiceGrpc.ChatServiceImplBase {
         }
     }
 
+    /**
+     * Retrieves messages between a specific sender and receiver.
+     *
+     * @param request The request containing the sender ID and receiver ID.
+     * @param responseObserver The stream observer to send the list of messages between the sender and receiver.
+     */
     @Override
     public void getMessages(GetMessagesRequest request, StreamObserver<GetMessagesResponse> responseObserver) {
         try {

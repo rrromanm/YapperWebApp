@@ -20,6 +20,13 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
     this.dao = dao;
     this.gson = new Gson();
   }
+
+  /**
+   * Creates a new comment and stores it in the database.
+   *
+   * @param request The request containing the details of the comment to be created, including the comment body, user ID, and post ID.
+   * @param responseObserver The stream observer to send the response.
+   */
   @Override
   public void createComment(CreateCommentRequest request, StreamObserver<CommentEmptyResponse> responseObserver)
   {
@@ -37,6 +44,12 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
     }
   }
 
+  /**
+   * Updates an existing comment in the database.
+   *
+   * @param request The request containing the comment ID and the updated body of the comment.
+   * @param responseObserver The stream observer to send the response.
+   */
   @Override
   public void updateComment(UpdateCommentRequest request,
       StreamObserver<CommentEmptyResponse> responseObserver)
@@ -55,6 +68,12 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
     }
   }
 
+  /**
+   * Deletes a comment from the database.
+   *
+   * @param request The request containing the ID of the comment to be deleted.
+   * @param responseObserver The stream observer to send the response.
+   */
   @Override
   public void deleteComment(DeleteCommentRequest request, StreamObserver<CommentEmptyResponse> responseObserver)
   {
@@ -71,6 +90,12 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
     }
   }
 
+  /**
+   * Retrieves a comment by its ID from the database.
+   *
+   * @param request The request containing the ID of the comment to be fetched.
+   * @param responseObserver The stream observer to send the comment response.
+   */
   @Override
   public void getComment(GetCommentRequest request, StreamObserver<GetCommentResponse> responseObserver)
   {
@@ -93,6 +118,12 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
     }
   }
 
+  /**
+   * Retrieves all comments from the database.
+   *
+   * @param request The request to retrieve all comments.
+   * @param responseObserver The stream observer to send the list of all comments.
+   */
   @Override
   public void getAllComments(EmptyGetAllCommentsRequest request, StreamObserver<GetAllCommentsResponse> responseObserver)
   {
@@ -111,6 +142,12 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
     }
   }
 
+  /**
+   * Retrieves all comments related to a specific post.
+   *
+   * @param request The request containing the post ID to fetch associated comments.
+   * @param responseObserver The stream observer to send the list of comments related to the post.
+   */
   @Override
   public void getCommentsByPost(GetCommentsByPostRequest request, StreamObserver<GetCommentsByPostResponse> responseObserver)
   {
@@ -125,6 +162,12 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
     }
   }
 
+  /**
+   * Retrieves all comments made by a specific user.
+   *
+   * @param request The request containing the user ID to fetch comments made by the user.
+   * @param responseObserver The stream observer to send the list of comments made by the user.
+   */
   @Override
   public void getCommentsByUser(GetCommentsByUserRequest request, StreamObserver<GetCommentsByUserResponse> responseObserver)
   {
@@ -142,6 +185,13 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
       responseObserver.onError(e);
     }
   }
+
+  /**
+   * Likes a specific comment.
+   *
+   * @param request The request containing the comment ID and user ID of the user liking the comment.
+   * @param responseObserver The stream observer to send the response.
+   */
   @Override
   public void likeComment(LikeCommentRequest request, StreamObserver<CommentEmptyResponse> responseObserver)
   {
@@ -160,6 +210,13 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
       responseObserver.onError(e);
     }
   }
+
+  /**
+   * Unlikes a specific comment.
+   *
+   * @param request The request containing the comment ID and user ID of the user unliking the comment.
+   * @param responseObserver The stream observer to send the response.
+   */
   @Override
   public void unlikeComment(UnlikeCommentRequest request, StreamObserver<CommentEmptyResponse> responseObserver)
   {
@@ -176,6 +233,12 @@ public class CommentImpl extends CommentServiceGrpc.CommentServiceImplBase
     }
   }
 
+  /**
+   * Retrieves all comments liked by a specific user.
+   *
+   * @param request The request containing the user ID to fetch liked comments.
+   * @param responseObserver The stream observer to send the list of comments liked by the user.
+   */
   @Override public void getAllLikedComments(GetAllLikedCommentsRequest request, StreamObserver<GetAllLikedCommentsResponse> responseObserver)
   {
     try
